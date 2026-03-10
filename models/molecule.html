@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Molecular Viewer — Kevlar, Steel & Nylon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            background: #050510;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(0, 255, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(120, 0, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(0, 100, 255, 0.04) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgPulse 8s ease-in-out infinite alternate
+        }
+
+        @keyframes bgPulse {
+            0% {
+                opacity: 0.6
+            }
+
+            100% {
+                opacity: 1
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float linear infinite
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0
+            }
+
+            10% {
+                opacity: 1
+            }
+
+            90% {
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%
+        }
+
+        .header {
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .back-btn {
+                position: relative;
+                top: 0;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 900;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #fff 0%, #0ff 50%, #7b2fff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            margin-bottom: 12px;
+            line-height: 1.2
+        }
+
+        .header .subtitle {
+            font-size: clamp(12px, 1.8vw, 16px);
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase
+        }
+
+        .header .divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0ff, transparent);
+            margin: 20px auto 0;
+            border-radius: 1px
+        }
+
+        /* Cards grid */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            padding: 0 10px
+        }
+
+        .card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px 30px 35px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            overflow: hidden;
+            backdrop-filter: blur(20px)
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0), rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease
+        }
+
+        .card:hover::before {
+            opacity: 1
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.04), transparent);
+            transition: left 0.6s ease
+        }
+
+        .card:hover::after {
+            left: 100%
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 255, 0.2);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 255, 0.08)
+        }
+
+        .card.kevlar:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 255, 0.12)
+        }
+
+        .card.steel:hover {
+            border-color: rgba(120, 0, 255, 0.3);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(120, 0, 255, 0.12)
+        }
+
+        .card.nylon:hover {
+            border-color: rgba(0, 255, 120, 0.3);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 120, 0.12)
+        }
+
+        /* Card icon area */
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 36px;
+            position: relative
+        }
+
+        .kevlar .card-icon {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.12), rgba(0, 200, 255, 0.06));
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.08)
+        }
+
+        .steel .card-icon {
+            background: linear-gradient(135deg, rgba(120, 0, 255, 0.12), rgba(80, 0, 200, 0.06));
+            border: 1px solid rgba(120, 0, 255, 0.2);
+            box-shadow: 0 0 30px rgba(120, 0, 255, 0.08)
+        }
+
+        .nylon .card-icon {
+            background: linear-gradient(135deg, rgba(0, 255, 120, 0.12), rgba(0, 200, 80, 0.06));
+            border: 1px solid rgba(0, 255, 120, 0.2);
+            box-shadow: 0 0 30px rgba(0, 255, 120, 0.08)
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 2.5vw, 26px);
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 8px
+        }
+
+        .kevlar .card-title {
+            color: #0ff
+        }
+
+        .steel .card-title {
+            color: #a855f7
+        }
+
+        .nylon .card-title {
+            color: #34d399
+        }
+
+        .card-formula {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 16px;
+            font-weight: 400
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+            line-height: 1.6;
+            margin-bottom: 24px
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 24px
+        }
+
+        .meta-item {
+            text-align: center
+        }
+
+        .meta-item .meta-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px
+        }
+
+        .kevlar .meta-val {
+            color: #0ff
+        }
+
+        .steel .meta-val {
+            color: #a855f7
+        }
+
+        .nylon .meta-val {
+            color: #34d399
+        }
+
+        .meta-item .meta-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px
+        }
+
+        .card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer
+        }
+
+        .kevlar .card-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #0ff
+        }
+
+        .kevlar:hover .card-btn {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2)
+        }
+
+        .steel .card-btn {
+            background: rgba(120, 0, 255, 0.1);
+            border: 1px solid rgba(120, 0, 255, 0.3);
+            color: #a855f7
+        }
+
+        .steel:hover .card-btn {
+            background: rgba(120, 0, 255, 0.2);
+            box-shadow: 0 0 20px rgba(120, 0, 255, 0.2)
+        }
+
+        .nylon .card-btn {
+            background: rgba(0, 255, 120, 0.1);
+            border: 1px solid rgba(0, 255, 120, 0.3);
+            color: #34d399
+        }
+
+        .nylon:hover .card-btn {
+            background: rgba(0, 255, 120, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 120, 0.2)
+        }
+
+        .card-btn .arrow {
+            transition: transform 0.3s ease;
+            font-size: 16px
+        }
+
+        .card:hover .card-btn .arrow {
+            transform: translateX(4px)
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 20px
+            }
+
+            .card {
+                padding: 30px 24px 28px
+            }
+
+            .header {
+                margin-bottom: 40px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-btn"><span class="arrow">◀</span> ÎNAPOI</a>
+            <h1>MOLECULAR 3D</h1>
+            <div class="subtitle">Interactive 3D Molecular Viewer</div>
+            <div class="divider"></div>
+        </div>
+
+        <div class="cards">
+            <!-- Kevlar Card -->
+            <a href="index_kevlar.html" class="card kevlar">
+                <div class="card-icon">🛡️</div>
+                <div class="card-title">KEVLAR</div>
+                <div class="card-formula">[C₁₄H₁₀N₂O₂]ₙ</div>
+                <div class="card-desc">Poly-p-phenylene terephthalamide — polimer aramid cu rezistență extremă. Folosit
+                    în veste antiglonț și materiale compozite.</div>
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <span class="meta-val">238.24</span>
+                        <span class="meta-label">g/mol</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">42</span>
+                        <span class="meta-label">atomi</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">3</span>
+                        <span class="meta-label">inele</span>
+                    </div>
+                </div>
+                <div class="card-btn">DESCHIDE MODELUL <span class="arrow">→</span></div>
+            </a>
+
+            <!-- Steel Card -->
+            <a href="index_steel.html" class="card steel">
+                <div class="card-icon">⚗️</div>
+                <div class="card-title">STEEL</div>
+                <div class="card-formula">C₁₄H₁₉NO₂</div>
+                <div class="card-desc">N-(7-metoxi-1-metil-tetrahidronaftalen-2-il)acetamidă — compus organic cu
+                    structură naptalenică parțial saturată.</div>
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <span class="meta-val">233.31</span>
+                        <span class="meta-label">g/mol</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">36</span>
+                        <span class="meta-label">atomi</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">2</span>
+                        <span class="meta-label">inele</span>
+                    </div>
+                </div>
+                <div class="card-btn">DESCHIDE MODELUL <span class="arrow">→</span></div>
+            </a>
+
+            <!-- Nylon Card -->
+            <a href="index_nylon.html" class="card nylon">
+                <div class="card-icon">🧵</div>
+                <div class="card-title">NYLON</div>
+                <div class="card-formula">[C₆H₁₁NO]ₙ</div>
+                <div class="card-desc">Policaprolactamă (Nylon-6) — polimer sintetic din familia poliamidelor. Folosit
+                    în fibre textile, angrenaje și componente mecanice.</div>
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <span class="meta-val">113.16</span>
+                        <span class="meta-label">g/mol</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">38</span>
+                        <span class="meta-label">atomi</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-val">0</span>
+                        <span class="meta-label">inele</span>
+                    </div>
+                </div>
+                <div class="card-btn">DESCHIDE MODELUL <span class="arrow">→</span></div>
+            </a>
+        </div>
+
+        <div class="footer">3D PRINT READY · INTERACTIVE VIEWER</div>
+    </div>
+
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (8 + Math.random() * 12) + 's';
+            p.style.animationDelay = Math.random() * 10 + 's';
+            p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+            p.style.background = Math.random() > 0.5
+                ? `rgba(0, 255, 255, ${0.15 + Math.random() * 0.2})`
+                : `rgba(120, 0, 255, ${0.15 + Math.random() * 0.2})`;
+            particlesContainer.appendChild(p);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C₁₄H₁₉NO₂ — Model Molecular 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%
+        }
+
+        .ui-overlay {
+            position: fixed;
+            z-index: 10;
+            pointer-events: none
+        }
+
+        .ui-overlay * {
+            pointer-events: auto
+        }
+
+        .title-bar {
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease
+        }
+
+        .back-btn:hover {
+            color: #0ff;
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.3);
+            transform: translateX(-2px)
+        }
+
+        .back-btn .arrow {
+            font-size: 10px;
+            transform: translateY(-1px)
+        }
+
+        .title-bar h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(18px, 3vw, 28px);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, .5), 0 0 40px rgba(0, 255, 255, .2);
+            letter-spacing: 3px;
+            line-height: 1
+        }
+
+        .title-bar .sub {
+            font-size: clamp(10px, 1.5vw, 13px);
+            color: #0ff;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 8px;
+            text-transform: uppercase
+        }
+
+        .title-bar .mol-name {
+            font-size: clamp(12px, 1.2vw, 15px);
+            color: rgba(255, 255, 255, .5);
+            margin-top: 4px;
+            font-style: italic
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 95vw
+        }
+
+        .btn {
+            background: rgba(0, 255, 255, .08);
+            border: 1px solid rgba(0, 255, 255, .3);
+            color: #0ff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all .25s;
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+            white-space: nowrap
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 255, .18);
+            box-shadow: 0 0 20px rgba(0, 255, 255, .3);
+            transform: translateY(-2px)
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, rgba(0, 255, 255, .18), rgba(0, 200, 255, .12));
+            border-color: #0ff;
+            color: #fff;
+            font-size: 14px;
+            padding: 12px 24px
+        }
+
+        .btn.primary:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, .35), rgba(0, 200, 255, .25));
+            box-shadow: 0 0 30px rgba(0, 255, 255, .4)
+        }
+
+        .legend {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: rgba(0, 0, 20, .75);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            backdrop-filter: blur(12px);
+            z-index: 10
+        }
+
+        .legend h3 {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .5);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .7)
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor
+        }
+
+        .info-panel {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            background: rgba(0, 0, 20, .75);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 12px;
+            padding: 18px 22px;
+            backdrop-filter: blur(12px);
+            z-index: 10;
+            font-size: clamp(14px, 1.1vw, 18px);
+            color: rgba(255, 255, 255, .5);
+            max-width: 340px;
+            transition: transform .3s ease, opacity .3s ease
+        }
+
+        .info-panel .val {
+            color: #0ff;
+            font-weight: 700;
+            font-size: clamp(15px, 1.2vw, 20px);
+            font-family: 'Orbitron', sans-serif
+        }
+
+        .info-panel .row {
+            margin: 4px 0;
+            white-space: nowrap
+        }
+
+        .info-toggle {
+            display: none;
+            position: fixed;
+            bottom: 75px;
+            right: 12px;
+            z-index: 11;
+            background: rgba(0, 255, 255, .1);
+            border: 1px solid rgba(0, 255, 255, .4);
+            color: #0ff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            backdrop-filter: blur(10px);
+            transition: all .25s;
+            align-items: center;
+            justify-content: center
+        }
+
+        .info-toggle:hover {
+            background: rgba(0, 255, 255, .2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, .3)
+        }
+
+        .info-toggle .arrow {
+            display: inline-block;
+            transition: transform .3s ease
+        }
+
+        .info-toggle.open .arrow {
+            transform: rotate(180deg)
+        }
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity .6s ease
+        }
+
+        #loading.hide {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        #loading .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 255, .12);
+            border-top-color: #0ff;
+            border-radius: 50%;
+            animation: spin .8s linear infinite
+        }
+
+        #loading p {
+            margin-top: 16px;
+            color: rgba(0, 255, 255, .6);
+            font-size: 13px;
+            letter-spacing: 2px
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        #tooltip {
+            position: fixed;
+            background: rgba(0, 0, 20, .92);
+            border: 1px solid rgba(0, 255, 255, .5);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 20;
+            display: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, .15)
+        }
+
+        .export-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 255, 255, .12);
+            border: 1px solid #0ff;
+            color: #fff;
+            padding: 20px 36px;
+            border-radius: 14px;
+            font-size: 16px;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 40px rgba(0, 255, 255, .2);
+            transition: all .35s ease;
+            letter-spacing: 1px;
+            font-weight: 600
+        }
+
+        .export-toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1)
+        }
+
+        @media(max-width:700px) {
+            .legend {
+                display: none
+            }
+
+            .info-panel {
+                bottom: 160px;
+                right: 12px;
+                font-size: 11.5px;
+                max-width: none;
+                padding: 10px 14px
+            }
+
+            .info-panel.hidden-mobile {
+                transform: translateX(calc(100% + 20px));
+                opacity: 0;
+                pointer-events: none
+            }
+
+            .info-toggle {
+                display: flex
+            }
+
+            .controls {
+                bottom: 10px;
+                gap: 5px
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 11px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>LOADING MOLECULAR STRUCTURE...</p>
+    </div>
+    <div id="canvas-container"></div>
+    <div id="tooltip"></div>
+    <div class="export-toast" id="exportToast">✅ Download Complete!</div>
+
+    <div class="ui-overlay title-bar">
+        <div>
+            <a href="molecule.html" class="back-btn">
+                <span class="arrow">◀</span> BACK
+            </a>
+            <h1>STEEL 3D</h1>
+            <div class="sub">N-(7-METHOXY-1-METHYL-TETRAHYDRONAPHTHALEN-2-YL)ACETAMIDE</div>
+            <div class="mol-name">C₁₄H₁₉NO₂ — 3D Print Ready</div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <h3>ATOMS</h3>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#606060;color:#606060"></div>Carbon (C)
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ffffff;color:#ffffff"></div>Hydrogen (H)
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#3050ff;color:#3050ff"></div>Nitrogen (N)
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ff2020;color:#ff2020"></div>Oxygen (O)
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <div class="row">Molecule: <span class="val">Steel Compound</span></div>
+        <div class="row">Formula: <span class="val">C₁₄H₁₉NO₂</span></div>
+        <div class="row">Molecular weight: <span class="val">233.31 g/mol</span></div>
+        <div class="row" style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.3)">🖱️ Drag = rotate · Scroll =
+            zoom · Right-drag = pan</div>
+    </div>
+
+    <button class="info-toggle" id="infoToggle" onclick="toggleInfoPanel()">
+        <span class="arrow">◀</span>
+    </button>
+
+    <div class="controls">
+        <button class="btn" onclick="resetView()">⟲ RESET</button>
+        <button class="btn" onclick="toggleSpin()">⟳ AUTO ROTATE</button>
+        <button class="btn" onclick="toggleStyle()">◉ STYLE</button>
+        <button class="btn" onclick="toggleHydrogens()">H HYDROGENS</button>
+        <button class="btn primary" onclick="exportModel()">⬇ DOWNLOAD 3D MODEL</button>
+    </div>
+
+    <script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+  }
+}
+</script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // ═══════════════════════════════════════════
+        // STEEL MOLECULE: C₁₄H₁₉NO₂
+        // N-(7-methoxy-1-methyl-1,2,3,4-tetrahydronaphthalen-2-yl)acetamide
+        // Atom positions extracted from GLB model
+        // ═══════════════════════════════════════════
+
+        const ATOM_COLORS = { C: 0x606060, H: 0xffffff, N: 0x3050ff, O: 0xff2020 };
+        const ATOM_RADII = { C: 0.42, H: 0.26, N: 0.40, O: 0.38 };
+        const BOND_RADIUS = 0.13;
+
+        // Atom positions from the GLB (36 atoms total)
+        const MOLECULE_ATOMS = [
+            { x: 0.0, y: 0.7, z: 0.0, el: 'C' },          // C0  aromatic
+            { x: 1.21, y: 1.4, z: 0.0, el: 'C' },          // C1  aromatic
+            { x: 2.42, y: 0.7, z: 0.0, el: 'C' },          // C2  aromatic
+            { x: 2.42, y: -0.7, z: 0.0, el: 'C' },         // C3  aromatic
+            { x: 1.21, y: -1.4, z: 0.0, el: 'C' },         // C4  aromatic
+            { x: 0.0, y: -0.7, z: 0.0, el: 'C' },          // C5  aromatic
+            { x: -1.21, y: 1.4, z: 0.35, el: 'C' },        // C6  saturated ring
+            { x: -2.42, y: 0.7, z: 0.2, el: 'C' },         // C7  saturated ring
+            { x: -2.42, y: -0.7, z: -0.15, el: 'C' },      // C8  saturated ring
+            { x: -1.21, y: -1.4, z: -0.35, el: 'C' },      // C9  saturated ring
+            { x: 1.21, y: 4.03, z: 0.5, el: 'C' },         // C10 methoxy CH3
+            { x: -1.0, y: 2.85, z: 0.75, el: 'C' },        // C11 methyl
+            { x: -5.14, y: 0.76, z: 0.05, el: 'C' },       // C12 acetamide C=O
+            { x: -5.8, y: 1.8, z: 0.1, el: 'C' },          // C13 acetamide CH3
+            { x: -3.82, y: 0.7, z: 0.1, el: 'N' },         // N14 amide nitrogen
+            { x: 1.21, y: 2.58, z: 0.0, el: 'O' },         // O15 methoxy O
+            { x: -5.8, y: -0.4, z: 0.0, el: 'O' },         // O16 carbonyl O
+            { x: 2.56, y: 1.48, z: 0.0, el: 'H' },         // H17
+            { x: 3.55, y: -1.15, z: 0.0, el: 'H' },        // H18
+            { x: 1.21, y: -2.58, z: 0.0, el: 'H' },        // H19
+            { x: -0.55, y: 1.4, z: 1.2, el: 'H' },         // H20
+            { x: -2.65, y: 0.6, z: -0.75, el: 'H' },       // H21
+            { x: -3.4, y: -0.9, z: 0.5, el: 'H' },         // H22
+            { x: -3.3, y: -0.8, z: -1.0, el: 'H' },        // H23
+            { x: -0.75, y: -2.2, z: 0.35, el: 'H' },       // H24
+            { x: -1.75, y: -2.1, z: -1.15, el: 'H' },      // H25
+            { x: -4.0, y: -0.1, z: -0.55, el: 'H' },       // H26 (N-H)
+            { x: -0.05, y: 3.1, z: 0.55, el: 'H' },        // H27
+            { x: -1.55, y: 3.45, z: 0.15, el: 'H' },       // H28
+            { x: -1.35, y: 2.9, z: 1.7, el: 'H' },         // H29
+            { x: -6.88, y: 1.7, z: 0.1, el: 'H' },         // H30
+            { x: -5.5, y: 2.4, z: 1.0, el: 'H' },          // H31
+            { x: -5.5, y: 2.4, z: -0.8, el: 'H' },         // H32
+            { x: 2.29, y: 4.33, z: 0.45, el: 'H' },        // H33
+            { x: 0.64, y: 4.58, z: 0.05, el: 'H' },        // H34
+            { x: 0.99, y: 3.98, z: 1.55, el: 'H' },        // H35
+        ];
+
+        // Bond connections [atomIndex1, atomIndex2]
+        const MOLECULE_BONDS = [
+            [0, 1], [0, 5], [0, 6],       // C0 connections
+            [1, 2], [1, 15],              // C1-C2, C1-O15
+            [2, 3], [2, 17],              // C2-C3, C2-H17
+            [3, 4], [3, 18],              // C3-C4, C3-H18
+            [4, 5], [4, 19],              // C4-C5, C4-H19
+            [5, 9],                       // C5-C9
+            [6, 7], [6, 11], [6, 20],     // C6 connections
+            [7, 8], [7, 14], [7, 21],     // C7 connections (C7-N14 amide)
+            [8, 9], [8, 22], [8, 23],     // C8 connections
+            [9, 24], [9, 25],             // C9-H24, C9-H25
+            [10, 15], [10, 33], [10, 34], [10, 35], // C10 (OCH3) connections
+            [11, 27], [11, 28], [11, 29], // C11 (CH3) connections
+            [12, 13], [12, 14], [12, 16], // C12 (C=O + N + CH3)
+            [13, 30], [13, 31], [13, 32], // C13 (CH3) connections
+            [14, 26],                     // N14-H26
+        ];
+
+        // ═══════════════════════════════════════════
+        // THREE.JS SCENE SETUP (identical to Kevlar)
+        // ═══════════════════════════════════════════
+
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+        camera.position.set(6, 5, 18);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        container.appendChild(renderer.domElement);
+
+        scene.background = new THREE.Color(0x050510);
+        scene.fog = new THREE.FogExp2(0x050510, 0.008);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
+        controls.minDistance = 4;
+        controls.maxDistance = 60;
+
+        // Rich Lighting Setup
+        scene.add(new THREE.AmbientLight(0x404060, 0.7));
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(10, 15, 12);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        const dirLight2 = new THREE.DirectionalLight(0x4488ff, 1.0);
+        dirLight2.position.set(-8, -5, 10);
+        scene.add(dirLight2);
+
+        const dirLight3 = new THREE.DirectionalLight(0xff8844, 0.5);
+        dirLight3.position.set(0, -10, -5);
+        scene.add(dirLight3);
+
+        const pointLight = new THREE.PointLight(0x00ffff, 1.5, 35);
+        pointLight.position.set(0, 8, 5);
+        scene.add(pointLight);
+
+        const pointLight2 = new THREE.PointLight(0xff00ff, 0.5, 25);
+        pointLight2.position.set(10, -5, -5);
+        scene.add(pointLight2);
+
+        // Post-processing bloom
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.3, 0.4, 0.85
+        );
+        composer.addPass(bloomPass);
+
+        // ═══════════════════════════════════════════
+        // BUILD 3D MOLECULE MESH (same approach as Kevlar)
+        // Each atom = individual sphere, each bond = individual cylinder
+        // ═══════════════════════════════════════════
+
+        const moleculeGroup = new THREE.Group();
+        const atomMeshes = [];
+        const hydrogenMeshes = [];
+        const bondCylinders = [];
+
+        // Shared geometry (instanced for performance)
+        const sphereGeo = new THREE.SphereGeometry(1, 64, 64);
+        const cylinderGeo = new THREE.CylinderGeometry(1, 1, 1, 32, 1);
+
+        // Material cache (shared per element)
+        const matCache = {};
+        function getAtomMaterial(el) {
+            if (!matCache[el]) {
+                const color = ATOM_COLORS[el] || 0x888888;
+                matCache[el] = new THREE.MeshPhysicalMaterial({
+                    color,
+                    metalness: el === 'C' ? 0.35 : (el === 'N' ? 0.15 : 0.1),
+                    roughness: el === 'H' ? 0.15 : 0.3,
+                    clearcoat: 0.5,
+                    clearcoatRoughness: 0.15,
+                    envMapIntensity: 1.2,
+                    emissive: new THREE.Color(color).multiplyScalar(0.05),
+                });
+            }
+            return matCache[el];
+        }
+
+        const bondMat = new THREE.MeshPhysicalMaterial({
+            color: 0x888888,
+            metalness: 0.45,
+            roughness: 0.25,
+            clearcoat: 0.3,
+        });
+
+        // Center the molecule
+        let cx = 0, cy = 0, cz = 0;
+        MOLECULE_ATOMS.forEach(a => { cx += a.x; cy += a.y; cz += a.z; });
+        cx /= MOLECULE_ATOMS.length;
+        cy /= MOLECULE_ATOMS.length;
+        cz /= MOLECULE_ATOMS.length;
+
+        // Add atoms as individual spheres
+        MOLECULE_ATOMS.forEach((a, i) => {
+            const r = ATOM_RADII[a.el] || 0.35;
+            const mesh = new THREE.Mesh(sphereGeo, getAtomMaterial(a.el));
+            mesh.scale.set(r, r, r);
+            mesh.position.set(a.x - cx, a.y - cy, a.z - cz);
+            mesh.userData = { element: a.el, index: i };
+            moleculeGroup.add(mesh);
+            atomMeshes.push(mesh);
+            if (a.el === 'H') hydrogenMeshes.push(mesh);
+        });
+
+        // Add bonds as individual cylinders
+        MOLECULE_BONDS.forEach(([i1, i2]) => {
+            const a1 = MOLECULE_ATOMS[i1], a2 = MOLECULE_ATOMS[i2];
+            const p1 = new THREE.Vector3(a1.x - cx, a1.y - cy, a1.z - cz);
+            const p2 = new THREE.Vector3(a2.x - cx, a2.y - cy, a2.z - cz);
+
+            function addCylinder(start, end, radius) {
+                const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+                const dir = new THREE.Vector3().subVectors(end, start);
+                const len = dir.length();
+                const cyl = new THREE.Mesh(cylinderGeo, bondMat);
+                cyl.scale.set(radius, len, radius);
+                cyl.position.copy(mid);
+                const up = new THREE.Vector3(0, 1, 0);
+                const quat = new THREE.Quaternion().setFromUnitVectors(up, dir.normalize());
+                cyl.quaternion.copy(quat);
+                moleculeGroup.add(cyl);
+                bondCylinders.push(cyl);
+                // Tag if connected to hydrogen
+                if (a1.el === 'H' || a2.el === 'H') {
+                    cyl.userData.hasHydrogen = true;
+                }
+            }
+
+            // Check if this is a double bond (C=O on carbonyl)
+            const isDoubleBond = (
+                (i1 === 12 && i2 === 16) || (i1 === 16 && i2 === 12)  // C12=O16 carbonyl
+            );
+
+            if (isDoubleBond) {
+                const dir = new THREE.Vector3().subVectors(p2, p1).normalize();
+                let perp = new THREE.Vector3(0, 0, 1).cross(dir);
+                if (perp.length() < 0.01) perp.set(0, 1, 0).cross(dir);
+                perp.normalize().multiplyScalar(0.09);
+                addCylinder(p1.clone().add(perp), p2.clone().add(perp), BOND_RADIUS * 0.8);
+                addCylinder(p1.clone().sub(perp), p2.clone().sub(perp), BOND_RADIUS * 0.8);
+            } else {
+                addCylinder(p1, p2, BOND_RADIUS);
+            }
+        });
+
+        scene.add(moleculeGroup);
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        // ═══════════════════════════════════════════
+        // RAYCASTER FOR TOOLTIPS
+        // ═══════════════════════════════════════════
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const tooltip = document.getElementById('tooltip');
+
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(atomMeshes);
+            if (intersects.length > 0) {
+                const obj = intersects[0].object;
+                const el = obj.userData.element;
+                const names = { C: 'Carbon', H: 'Hydrogen', N: 'Nitrogen', O: 'Oxygen' };
+                tooltip.textContent = `${names[el] || el} (${el})`;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+            } else {
+                tooltip.style.display = 'none';
+            }
+        });
+
+        // ═══════════════════════════════════════════
+        // CONTROLS (identical logic to Kevlar index.html)
+        // ═══════════════════════════════════════════
+        let styleMode = 0;
+        let showHydrogens = true;
+
+        window.resetView = () => {
+            camera.position.set(6, 5, 18);
+            controls.target.set(0, 0, 0);
+            controls.update();
+        };
+
+        window.toggleSpin = () => {
+            controls.autoRotate = !controls.autoRotate;
+        };
+
+        window.toggleStyle = () => {
+            styleMode = (styleMode + 1) % 3;
+            atomMeshes.forEach(m => {
+                const baseR = ATOM_RADII[m.userData.element] || 0.35;
+                if (styleMode === 0) m.scale.setScalar(baseR);
+                else if (styleMode === 1) m.scale.setScalar(baseR * 2.5); // Space-filling
+                else m.scale.setScalar(baseR * 0.4);
+            });
+            bondCylinders.forEach(c => {
+                // If hydrogen bonds and hydrogens are hidden, keep them hidden
+                if (c.userData.hasHydrogen && !showHydrogens) {
+                    c.visible = false;
+                    return;
+                }
+                if (styleMode === 1) c.visible = false;
+                else c.visible = true;
+            });
+        };
+
+        window.toggleHydrogens = () => {
+            showHydrogens = !showHydrogens;
+            hydrogenMeshes.forEach(m => {
+                m.visible = showHydrogens;
+                if (showHydrogens) {
+                    const baseR = ATOM_RADII[m.userData.element] || 0.35;
+                    if (styleMode === 0) m.scale.setScalar(baseR);
+                    else if (styleMode === 1) m.scale.setScalar(baseR * 2.5); // Space-filling
+                    else m.scale.setScalar(baseR * 0.4);
+                }
+            });
+            bondCylinders.forEach(c => {
+                if (c.userData.hasHydrogen) {
+                    if (showHydrogens) {
+                        c.visible = (styleMode !== 1); // Hidden in space-fill mode
+                    } else {
+                        c.visible = false;
+                    }
+                }
+            });
+        };
+
+        window.toggleInfoPanel = () => {
+            const panel = document.querySelector('.info-panel');
+            const btn = document.getElementById('infoToggle');
+            panel.classList.toggle('hidden-mobile');
+            btn.classList.toggle('open');
+        };
+
+        // ═══════════════════════════════════════════
+        // DOWNLOAD 3D MODEL
+        // ═══════════════════════════════════════════
+        window.exportModel = () => {
+            const link = document.createElement('a');
+            link.href = 'steel_model.glb';
+            link.download = 'steel_model.glb';
+            link.click();
+            const toast = document.getElementById('exportToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        };
+
+        // ═══════════════════════════════════════════
+        // ANIMATION LOOP
+        // ═══════════════════════════════════════════
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            const t = performance.now() * 0.001;
+            moleculeGroup.rotation.x = Math.sin(t * 0.3) * 0.02;
+            moleculeGroup.position.y = Math.sin(t * 0.5) * 0.08;
+
+            pointLight.position.x = Math.sin(t * 0.7) * 8;
+            pointLight.position.z = Math.cos(t * 0.7) * 5;
+            pointLight2.position.y = Math.sin(t * 0.5) * 5;
+
+            composer.render();
+        }
+
+        // Hide loading & start
+        setTimeout(() => document.getElementById('loading').classList.add('hide'), 1000);
+        animate();
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>
