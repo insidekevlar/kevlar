@@ -38,75 +38,11 @@ body {
     background: var(--cosmic-deep);
     color: var(--star-white);
     overflow-x: hidden;
-    cursor: none;
     min-height: 100vh;
     position: relative;
 }
 
-/* ========================================
-   CUSTOM CURSOR
-   ======================================== */
-.cursor-outer {
-    position: fixed;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 2px solid rgba(123, 104, 238, 0.8);
-    pointer-events: none;
-    z-index: 999999;
-    transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s, border-color 0.2s, opacity 0.2s;
-    mix-blend-mode: screen;
 
-    animation: cursorPulse 2.5s ease-in-out infinite;
-}
-
-.cursor-inner {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #c084fc;
-    pointer-events: none;
-    z-index: 999999;
-    transform: translate(-50%, -50%);
-
-    transition: transform 0.05s;
-}
-
-.cursor-trail {
-    position: fixed;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 999990;
-    transform: translate(-50%, -50%);
-    background: rgba(192, 132, 252, 0.5);
-
-}
-
-@keyframes cursorPulse {
-
-    0%,
-    100% {}
-
-    50% {
-
-        border-color: rgba(192, 132, 252, 1);
-    }
-}
-
-body:hover .cursor-outer {
-    opacity: 1;
-}
-
-a:hover~.cursor-outer,
-button:hover~.cursor-outer {
-    width: 52px;
-    height: 52px;
-    border-color: var(--gold);
-}
 
 /* ========================================
    SPIDER WEB PURPLE BACKGROUND

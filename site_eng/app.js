@@ -47,7 +47,6 @@ const elements = {};
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     initElements();
-    initCustomCursor();
     initKevlarBg();
     initEventListeners();
     initButtonEffects();
@@ -1033,83 +1032,6 @@ function initKevlarBg() {
         bgRenderer.setSize(W(), H());
         if (bgComposer) bgComposer.setSize(W(), H());
     });
-}
-
-// ============================================
-// CUSTOM CURSOR
-// ============================================
-function initCustomCursor() {
-    const outer = document.createElement('div');
-    outer.className = 'cursor-outer';
-    outer.id = 'cursor-outer';
-    document.body.appendChild(outer);
-
-    const inner = document.createElement('div');
-    inner.className = 'cursor-inner';
-    inner.id = 'cursor-inner';
-    document.body.appendChild(inner);
-
-    // Trail elements
-    const trails = [];
-    for (let i = 0; i < 4; i++) {
-        const t = document.createElement('div');
-        t.className = 'cursor-trail';
-        t.style.opacity = (1 - i / 6) * 0.6;
-        t.style.width = (5 - i * 0.6) + 'px';
-        t.style.height = (5 - i * 0.6) + 'px';
-        document.body.appendChild(t);
-        trails.push({ el: t, x: 0, y: 0 });
-    }
-
-    let mouseX = 0, mouseY = 0;
-    let outerX = 0, outerY = 0;
-    const trailHistory = Array(5).fill({ x: 0, y: 0 });
-
-    document.addEventListener('mousemove', e => {
-        mouseX = e.clientX; mouseY = e.clientY;
-        inner.style.left = mouseX + 'px';
-        inner.style.top = mouseY + 'px';
-        trailHistory.unshift({ x: mouseX, y: mouseY });
-        trailHistory.pop();
-    });
-
-    // Cursor expand on hover over buttons/links
-    document.addEventListener('mouseover', e => {
-        if (e.target.closest('button, a, .rgb-glow-btn, .spec-category, .module-card')) {
-            outer.style.width = '52px';
-            outer.style.height = '52px';
-            outer.style.borderColor = 'rgba(232, 197, 71, 0.9)';
-            outer.style.boxShadow = '0 0 20px rgba(232, 197, 71, 0.7)';
-        }
-    });
-    document.addEventListener('mouseout', e => {
-        if (e.target.closest('button, a, .rgb-glow-btn, .spec-category, .module-card')) {
-            outer.style.width = '';
-            outer.style.height = '';
-            outer.style.borderColor = '';
-            outer.style.boxShadow = '';
-        }
-    });
-
-    function animateCursor() {
-        outerX += (mouseX - outerX) * 0.12;
-        outerY += (mouseY - outerY) * 0.12;
-        outer.style.left = outerX + 'px';
-        outer.style.top = outerY + 'px';
-
-        trails.forEach((t, i) => {
-            const lag = i + 1;
-            const h = trailHistory[Math.min(lag * 1, trailHistory.length - 1)];
-            if (h) {
-                t.x += (h.x - t.x) * 0.2;
-                t.y += (h.y - t.y) * 0.2;
-                t.el.style.left = t.x + 'px';
-                t.el.style.top = t.y + 'px';
-            }
-        });
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
 }
 
 // ============================================
