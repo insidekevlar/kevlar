@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+Mono:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=2">
     <style>
@@ -2213,1154 +2213,1604 @@
 
     <script src="app.js"></script>
 
+
     <!-- ══════════════════════════════════════════════
-     KEVLAR AI CHATBOT — BOTTOM LEFT
+     KEVLAR AI CHATBOT (ELITE v3) — BOTTOM LEFT
 ══════════════════════════════════════════════ -->
-    <style>
-        :root {
-            --kg: #00ff41;
-            --kg2: #009922;
-            --kg3: #004410;
-            --kborder: rgba(0, 255, 65, 0.3);
-        }
-
-        .kc-launcher {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 9000;
-            perspective: 600px;
-        }
-
-        .kc-orbit {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 255, 65, 0.18);
-            top: 50%;
-            left: 50%;
-            pointer-events: none;
-        }
-
-        .kc-orbit:nth-child(1) {
-            width: 150px;
-            height: 150px;
-            margin: -75px 0 0 -75px;
-            animation: kcorbitX 4s linear infinite;
-            border-color: rgba(0, 255, 65, 0.2);
-        }
-
-        .kc-orbit:nth-child(2) {
-            width: 178px;
-            height: 178px;
-            margin: -89px 0 0 -89px;
-            animation: kcorbitY 6s linear infinite reverse;
-            border-color: rgba(0, 255, 65, 0.1);
-        }
-
-        .kc-orbit:nth-child(3) {
-            width: 208px;
-            height: 208px;
-            margin: -104px 0 0 -104px;
-            animation: kcorbitZ 8s linear infinite;
-            border-color: rgba(0, 255, 65, 0.06);
-        }
-
-        .kc-orbit-dot {
-            position: absolute;
-            top: -4px;
-            left: 50%;
-            margin-left: -4px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--kg);
-            box-shadow: 0 0 10px var(--kg), 0 0 20px rgba(0, 255, 65, 0.6);
-        }
-
-        .kc-halo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 255, 65, 0.18) 0%, transparent 70%);
-            animation: kcHalo 2s ease-in-out infinite alternate;
-            pointer-events: none;
-        }
-
-        .kc-btn {
-            position: relative;
-            z-index: 10;
-            width: 90px;
-            height: 90px;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            animation: kcFloat 3s ease-in-out infinite, kcGlow 10s linear infinite;
-            outline: none;
-            border: none;
-            background: none;
-        }
-
-        .kc-hex {
-            position: absolute;
-            inset: 0;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-style: preserve-3d;
-        }
-
-        .kc-face {
-            position: absolute;
-            inset: 0;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            background: linear-gradient(135deg, #001a00 0%, #003300 50%, #001800 100%);
-            border: 2px solid rgba(0, 255, 65, 0.7);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4), 0 0 60px rgba(0, 255, 65, 0.15), inset 0 0 30px rgba(0, 255, 65, 0.08);
-            animation: kcHexGlow 2s ease-in-out infinite alternate;
-        }
-
-        .kc-icon {
-            position: relative;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 4px;
-            pointer-events: none;
-        }
-
-        .kc-icon svg {
-            width: 34px;
-            height: 34px;
-            fill: none;
-            stroke: var(--kg);
-            stroke-width: 1.5;
-            filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.9));
-            animation: kcIconPulse 2s ease-in-out infinite alternate;
-        }
-
-        .kc-label {
-            font-family: 'Orbitron', monospace;
-            font-size: 9px;
-            letter-spacing: 2px;
-            font-weight: 700;
-            color: var(--kg);
-            text-shadow: 0 0 8px rgba(0, 255, 65, 0.9);
-        }
-
-        .kc-scan {
-            position: absolute;
-            top: -5%;
-            left: 0;
-            right: 0;
-            height: 25%;
-            background: linear-gradient(transparent, rgba(0, 255, 65, 0.12), transparent);
-            animation: kcScan 2.5s linear infinite;
-            pointer-events: none;
-            z-index: 6;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-
-        .kc-ripple {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 2px solid var(--kg);
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .kc-ripple.go {
-            animation: kcRipple 0.6s ease-out forwards;
-        }
-
-        .kc-notif {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            z-index: 20;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: var(--kg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #000;
-            box-shadow: 0 0 10px var(--kg), 0 0 20px rgba(0, 255, 65, 0.5);
-            animation: kcNotif 1s ease-in-out infinite alternate;
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        /* Chat panel */
-        .kc-panel {
-            position: fixed;
-            bottom: 165px;
-            left: 30px;
-            width: min(760px, calc(100vw - 48px));
-            z-index: 8999;
-            transform-origin: bottom left;
-            transform: scale(0.85) translateY(20px);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.4s cubic-bezier(.34, 1.56, .64, 1), opacity 0.3s ease;
-        }
-
-        .kc-panel.open {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .kc-inner {
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            background: #020d04;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.06), 0 0 30px rgba(0, 255, 65, 0.12), 0 0 80px rgba(0, 255, 65, 0.05), inset 0 0 40px rgba(0, 0, 0, 0.6);
-            animation: kcBorderPulse 3s ease-in-out infinite alternate;
-        }
-
-        .kc-c {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            z-index: 20;
-        }
-
-        .kc-c::before,
-        .kc-c::after {
-            content: '';
-            position: absolute;
-            background: var(--kg);
-            box-shadow: 0 0 6px var(--kg);
-        }
-
-        .kc-c.tl {
-            top: 0;
-            left: 0
-        }
-
-        .kc-c.tl::before {
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px
-        }
-
-        .kc-c.tl::after {
-            top: 0;
-            left: 0;
-            width: 1px;
-            height: 100%
-        }
-
-        .kc-c.tr {
-            top: 0;
-            right: 0
-        }
-
-        .kc-c.tr::before {
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 1px
-        }
-
-        .kc-c.tr::after {
-            top: 0;
-            right: 0;
-            width: 1px;
-            height: 100%
-        }
-
-        .kc-c.bl {
-            bottom: 0;
-            left: 0
-        }
-
-        .kc-c.bl::before {
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px
-        }
-
-        .kc-c.bl::after {
-            bottom: 0;
-            left: 0;
-            width: 1px;
-            height: 100%
-        }
-
-        .kc-c.br {
-            bottom: 0;
-            right: 0
-        }
-
-        .kc-c.br::before {
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 1px
-        }
-
-        .kc-c.br::after {
-            bottom: 0;
-            right: 0;
-            width: 1px;
-            height: 100%
-        }
-
-        .kc-topbar {
-            padding: 9px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0, 255, 65, 0.03);
-            position: relative;
-        }
-
-        .kc-topbar::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--kg), rgba(0, 255, 65, 0.3), var(--kg), transparent);
-            background-size: 200%;
-            animation: kcShimmer 3s linear infinite;
-        }
-
-        .kc-topleft {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .kc-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--kg);
-            box-shadow: 0 0 8px var(--kg), 0 0 16px rgba(0, 255, 65, 0.4);
-            animation: kcDotPulse 2s ease-in-out infinite;
-        }
-
-        .kc-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: var(--kg);
-            text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
-        }
-
-        .kc-topright {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .kc-status {
-            font-size: 9px;
-            letter-spacing: 1px;
-            color: var(--kg2);
-        }
-
-        .kc-status span {
-            color: var(--kg);
-        }
-
-        .kc-closebtn {
-            background: transparent;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            color: var(--kg2);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
-            padding: 0;
-        }
-
-        .kc-closebtn:hover {
-            border-color: var(--kg);
-            color: var(--kg);
-            background: rgba(0, 255, 65, 0.08);
-        }
-
-        .kc-marquee {
-            border-bottom: 1px solid rgba(0, 255, 65, 0.08);
-            overflow: hidden;
-            padding: 4px 0;
-            background: rgba(0, 255, 65, 0.02);
-        }
-
-        .kc-marq-inner {
-            display: inline-block;
-            white-space: nowrap;
-            font-size: 9px;
-            letter-spacing: 1.5px;
-            color: var(--kg2);
-            animation: kcMarquee 20s linear infinite;
-        }
-
-        .kc-marq-inner span {
-            color: var(--kg);
-        }
-
-        .kc-msgs {
-            height: min(340px, 45vh);
-            overflow-y: auto;
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scroll-behavior: smooth;
-        }
-
-        .kc-msgs::-webkit-scrollbar {
-            width: 2px;
-        }
-
-        .kc-msgs::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 65, 0.25);
-        }
-
-        .kc-msg {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            animation: kcMsgIn 0.3s cubic-bezier(.34, 1.56, .64, 1) both;
-        }
-
-        .kc-meta {
-            font-size: 9px;
-            letter-spacing: 1.5px;
-            color: var(--kg2);
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .kc-msg.kc-user .kc-meta {
-            justify-content: flex-end;
-        }
-
-        .kc-tag {
-            border: 1px solid rgba(0, 255, 65, 0.25);
-            padding: 1px 5px;
-            font-size: 8px;
-            letter-spacing: 1px;
-            color: var(--kg2);
-        }
-
-        .kc-bubble {
-            font-size: 13px;
-            line-height: 1.67;
-            border: 1px solid rgba(0, 255, 65, 0.12);
-            padding: 10px 13px;
-            max-width: 88%;
-            position: relative;
-            overflow: hidden;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--kg);
-        }
-
-        .kc-bubble::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.04), transparent);
-            animation: kcGlare 6s ease-in-out infinite;
-        }
-
-        .kc-msg.kc-ai .kc-bubble {
-            background: rgba(0, 255, 65, 0.02);
-            border-left: 2px solid rgba(0, 255, 65, 0.5);
-            align-self: flex-start;
-            max-width: 100%;
-        }
-
-        .kc-msg.kc-user .kc-bubble {
-            background: rgba(0, 255, 65, 0.04);
-            border-right: 2px solid var(--kg);
-            border-left-color: transparent;
-            align-self: flex-end;
-            color: #99ffbb;
-        }
-
-        .kc-bubble strong {
-            color: var(--kg);
-            text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
-        }
-
-        .kc-bubble .tbl-wrap {
-            overflow-x: auto;
-            margin: 8px 0;
-        }
-
-        .kc-bubble table {
-            border-collapse: collapse;
-            width: 100%;
-            font-size: 11px;
-            font-family: 'Share Tech Mono', monospace;
-            min-width: 360px;
-        }
-
-        .kc-bubble table th {
-            background: rgba(0, 255, 65, 0.1);
-            color: var(--kg);
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            padding: 5px 8px;
-            text-align: left;
-            letter-spacing: 1px;
-            font-size: 10px;
-            white-space: nowrap;
-        }
-
-        .kc-bubble table td {
-            border: 1px solid rgba(0, 255, 65, 0.15);
-            padding: 5px 8px;
-            color: rgba(0, 255, 65, 0.8);
-            vertical-align: top;
-        }
-
-        .kc-bubble table tr:nth-child(even) td {
-            background: rgba(0, 255, 65, 0.03);
-        }
-
-        .kc-bubble table td strong {
-            color: var(--kg);
-            text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
-        }
-
-        .kc-typing {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 13px;
-            border: 1px solid rgba(0, 255, 65, 0.12);
-            border-left: 2px solid rgba(0, 255, 65, 0.45);
-            background: rgba(0, 255, 65, 0.02);
-            width: fit-content;
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            color: var(--kg2);
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        .kc-tdots span {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            background: var(--kg);
-            border-radius: 50%;
-            margin-right: 3px;
-            animation: kcTdot 1.1s infinite;
-        }
-
-        .kc-tdots span:nth-child(2) {
-            animation-delay: .2s
-        }
-
-        .kc-tdots span:nth-child(3) {
-            animation-delay: .4s
-        }
-
-        .kc-chips {
-            padding: 7px 14px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            border-top: 1px solid rgba(0, 255, 65, 0.07);
-            background: rgba(0, 0, 0, 0.35);
-        }
-
-        .kc-chip {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 1px;
-            padding: 4px 9px;
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            color: var(--kg2);
-            cursor: pointer;
-            background: transparent;
-            text-transform: uppercase;
-            transition: all 0.15s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .kc-chip::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.08), transparent);
-            transition: left 0.4s;
-        }
-
-        .kc-chip:hover::before {
-            left: 100%;
-        }
-
-        .kc-chip:hover {
-            border-color: var(--kg);
-            color: var(--kg);
-            background: rgba(0, 255, 65, 0.06);
-            box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .kc-input-row {
-            padding: 9px 12px;
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-            border-top: 1px solid var(--kborder);
-            background: rgba(0, 0, 0, 0.45);
-            position: relative;
-        }
-
-        .kc-input-row::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--kg), rgba(0, 255, 65, 0.2), transparent);
-            background-size: 200%;
-            animation: kcShimmer 4s linear infinite reverse;
-        }
-
-        .kc-prefix {
-            font-size: 14px;
-            color: var(--kg);
-            padding-bottom: 10px;
-            text-shadow: 0 0 8px var(--kg);
-            flex-shrink: 0;
-            animation: kcDotPulse 2s ease-in-out infinite;
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        textarea.kc-inp {
-            flex: 1;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(0, 255, 65, 0.28);
-            color: var(--kg);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            padding: 8px 4px;
-            resize: none;
-            outline: none;
-            min-height: 34px;
-            max-height: 96px;
-            line-height: 1.5;
-            caret-color: var(--kg);
-            transition: border-bottom-color 0.2s;
-        }
-
-        textarea.kc-inp::placeholder {
-            color: var(--kg3);
-            font-size: 10px;
-            letter-spacing: 2px;
-        }
-
-        textarea.kc-inp:focus {
-            border-bottom-color: var(--kg);
-        }
-
-        .kc-sbtn {
-            background: transparent;
-            border: 1px solid rgba(0, 255, 65, 0.4);
-            color: var(--kg);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 2px;
-            padding: 7px 12px;
-            cursor: pointer;
-            transition: all 0.15s;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .kc-sbtn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 255, 65, 0.08);
-            transform: translateX(-100%);
-            transition: transform 0.3s;
-        }
-
-        .kc-sbtn:hover:not(:disabled)::before {
-            transform: translateX(0);
-        }
-
-        .kc-sbtn:hover:not(:disabled) {
-            border-color: var(--kg);
-            box-shadow: 0 0 16px rgba(0, 255, 65, 0.25);
-            text-shadow: 0 0 8px var(--kg);
-            transform: translateY(-1px);
-        }
-
-        .kc-sbtn:disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-        }
-
-        .kc-footer {
-            padding: 4px 16px;
-            font-size: 8px;
-            letter-spacing: 1px;
-            color: var(--kg3);
-            border-top: 1px solid rgba(0, 255, 65, 0.07);
-            background: rgba(0, 0, 0, 0.55);
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        /* Attention pulse when closed */
-        @keyframes kcAttentionPulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.8)
-            }
-
-            70% {
-                box-shadow: 0 0 0 20px rgba(0, 255, 65, 0)
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 255, 65, 0)
-            }
-        }
-
-        .kc-btn {
-            animation: kcFloat 3s ease-in-out infinite, kcGlow 10s linear infinite, kcAttentionPulse 2s ease-out infinite !important;
-        }
-
-        @keyframes kcorbitX {
-            from {
-                transform: rotateX(0deg)
-            }
-
-            to {
-                transform: rotateX(360deg)
-            }
-        }
-
-        @keyframes kcorbitY {
-            from {
-                transform: rotateY(0deg)
-            }
-
-            to {
-                transform: rotateY(360deg)
-            }
-        }
-
-        @keyframes kcorbitZ {
-            from {
-                transform: rotateZ(0deg) rotateX(60deg)
-            }
-
-            to {
-                transform: rotateZ(360deg) rotateX(60deg)
-            }
-        }
-
-        @keyframes kcHalo {
-            from {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.5
-            }
-
-            to {
-                transform: translate(-50%, -50%) scale(1.4);
-                opacity: 1
-            }
-        }
-
-        @keyframes kcFloat {
-
-            0%,
-            100% {
-                transform: translateY(0px)
-            }
-
-            50% {
-                transform: translateY(-8px)
-            }
-        }
-
-        @keyframes kcGlow {
-            0% {
-                filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.6))
-            }
-
-            50% {
-                filter: drop-shadow(0 0 20px rgba(0, 255, 65, 1))
-            }
-
-            100% {
-                filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.6))
-            }
-        }
-
-        @keyframes kcHexGlow {
-            from {
-                box-shadow: 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 15px rgba(0, 255, 65, 0.04)
-            }
-
-            to {
-                box-shadow: 0 0 30px rgba(0, 255, 65, 0.6), inset 0 0 25px rgba(0, 255, 65, 0.12)
-            }
-        }
-
-        @keyframes kcIconPulse {
-            from {
-                filter: drop-shadow(0 0 3px rgba(0, 255, 65, 0.6))
-            }
-
-            to {
-                filter: drop-shadow(0 0 10px rgba(0, 255, 65, 1)) drop-shadow(0 0 20px rgba(0, 255, 65, 0.5))
-            }
-        }
-
-        @keyframes kcScan {
-            from {
-                top: -25%
-            }
-
-            to {
-                top: 125%
-            }
-        }
-
-        @keyframes kcNotif {
-            from {
-                transform: scale(1)
-            }
-
-            to {
-                transform: scale(1.25);
-                box-shadow: 0 0 15px var(--kg), 0 0 30px rgba(0, 255, 65, 0.4)
-            }
-        }
-
-        @keyframes kcRipple {
-            from {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1
-            }
-
-            to {
-                transform: translate(-50%, -50%) scale(6);
-                opacity: 0
-            }
-        }
-
-        @keyframes kcBorderPulse {
-            from {
-                box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.06), 0 0 25px rgba(0, 255, 65, 0.08)
-            }
-
-            to {
-                box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.18), 0 0 45px rgba(0, 255, 65, 0.16)
-            }
-        }
-
-        @keyframes kcShimmer {
-            from {
-                background-position: -200% 0
-            }
-
-            to {
-                background-position: 200% 0
-            }
-        }
-
-        @keyframes kcDotPulse {
-
-            0%,
-            100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: .4
-            }
-        }
-
-        @keyframes kcGlare {
-            0% {
-                left: -120%
-            }
-
-            40% {
-                left: 120%
-            }
-
-            100% {
-                left: 120%
-            }
-        }
-
-        @keyframes kcMarquee {
-            from {
-                transform: translateX(0)
-            }
-
-            to {
-                transform: translateX(-50%)
-            }
-        }
-
-        @keyframes kcMsgIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px) scale(0.98)
-            }
-
-            to {
-                opacity: 1;
-                transform: none
-            }
-        }
-
-        @keyframes kcTdot {
-
-            0%,
-            60%,
-            100% {
-                transform: scale(1);
-                opacity: .3
-            }
-
-            30% {
-                transform: scale(1.6);
-                opacity: 1
-            }
-        }
-    </style>
-
-    <!-- CHATBOT LAUNCHER (bottom left) -->
-    <div class="kc-launcher" id="kcLauncher">
-        <div class="kc-orbit">
-            <div class="kc-orbit-dot"></div>
+<style>
+:root {
+  --green: #00ff41;
+  --green-mid: #009922;
+  --green-dark: #004410;
+  --bg2: #020d04;
+  --border: rgba(0,255,65,0.3);
+}
+#loading-screen:not(.hidden) ~ #launcherWrap { display: none !important; }
+.launcher-wrap { contain: layout style; }
+
+
+:root {
+  --green: #00ff41;
+  --green-mid: #009922;
+  --green-dark: #004410;
+  --bg: #000000;
+  --bg2: #020d04;
+  --border: rgba(0,255,65,0.3);
+}
+
+
+/* ── BG GRID ── */
+
+/* ══════════════════════════════════
+   3D LAUNCHER BUTTON
+══════════════════════════════════ */
+.launcher-wrap {
+  position: fixed;
+  bottom: 30px; left: 30px;
+  z-index: 100;
+  perspective: 600px;
+}
+
+/* Orbit rings around button */
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0,255,65,0.2);
+  top: 50%; left: 50%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.orbit-ring:nth-child(1) {
+  width: 150px; height: 150px;
+  margin: -75px 0 0 -75px;
+  animation: orbitX 4s linear infinite;
+  border-color: rgba(0,255,65,0.2);
+}
+.orbit-ring:nth-child(2) {
+  width: 175px; height: 175px;
+  margin: -87px 0 0 -87px;
+  animation: orbitY 6s linear infinite reverse;
+  border-color: rgba(0,255,65,0.12);
+}
+.orbit-ring:nth-child(3) {
+  width: 205px; height: 205px;
+  margin: -102px 0 0 -102px;
+  animation: orbitZ 8s linear infinite;
+  border-color: rgba(0,255,65,0.07);
+}
+
+/* Orbit dot */
+.orbit-dot {
+  position: absolute; top: -4px; left: 50%; margin-left: -4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green), 0 0 20px rgba(0,255,65,0.6);
+}
+
+/* Glow halo */
+.launcher-halo {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 130px; height: 130px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,65,0.18) 0%, transparent 70%);
+  animation: haloPulse 2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+/* The actual button */
+.launcher-btn {
+  position: relative; z-index: 10;
+  width: 90px; height: 90px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  animation: btnFloat 3s ease-in-out infinite, btnSpin3d 10s linear infinite;
+  transition: transform 0.2s;
+  outline: none; border: none; background: none;
+}
+
+.launcher-btn:hover {
+  animation: btnFloat 3s ease-in-out infinite, btnSpin3d 10s linear infinite, btnHoverScale 0.2s ease forwards;
+}
+
+/* 3D hexagon face */
+.hex {
+  position: absolute; inset: 0;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  transform-style: preserve-3d;
+}
+.hex-face {
+  position: absolute; inset: 0;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(135deg, #001a00 0%, #003300 50%, #001800 100%);
+  border: 2px solid rgba(0,255,65,0.7);
+  box-shadow:
+    0 0 30px rgba(0,255,65,0.4),
+    0 0 60px rgba(0,255,65,0.15),
+    inset 0 0 30px rgba(0,255,65,0.08);
+  animation: hexGlow 2s ease-in-out infinite alternate;
+}
+.hex-icon {
+  position: relative; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 4px;
+  pointer-events: none;
+}
+.hex-icon svg {
+  width: 34px; height: 34px;
+  fill: none; stroke: var(--green); stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px rgba(0,255,65,0.9));
+  animation: iconPulse 2s ease-in-out infinite alternate;
+}
+.hex-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 2px; font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 8px rgba(0,255,65,0.9);
+}
+
+/* Scanning line on button */
+.hex-scan {
+  position: absolute; top: -5%; left: 0; right: 0; height: 25%;
+  background: linear-gradient(transparent, rgba(0,255,65,0.12), transparent);
+  animation: hexScan 2.5s linear infinite;
+  pointer-events: none; z-index: 6;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Edge glow lines */
+.hex-edge {
+  position: absolute; inset: -2px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: transparent;
+  border: 1px solid transparent;
+  animation: edgeRotate 3s linear infinite;
+  pointer-events: none;
+}
+
+/* Click ripple */
+.ripple {
+  position: absolute; top: 50%; left: 50%;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0; pointer-events: none;
+}
+.ripple.go {
+  animation: rippleGo 0.6s ease-out forwards;
+}
+
+/* Notification badge */
+.notif {
+  position: absolute; top: -6px; right: -6px; z-index: 20;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #000;
+  box-shadow: 0 0 10px var(--green), 0 0 20px rgba(0,255,65,0.5);
+  animation: notifPop 1s ease-in-out infinite alternate;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ══════════════════════════════════
+   CHATBOT PANEL
+══════════════════════════════════ */
+.chat-panel {
+  position: fixed;
+  bottom: 200px; left: 30px;
+  width: min(780px, calc(100vw - 48px));
+  z-index: 50;
+  transform-origin: bottom left;
+  transform: scale(0.85) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+}
+.chat-panel.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.chatbot-inner {
+  border: 1px solid rgba(0,255,65,0.3);
+  background: var(--bg2);
+  position: relative; overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(0,255,65,0.06),
+    0 0 30px rgba(0,255,65,0.1),
+    0 0 80px rgba(0,255,65,0.04),
+    inset 0 0 40px rgba(0,0,0,0.6);
+  animation: borderPulse 3s ease-in-out infinite alternate;
+}
+
+/* Corners */
+.c { position: absolute; width: 14px; height: 14px; z-index: 20; }
+.c::before,.c::after { content:''; position:absolute; background:var(--green); box-shadow:0 0 6px var(--green); }
+.c.tl{top:0;left:0} .c.tl::before{top:0;left:0;width:100%;height:1px} .c.tl::after{top:0;left:0;width:1px;height:100%}
+.c.tr{top:0;right:0} .c.tr::before{top:0;right:0;width:100%;height:1px} .c.tr::after{top:0;right:0;width:1px;height:100%}
+.c.bl{bottom:0;left:0} .c.bl::before{bottom:0;left:0;width:100%;height:1px} .c.bl::after{bottom:0;left:0;width:1px;height:100%}
+.c.br{bottom:0;right:0} .c.br::before{bottom:0;right:0;width:100%;height:1px} .c.br::after{bottom:0;right:0;width:1px;height:100%}
+
+/* TOP BAR */
+.topbar {
+  padding: 9px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(0,255,65,0.03); position: relative;
+}
+.topbar::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--green), rgba(0,255,65,0.3), var(--green), transparent);
+  background-size: 200%; animation: shimmer 3s linear infinite;
+}
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green), 0 0 16px rgba(0,255,65,0.4);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.title {
+  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  letter-spacing: 4px; color: var(--green);
+  text-shadow: 0 0 8px rgba(0,255,65,0.4);
+}
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.topbar-stats { display:flex; gap:16px; }
+.ts { font-size:9px; letter-spacing:1px; color:var(--green-mid); }
+.ts span { color:var(--green); }
+
+/* Close btn */
+.close-btn {
+  background: transparent; border: 1px solid rgba(0,255,65,0.3);
+  color: var(--green-mid); font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; width: 24px; height: 24px;
+  cursor: pointer; display:flex; align-items:center; justify-content:center;
+  transition: all 0.15s; padding: 0;
+}
+.close-btn:hover { border-color: var(--green); color: var(--green); background: rgba(0,255,65,0.08); }
+
+/* MARQUEE */
+.marquee-wrap {
+  border-bottom: 1px solid rgba(0,255,65,0.08); overflow: hidden; padding: 4px 0;
+  background: rgba(0,255,65,0.02);
+}
+.marquee-inner {
+  display: inline-block; white-space: nowrap;
+  font-size: 9px; letter-spacing: 1.5px; color: var(--green-mid);
+  animation: marquee 20s linear infinite;
+}
+.marquee-inner span { color: var(--green); }
+
+/* MESSAGES */
+.msgs {
+  height: min(360px, 48vh);
+  overflow-y: auto; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  scroll-behavior: smooth;
+}
+.msgs::-webkit-scrollbar { width: 2px; }
+.msgs::-webkit-scrollbar-thumb { background: rgba(0,255,65,0.25); }
+
+.msg { display:flex; flex-direction:column; gap:4px; animation: msgIn 0.3s cubic-bezier(.34,1.56,.64,1) both; }
+.meta {
+  font-size: 9px; letter-spacing: 1.5px; color: var(--green-mid);
+  display: flex; align-items: center; gap: 7px;
+}
+.msg.user .meta { justify-content:flex-end; }
+.tag { border: 1px solid rgba(0,255,65,0.25); padding: 1px 5px; font-size: 8px; letter-spacing: 1px; color: var(--green-mid); }
+.bubble {
+  font-size: 13px; line-height: 1.67;
+  border: 1px solid rgba(0,255,65,0.12); padding: 10px 13px; max-width: 88%;
+  position: relative; overflow: hidden;
+}
+.bubble::after {
+  content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+  background: linear-gradient(90deg, transparent, rgba(0,255,65,0.04), transparent);
+  animation: glare 6s ease-in-out infinite;
+}
+.msg.ai .bubble { background: rgba(0,255,65,0.02); border-left: 2px solid rgba(0,255,65,0.5); align-self: flex-start; color: var(--green); max-width: 100%; }
+.msg.user .bubble { background: rgba(0,255,65,0.04); border-right: 2px solid var(--green); border-left-color: transparent; align-self: flex-end; color: #99ffbb; }
+.bubble strong { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,0.5); }
+
+/* TABLES */
+.bubble .tbl-wrap { overflow-x: auto; margin: 8px 0; }
+.bubble table {
+  border-collapse: collapse; width: 100%; font-size: 11px;
+  font-family: 'Share Tech Mono', monospace; min-width: 360px;
+}
+.bubble table th {
+  background: rgba(0,255,65,0.1); color: var(--green);
+  border: 1px solid rgba(0,255,65,0.3); padding: 5px 8px;
+  text-align: left; letter-spacing: 1px; font-size: 10px;
+  white-space: nowrap;
+}
+.bubble table td {
+  border: 1px solid rgba(0,255,65,0.15); padding: 5px 8px;
+  color: rgba(0,255,65,0.8); vertical-align: top;
+}
+.bubble table tr:nth-child(even) td { background: rgba(0,255,65,0.03); }
+.bubble table tr:hover td { background: rgba(0,255,65,0.07); }
+.bubble table td strong { color: var(--green); text-shadow: 0 0 6px rgba(0,255,65,0.4); }
+
+/* TYPING */
+.typing-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid rgba(0,255,65,0.12); border-left: 2px solid rgba(0,255,65,0.45);
+  background: rgba(0,255,65,0.02); width: fit-content;
+  font-size: 10px; letter-spacing: 1.5px; color: var(--green-mid);
+}
+.tdots span {
+  display:inline-block; width:4px; height:4px;
+  background:var(--green); border-radius:50%; margin-right:3px;
+  animation: tdot 1.1s infinite;
+}
+.tdots span:nth-child(2){animation-delay:.2s} .tdots span:nth-child(3){animation-delay:.4s}
+
+/* CHIPS */
+.chips { padding: 7px 14px; display:flex; gap:6px; flex-wrap:wrap; border-top: 1px solid rgba(0,255,65,0.07); background: rgba(0,0,0,0.35); }
+.chip {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1px; padding: 4px 9px;
+  border: 1px solid rgba(0,255,65,0.2); color: var(--green-mid); cursor: pointer;
+  background: transparent; text-transform: uppercase; transition: all 0.15s; position: relative; overflow: hidden;
+}
+.chip::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(0,255,65,0.08), transparent); transition: left 0.4s; }
+.chip:hover::before { left: 100%; }
+.chip:hover { border-color: var(--green); color: var(--green); background: rgba(0,255,65,0.06); box-shadow: 0 0 12px rgba(0,255,65,0.15); transform: translateY(-1px); }
+
+/* INPUT */
+.input-row {
+  padding: 9px 12px; display:flex; gap:8px; align-items:flex-end;
+  border-top: 1px solid var(--border); background: rgba(0,0,0,0.45); position:relative;
+}
+.input-row::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--green), rgba(0,255,65,0.2), transparent);
+  background-size: 200%; animation: shimmer 4s linear infinite reverse;
+}
+.prefix { font-size: 14px; color: var(--green); padding-bottom: 10px; text-shadow: 0 0 8px var(--green); flex-shrink: 0; animation: dotPulse 2s ease-in-out infinite; }
+textarea.inp {
+  flex: 1; background: transparent; border: none; border-bottom: 1px solid rgba(0,255,65,0.28);
+  color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 13px;
+  padding: 8px 4px; resize: none; outline: none; min-height: 34px; max-height: 96px; line-height: 1.5; caret-color: var(--green); transition: border-bottom-color 0.2s;
+}
+textarea.inp::placeholder { color: var(--green-dark); font-size:10px; letter-spacing:2px; }
+textarea.inp:focus { border-bottom-color: var(--green); }
+.sbtn {
+  background: transparent; border: 1px solid rgba(0,255,65,0.4); color: var(--green);
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 7px 12px;
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0; position: relative; overflow: hidden;
+}
+.sbtn::before { content:''; position:absolute; inset:0; background: rgba(0,255,65,0.08); transform: translateX(-100%); transition: transform 0.3s; }
+.sbtn:hover:not(:disabled)::before { transform: translateX(0); }
+.sbtn:hover:not(:disabled) { border-color: var(--green); box-shadow: 0 0 16px rgba(0,255,65,0.25); text-shadow: 0 0 8px var(--green); transform: translateY(-1px); }
+.sbtn:disabled { opacity:0.2; cursor:not-allowed; }
+
+/* FOOTER */
+.footer { padding: 4px 16px; font-size: 8px; letter-spacing: 1px; color: var(--green-dark); border-top: 1px solid rgba(0,255,65,0.07); background: rgba(0,0,0,0.55); display:flex; justify-content:space-between; }
+
+/* ══════════════════ KEYFRAMES ══════════════════ */
+@keyframes gridMove { from{background-position:0 0,0 0} to{background-position:44px 44px,44px 44px} }
+@keyframes bgBreath { from{opacity:.5;transform:scale(1)} to{opacity:1;transform:scale(1.05)} }
+@keyframes sweep { from{top:-8%} to{top:108%} }
+@keyframes borderPulse {
+  from{box-shadow:0 0 0 1px rgba(0,255,65,0.06),0 0 25px rgba(0,255,65,0.07)}
+  to{box-shadow:0 0 0 1px rgba(0,255,65,0.15),0 0 40px rgba(0,255,65,0.14),0 0 80px rgba(0,255,65,0.05)}
+}
+@keyframes shimmer { from{background-position:-200% 0} to{background-position:200% 0} }
+@keyframes dotPulse { 0%,100%{opacity:1;text-shadow:0 0 8px var(--green)} 50%{opacity:.5;text-shadow:0 0 2px var(--green)} }
+@keyframes glare { 0%{left:-120%} 40%{left:120%} 100%{left:120%} }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes msgIn { from{opacity:0;transform:translateY(8px) scale(0.98)} to{opacity:1;transform:none} }
+@keyframes tdot { 0%,60%,100%{transform:scale(1);opacity:.3} 30%{transform:scale(1.6);opacity:1} }
+
+/* Launcher animations */
+@keyframes btnFloat {
+  0%,100%{transform:translateY(0px)}
+  50%{transform:translateY(-8px)}
+}
+@keyframes btnSpin3d {
+  0%  {filter:drop-shadow(0 0 10px rgba(0,255,65,0.6))}
+  25% {filter:drop-shadow(4px 0 14px rgba(0,255,65,0.8))}
+  50% {filter:drop-shadow(0 0 20px rgba(0,255,65,1))}
+  75% {filter:drop-shadow(-4px 0 14px rgba(0,255,65,0.8))}
+  100%{filter:drop-shadow(0 0 10px rgba(0,255,65,0.6))}
+}
+@keyframes hexGlow {
+  from{box-shadow:0 0 15px rgba(0,255,65,0.2),0 0 30px rgba(0,255,65,0.08),inset 0 0 15px rgba(0,255,65,0.04)}
+  to{box-shadow:0 0 25px rgba(0,255,65,0.5),0 0 50px rgba(0,255,65,0.2),inset 0 0 25px rgba(0,255,65,0.1)}
+}
+@keyframes iconPulse {
+  from{filter:drop-shadow(0 0 3px rgba(0,255,65,0.6))}
+  to{filter:drop-shadow(0 0 8px rgba(0,255,65,1)) drop-shadow(0 0 16px rgba(0,255,65,0.5))}
+}
+@keyframes hexScan {
+  from{top:-25%} to{top:125%}
+}
+@keyframes orbitX { from{transform:rotateX(0deg)} to{transform:rotateX(360deg)} }
+@keyframes orbitY { from{transform:rotateY(0deg)} to{transform:rotateY(360deg)} }
+@keyframes orbitZ { from{transform:rotateZ(0deg) rotateX(60deg)} to{transform:rotateZ(360deg) rotateX(60deg)} }
+@keyframes haloPulse {
+  from{transform:translate(-50%,-50%) scale(1);opacity:0.5}
+  to{transform:translate(-50%,-50%) scale(1.4);opacity:1}
+}
+@keyframes notifPop {
+  from{transform:scale(1);box-shadow:0 0 6px var(--green)}
+  to{transform:scale(1.2);box-shadow:0 0 12px var(--green),0 0 20px rgba(0,255,65,0.4)}
+}
+@keyframes rippleGo {
+  from{transform:translate(-50%,-50%) scale(0);opacity:1}
+  to{transform:translate(-50%,-50%) scale(5);opacity:0}
+}
+@keyframes edgeRotate {
+  0%{box-shadow:2px 0 6px rgba(0,255,65,0.6)}
+  25%{box-shadow:0 2px 6px rgba(0,255,65,0.6)}
+  50%{box-shadow:-2px 0 6px rgba(0,255,65,0.6)}
+  75%{box-shadow:0 -2px 6px rgba(0,255,65,0.6)}
+  100%{box-shadow:2px 0 6px rgba(0,255,65,0.6)}
+}
+
+@media(max-width:580px){
+  .topbar-stats{display:none}
+  .chips{display:none}
+  .title{font-size:10px;letter-spacing:2px}
+  .launcher-wrap{bottom:20px;left:20px}
+  .chat-panel{left:16px;bottom:190px}
+}
+.mic-btn {
+  background: transparent;
+  border: 1px solid rgba(0,255,65,0.3);
+  color: rgba(0,255,65,0.7);
+  font-size: 22px;
+  padding: 0 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mic-btn:hover { border-color: rgba(0,255,65,0.6); color: #00ff41; }
+.mic-btn.recording {
+  border-color: #ff3333 !important;
+  color: #ff3333 !important;
+  animation: micPulse 0.8s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(255,51,51,0.4);
+}
+@keyframes micPulse {
+  0%,100% { opacity:1; } 50% { opacity:0.5; }
+}
+.lang-btn {
+  background: transparent;
+  border: 1px solid rgba(0,255,65,0.2);
+  color: rgba(0,255,65,0.5);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  padding: 0 7px; cursor: pointer;
+  flex-shrink: 0; min-width: 30px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.lang-btn:hover { border-color: rgba(0,255,65,0.5); color: #00ff41; }
+.lang-btn.en { color: #00ccff; border-color: rgba(0,204,255,0.4); }
+
+</style>
+
+<!-- ══ 3D LAUNCHER BUTTON ══ -->
+<div class="launcher-wrap" id="launcherWrap">
+  <!-- Orbit rings -->
+  <div class="orbit-ring"><div class="orbit-dot"></div></div>
+  <div class="orbit-ring"><div class="orbit-dot"></div></div>
+  <div class="orbit-ring"><div class="orbit-dot"></div></div>
+
+  <!-- Halo glow -->
+  <div class="launcher-halo"></div>
+
+  <!-- Button -->
+  <button class="launcher-btn" id="launcherBtn" onclick="toggleChat()" aria-label="Open Kevlar AI Chat">
+    <div class="hex">
+      <div class="hex-face"></div>
+      <div class="hex-scan"></div>
+      <div class="hex-icon">
+        <!-- AI / Chat SVG icon -->
+        <svg viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z"/>
+        </svg>
+        <div class="hex-label">AI</div>
+      </div>
+    </div>
+    <!-- Ripple -->
+    <div class="ripple" id="ripple"></div>
+  </button>
+
+</div>
+
+<!-- ══ CHAT PANEL ══ -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chatbot-inner">
+    <div class="c tl"></div><div class="c tr"></div>
+    <div class="c bl"></div><div class="c br"></div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="dot"></div>
+        <div class="title">KEVLAR // AI TACTICAL</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-stats">
+          <div class="ts">STATUS <span>● LIVE</span></div>
         </div>
-        <div class="kc-orbit">
-            <div class="kc-orbit-dot"></div>
-        </div>
-        <div class="kc-orbit">
-            <div class="kc-orbit-dot"></div>
-        </div>
-        <div class="kc-halo"></div>
-        <button class="kc-btn" id="kcBtn" onclick="kcToggle()" aria-label="Kevlar AI Chat">
-            <div class="kc-hex">
-                <div class="kc-face"></div>
-                <div class="kc-scan"></div>
-                <div class="kc-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
-                    </svg>
-                    <div class="kc-label">AI</div>
-                </div>
-            </div>
-            <div class="kc-ripple" id="kcRipple"></div>
-        </button>
-
+        <button class="close-btn" onclick="toggleChat()">✕</button>
+      </div>
     </div>
 
-    <!-- CHAT PANEL -->
-    <div class="kc-panel" id="kcPanel">
-        <div class="kc-inner">
-            <div class="kc-c tl"></div>
-            <div class="kc-c tr"></div>
-            <div class="kc-c bl"></div>
-            <div class="kc-c br"></div>
-            <div class="kc-topbar">
-                <div class="kc-topleft">
-                    <div class="kc-dot"></div>
-                    <div class="kc-title">KEVLAR // AI TACTIC</div>
-                </div>
-                <div class="kc-topright">
-                    <div class="kc-status">SISTEM <span>● ANGAJAT</span></div>
-                    <button class="kc-closebtn" onclick="kcToggle()">✕</button>
-                </div>
-            </div>
-            <div class="kc-marquee">
-                <span class="kc-marq-inner">
-                    [KEVLAR_AI_INIT] // PARA_ARAMID_DB: <span>LOADED</span> // K29_K49_K129_K149: <span>INDEXED</span>
-                    // DuPont™ // <span>3,620 MPa</span> // 5X vs STEEL // NIJ_IIIA: <span>CONFIRMED</span> //
-                    STEPHANIE_KWOLEK_1965 // BALLISTIC_CORE: <span>READY</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    [KEVLAR_AI_INIT] // PARA_ARAMID_DB: <span>LOADED</span> // K29_K49_K129_K149: <span>INDEXED</span>
-                    // DuPont™ // <span>3,620 MPa</span> // 5X vs STEEL // NIJ_IIIA: <span>CONFIRMED</span> //
-                    STEPHANIE_KWOLEK_1965 // BALLISTIC_CORE: <span>READY</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
-            </div>
-            <div class="kc-msgs" id="kcMsgs">
-                <div class="kc-msg kc-ai">
-                    <div class="kc-meta">
-                        <div class="kc-tag">KEVLAR_AI</div> INIȚIALIZAT
-                    </div>
-                    <div class="kc-bubble">
-                        <strong>[BAZĂ DE DATE KEVLAR ACTIVĂ]</strong><br><br>
-                        <strong>KEVLAR AI</strong> este online. Fibra para-aramidică inventată de
-                        <strong>Stephanie Kwolek</strong> la DuPont în 1965 — de 5× mai rezistentă decât oțelul.<br><br>
-                        Selectați un subiect sau scrieți orice întrebare despre Kevlar.
-                    </div>
-                </div>
-            </div>
-            <div class="kc-chips" id="kcChips">
-                <button class="kc-chip" onclick="kcQ('Explain the molecular structure of Kevlar')">// CHIMIE</button>
-                <button class="kc-chip" onclick="kcQ('What types of Kevlar exist? K-29, K-49, K-149...')">//
-                    TIPURI</button>
-                <button class="kc-chip" onclick="kcQ('How does a Kevlar bulletproof vest work?')">//
-                    BALISTIC</button>
-                <button class="kc-chip" onclick="kcQ('How is Kevlar produced at an industrial level?')">//
-                    PRODUCȚIE</button>
-                <button class="kc-chip" onclick="kcQ('The story of Kevlar discovery')">// ISTORIE</button>
-                <button class="kc-chip" onclick="kcQ('What are the disadvantages and limits of Kevlar?')">//
-                    LIMITE</button>
-                <button class="kc-chip" onclick="kcQ('Kevlar vs steel vs Dyneema — comparison')">// VS</button>
-            </div>
-            <div class="kc-input-row">
-                <div class="kc-prefix">&gt;_</div>
-                <textarea class="kc-inp" id="kcInp" placeholder="INTRODUCEȚI ÎNTREBAREA..." rows="1"
-                    onkeydown="kcHandleKey(event)" oninput="kcResize(this)"></textarea>
-                <button class="kc-sbtn" id="kcSbtn" onclick="kcSend()">TRIMITE &gt;&gt;</button>
-            </div>
-            <div class="kc-footer">
-                <span>[POLI-PARA-FENILEN-TEREFTALAMIDĂ] // DuPont™</span>
-                <span>MOTOR_AI: KEVLAR_BD</span>
-            </div>
-        </div>
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+      <span class="marquee-inner">
+        [SISTEM_ACTIV] // PARA_ARAMID_DB: <span>LOADED</span> // K29_K49_K129_K149: <span>ONLINE</span> // DuPont™ // <span>3,620 MPa</span> // 5X vs OȚEL // NIJ_IIIA: <span>ACTIVE</span> // STEPHANIE_KWOLEK_1965 // BALLISTIC_CORE: <span>READY</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        [SISTEM_ACTIV] // PARA_ARAMID_DB: <span>LOADED</span> // K29_K49_K129_K149: <span>ONLINE</span> // DuPont™ // <span>3,620 MPa</span> // 5X vs OȚEL // NIJ_IIIA: <span>ACTIVE</span> // STEPHANIE_KWOLEK_1965 // BALLISTIC_CORE: <span>READY</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>
     </div>
 
-    <script>
-        /* ── KEVLAR AI CHATBOT ENGINE ── */
-        const KC_KB = [
-            { keys: ['history', 'historic', 'kwolek', 'discover', 'invented', '1965', 'origin', 'how it started'], r: `The story of Kevlar begins in **1965**, when chemist **Stephanie Kwolek** at DuPont synthesized a strange solution — cloudy, fluid as water — which her team wanted to discard. She insisted on testing it.\n\nThe result: the fiber was **5 times stronger than steel** at the same weight. Nobody had ever seen that.\n\n**1971** — commercial production. **1975** — the first bulletproof vest saves the first life. **1988** — Kevlar reaches the **ISS** as an anti-orbital-debris shield. Kwolek was inducted into the National Inventors Hall of Fame in 1994.` },
-            { keys: ['chemistry', 'molecul', 'structur', 'ppta', 'polymer', 'formula', 'chemical', 'aramid'], r: `Chemically known as **poly-para-phenylene terephthalamide (PPTA)**. The secret lies in the word **"para"**: the amide bonds (CO−NH) are attached at opposite positions of the benzene rings — the chain is perfectly straight, like matchsticks.\n\nAdjacent chains form a dense network of **hydrogen bonds** — they hold tightly to each other. A fiber as thin as a hair can stop a bullet.\n\nComparatively, **Nomex** (meta-aramid) has angled bonds → strength drops to ~340 MPa vs **3,620 MPa** for Kevlar.` },
-            { keys: ['types', 'type', 'k-29', 'k-49', 'k29', 'k49', 'k149', 'km2', 'versions', 'grade'], r: `Kevlar is not a single material — there are multiple grades:\n\n**Kevlar 29** — classic, base for bulletproof vests. Modulus 70 GPa.\n**Kevlar 49** — rigid (135 GPa), aviation and marine.\n**Kevlar 129** — serious ballistic upgrade, 3.4 GPa. Military helmets.\n**Kevlar 149** — the most rigid, 143–186 GPa. Strictly aerospace.\n**Kevlar KM2** — special for shrapnel fragments, 3.8 GPa.\n**KM2 Plus (series 775)** — current US Army generation. Same protection with **35% less material**.\n**Kevlar KXP** — modern flexible version.` },
-            { keys: ['properties', 'mechanic', 'strength', 'mpa', 'gpa', 'density', 'weight'], r: `The concrete numbers:\n\n**Density** — 1.44 g/cm³. Steel is 7.85 g/cm³ → Kevlar is **5.5× lighter**.\n**Tensile strength** — **3,620 MPa**.\n**Elastic modulus** — between 70 GPa (K-29) and 186 GPa (K-149).\n**Creep** — under **0.03%** at loads of 40–48% of maximum. Does not deform over time, unlike Dyneema.\n\nIn short: **5× stronger than steel** at the same weight.` },
-            { keys: ['thermal', 'temperature', 'heat', 'fire', 'burn', 'burning', 'decomposition'], r: `Kevlar **does not melt** — it decomposes directly at **425–480°C**. The limiting oxygen index (LOI 29%) means it doesn't easily sustain combustion.\n\nSurprising fact: at **-196°C** (liquid nitrogen) it actually becomes *more resistant*. Ideal for space and cryogenic applications.\n\nThermal conductivity: **0.04 W/(m·K)** — practically a thermal insulator.` },
-            { keys: ['ballistic', 'bullet', 'vest', 'bulletproof', 'protection', 'impact', 'nij'], r: `A bulletproof vest doesn't "repel" the bullet — it **stops it by distributing energy**:\n\n1. The bullet deforms the woven fiber layers\n2. Kinetic energy is transferred laterally across **hundreds of filaments simultaneously**\n3. The fiber elongates slightly, absorbing energy\n4. The impact is distributed over a large area\n\n**NIJ IIIA** = stops a **.44 Magnum at 490 m/s**, with a max 44mm indentation.\n**KM2 Plus** — same protection with **35% less material**.` },
-            { keys: ['produc', 'fabric', 'synthes', 'produce', 'how it is made', 'industrial', 'process'], r: `**Step 1 — Synthesis:** 1,4-phenylenediamine + terephthaloyl chloride → PPTA polymer at low temperatures.\n\n**Step 2 — Spinning:** The polymer is dissolved in **concentrated sulfuric acid** (the only solvent). It behaves like a liquid crystal — molecules align spontaneously during extrusion.\n\n**Step 3 — Heat treatment:** Kwolek discovered that heating dramatically increases strength. This differentiates the grades — K-29 vs K-149 is the same polymer, treated differently.\n\nManufacturers: **DuPont** (Virginia), **Twaron** (Teijin, Japan), **Heracron** (Kolon, Korea).` },
-            { keys: ['disadvantage', 'limit', 'weak', 'problem', 'uv', 'sun', 'moisture', 'water'], r: `Kevlar's weak points:\n\n**UV** — the main enemy. At 1000h accelerated exposure it loses **10–20%** of strength. Solution: UVA additives + treatments.\n\n**Water** — absorbs **5–7%** of its weight. Reduces strength and becomes electrically conductive. Solution: polyurethane sheaths.\n\n**Compression** — excellent in tension, weak under longitudinal compressive forces.\n\n**Cutting** — requires special tools. Poor adhesion to paints.\n\nThat's why ballistic vests have waterproof covers and are replaced every 5–7 years.` },
-            { keys: ['vs', 'compare', 'dyneema', 'steel', 'carbon', 'comparison'], r: `| Material | Density | Strength | Melting |\n|---|---|---|---|\n| **Kevlar** | 1.44 g/cm³ | 3.6 GPa | 425°C+ |\n| Dyneema | 0.97 g/cm³ | ~3.0 GPa | **150°C** |\n| Carbon | 1.79 g/cm³ | 5.49 GPa | Extreme |\n| Steel | 7.85 g/cm³ | 1.0–2.0 GPa | 1400°C+ |\n\n**vs Dyneema:** Floats, lighter, but melts at 150°C and irreversibly stretches over time.\n**vs Carbon:** Carbon is stiffer, but **brittle on impact**. Kevlar absorbs energy.\n**vs Steel:** Kevlar is 5× stronger at the same mass and doesn't corrode.` },
-            { keys: ['space', 'nasa', 'iss', 'mars', 'satellite'], r: `Kevlar is on the **ISS Space Station** as an anti-micrometeorite shield — particles at 15 km/s are turned into plasma by an aluminum layer, while Kevlar retains everything.\n\n**Mars Pathfinder (1997):** The inflatable landing airbags were sewn from Kevlar — the rover bounced multiple times on Martian soil without damage.\n\n**Perseverance (2020):** Contains Kevlar samples directly exposed to the Martian environment — NASA is testing the material for future human spacesuits.` },
-            { keys: ['what is', 'about', 'kevlar', 'explain', 'general'], r: `Kevlar is arguably the most important synthetic material of the 20th century.\n\nChemically: **poly-para-phenylene terephthalamide (PPTA)** — discovered in **1965** by **Stephanie Kwolek** at DuPont, almost by accident.\n\n**Why is it special?**\n— Density: **1.44 g/cm³** (6× lighter than steel)\n— Strength: **3,620 MPa** — **5× greater** than steel at the same weight\n— Does not melt — decomposes at **425–480°C**\n— At -196°C it becomes *more resistant*\n\nYou'll find it in bulletproof vests, on the ISS, in submarine cables of the global internet, in F1 tires, and on Mars.` },
-        ];
-        function kcGetReply(msg) {
-            const raw = msg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            const words = raw.split(/\s+/).filter(w => w.length >= 3);
-            let best = null, bestScore = 0;
-            for (const e of KC_KB) {
-                let score = 0;
-                for (const k of e.keys) {
-                    const matched = k.length <= 3 ? words.includes(k) : (k.includes(' ') ? raw.includes(k) : words.some(w => w === k || w.includes(k) || k.includes(w)));
-                    if (matched) { score += 2; continue; }
-                    for (const w of words) {
-                        if (w.length < 3 || k.length < 3 || Math.abs(w.length - k.length) > 3) continue;
-                        const a = w, b = k, dp = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => i || j));
-                        for (let i = 1; i <= a.length; i++)for (let j = 1; j <= b.length; j++)dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-                        if (dp[a.length][b.length] <= (w.length <= 5 ? 1 : 2)) { score += 1; break; }
-                    }
-                }
-                if (score > bestScore) { bestScore = score; best = e; }
-            }
-            if (best && bestScore > 0) return best.r;
-            return `Could not find exactly that in the database.\n\nTry: **Chemistry** // **Types** (K-29, K-49...) // **Ballistic** // **Temperatură** // **Production** // **History** // **Limits** // **Comparisons** // **NASA / Space**`;
+    <!-- MESSAGES -->
+    <div class="msgs" id="msgs">
+      <div class="msg ai">
+        <div class="meta"><div class="tag">KEVLAR_AI</div> INIȚIALIZAT</div>
+        <div class="bubble">
+          <strong>[BAZA DE DATE KEVLAR ACTIVĂ]</strong><br><br>
+          Inteligența <strong>KEVLAR AI</strong> este online. Fibra para-aramidică inventată de <strong>Stephanie Kwolek</strong> la DuPont în 1965 — de 5x mai rezistentă decât oțelul.<br><br>
+          Selectează un topic rapid sau scrie orice întrebare.
+        </div>
+      </div>
+    </div>
+
+    <!-- CHIPS -->
+    <div class="chips" id="chips">
+      <button class="chip" onclick="q('Explică structura moleculară a Kevlarului')">// CHIMIE</button>
+      <button class="chip" onclick="q('Ce tipuri de Kevlar există? K-29, K-49, K-149...')">// TIPURI</button>
+      <button class="chip" onclick="q('Cum funcționează vesta antiglonț din Kevlar?')">// BALISTIC</button>
+      <button class="chip" onclick="q('Kevlar vs oțel vs Dyneema — comparație')">// VS</button>
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-row">
+      <div class="prefix">&gt;_</div>
+      <textarea class="inp" id="inp" placeholder="INTRODUCEȚI INTEROGAREA..." rows="1"
+        onkeydown="handleKey(event)" oninput="resizeInp(this)"></textarea>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice input">🎤</button>
+      <button class="lang-btn" id="langBtn" onclick="toggleMicLang()" title="Limbă microfon">RO</button>
+      <button class="sbtn" id="sbtn" onclick="send()">SEND &gt;&gt;</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span>[POLY-PARA-PHENYLENE-TEREPHTHALAMIDE] // DuPont™</span>
+      <span>AI_ENGINE: ACTIVE</span>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* ════════════════════════════════════════════════════════════════
+   KEVLAR AI — ELITE ENGINE
+   ■ TensorFlow.js Universal Sentence Encoder (semantic search)
+   ■ Cosine similarity vector matching
+   ■ Hybrid: semantic + keyword fallback
+   ■ Page content extractor (reads live DOM)
+   ■ Mouse context awareness
+   ■ Conversation memory
+   ■ Dynamic contextual chips after each answer
+   ■ Knowledge Graph
+   ■ Voice synthesis
+   ■ 3 AI Modes: STUDENT / SCIENTIST / DEEP
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── LAUNCHER ── */
+let chatOpen = false;
+const panel = document.getElementById('chatPanel');
+const notif = document.querySelector('.notif');
+const ripple = document.getElementById('ripple');
+function toggleChat() {
+  chatOpen = !chatOpen;
+  panel.classList.toggle('open', chatOpen);
+  if (chatOpen) {
+    notif.style.display = 'none';
+    ripple.classList.remove('go'); void ripple.offsetWidth; ripple.classList.add('go');
+    setTimeout(() => document.getElementById('inp').focus(), 450);
+  }
+}
+
+/* ════════════════════════════════════════
+   AI MODE SYSTEM
+   ════════════════════════════════════════ */
+const AI_MODES = {
+  student: { label: 'STUDENT', desc: 'Explicații simple, analogii, fără jargon tehnic excesiv' },
+  scientist: { label: 'SCIENTIST', desc: 'Detalii tehnice complete, parametri, formule' },
+  deep: { label: 'DEEP RESEARCH', desc: 'Mod cercetare — tot ce știu, corelații, context extins' }
+};
+let currentMode = 'scientist';
+
+/* ════════════════════════════════════════
+   KNOWLEDGE GRAPH
+   ════════════════════════════════════════ */
+const KNOWLEDGE_GRAPH = {
+  'kevlar': ['ppta','aramid','fibra','dupont','kwolek','rezistenta','densitate'],
+  'ppta': ['polimer','para','fenilen','tereftalamida','cristal lichid','policondensare','ppd','tcl'],
+  'balistic': ['vesta','nij','v50','bfd','glont','fragment','impact','kinetic'],
+  'termic': ['temperatura','descompunere','criogenic','piroliza','loi','conductivitate'],
+  'compozit': ['carbon','dyneema','otel','twaron','hybrid','frp'],
+  'spatiu': ['iss','mars','nasa','hubble','pathfinder','perseverance','orbital'],
+  'civil': ['pod','aberfeldy','seismic','frp','cablu','submarine','internet'],
+  'chimie': ['modul','young','mpa','gpa','structura','legatura','hidrogen','cristalinitate']
+};
+
+/* ════════════════════════════════════════
+   MEGA KNOWLEDGE BASE
+   ════════════════════════════════════════ */
+const MEGA_KB = [
+{
+  id:'history',
+  tags:['istoric','istorie','kwolek','descoperi','inventat','1965','1971','1973','origine','cum a aparut','inceput','geneza','context','criza','combustibil','stephanie','dupont','perkin','medalie','inventors hall of fame','laureata','pionierat','history','origin','discovery','invented','invention','discovered','began','started','beginning','genesis','fuel','crisis','pioneer','medal'],
+  weight:1.0,
+  relatedChips:[
+    ['Chimia PPTA', 'Explică structura moleculară a Kevlarului'],
+    ['Tipuri de Kevlar', 'Ce tipuri de Kevlar există? K-29, K-49, K-149...'],
+    ['Proprietăți mecanice', 'Care sunt proprietatile mecanice complete ale Kevlarului?']
+  ],
+  r:`**[ORIGIN LOG — KEVLAR GENESIS]**\n\nAnul **1965**. DuPont, Richmond Virginia. O chimistă pe nume **Stephanie Kwolek** pregătea soluții polimerice pentru o misiune dificilă: anticipa criza combustibililor și DuPont voia o fibră care să înlocuiască oțelul din anvelope — mai ușoară, la fel de rezistentă.\n\nSoluția pe care a sintetizat-o era stranie. Orice polimer normal e vâscos și transparent. Al ei era **tulbure, opalescent, fluid ca apa**. Echipa tehnică refuza să îl testeze — credeau că impuritățile vor bloca filiera. Kwolek a insistat **câteva zile** până au cedat.\n\nRezultatul a redefinit știința materialelor: fibra era de **5x mai rezistentă decât oțelul** la aceeași greutate — ceva nemaivăzut în istoria polimerilor.\n\n**Timeline complet:**\n— **1965** — descoperire (cristale lichide liofotropice PPTA)\n— **1971** — producție comercială\n— **1973** — primul impact industrial major\n— **1975** — prima vestă antiglonț salvează prima viață umană\n— **1988** — ISS adoptă Kevlarul ca scut anti-deșeuri orbitale\n— **1994** — Kwolek inductată National Inventors Hall of Fame (a 4-a femeie)\n— **1999** — Medalia Națională pentru Tehnologie SUA`
+},
+{
+  id:'chemistry',
+  tags:['chimie','molecul','structur','ppta','polimer','formula','chimic','atom','legatura','amida','aramid','para','cristal','lichid','liofotrop','policondensare','benzenic','inel','hidrogen','punte','cristalina','co-nh','inele aromatice','conjugat','rigid','tija','chemistry','molecule','molecular','structure','polymer','chemical','atom','bond','amide','crystal','liquid','ring','hydrogen','bridge','crystalline','rigid','chain'],
+  weight:1.0,
+  relatedChips:[
+    ['Cum se fabrică?', 'Cum se produce Kevlarul la nivel industrial?'],
+    ['Proprietăți complete', 'Care sunt proprietatile mecanice complete ale Kevlarului?'],
+    ['Kevlar vs Nomex', 'Care e diferenta dintre Kevlar si Nomex?']
+  ],
+  r:`**[MOLECULAR ARCHITECTURE — PPTA]**\n\nNume complet: **Poli-para-fenilen-tereftalamidă (PPTA)**\nFormula repetitivă: **[-CO-C₆H₄-CO-NH-C₆H₄-NH-]ₙ**\n\n**De ce "para" contează enorm:**\nLegăturile amidice **CO−NH** sunt atașate în pozițiile 1 și 4 (opuse) ale inelelor benzenice. Asta forțează lanțul să rămână **perfect drept** — fără coturi, fără îndoituri.\n\n| Tip | Poziție | Geometrie lanț | Rezistență |\n|---|---|---|---|\n| **Kevlar (para)** | 1,4 | Dreaptă rigidă | **3,620 MPa** |\n| Nomex (meta) | 1,3 | Frântă, unghiulată | ~340 MPa |\n\n**Cei 3 piloni ai rezistenței:**\n1. **Inele aromatice** — schelet rigid, modul de elasticitate ridicat\n2. **Orientare longitudinală** — moleculele se aliniază perfect în filieră\n3. **Punți de hidrogen** — rețea 3D densă inter-catenară\n\n**Procesul magic:** PPTA în acid sulfuric formează un **cristal lichid liofotropic** — moleculele se autoaliniază ca bețele de chibrit în cutie.`
+},
+{
+  id:'manufacturing',
+  tags:['produc','fabric','sintez','produce','cum se face','manufactur','industrial','proces','fir','filare','dupont','uzina','ppd','tcl','acid sulfuric','solvent','filiera','spinneret','tratament termic','post-filare','manufacturing','production','synthesis','process','how is made','industrial','spinning','spinneret','heat treatment','fiber','fibre','make','produced'],
+  weight:0.9,
+  relatedChips:[
+    ['Gradele Kevlar', 'Ce tipuri de Kevlar există? K-29, K-49, K-149...'],
+    ['Chimia PPTA', 'Explică structura moleculară a Kevlarului'],
+    ['Producători globali', 'Care sunt producatorii de aramide in lume?']
+  ],
+  r:`**[FABRICATION PROTOCOL — PPTA SYNTHESIS]**\n\n**Monomeri de bază:**\n— **PPD** (para-fenilendiamină) — furnizează grupările amino\n— **TCl** (clorură de tereftaloil) — furnizează grupările carbonil\n\n**Procesul de filare în 3 pași:**\n\n**PASUL 1 — Dizolvare:** PPTA + H₂SO₄ concentrat → soluție cristal lichid (turbidă, opalescenta).\n\n**PASUL 2 — Filare:** Soluția e extrudată prin **filierea**. Forfecarea aliniază perfect toate lanțurile.\n\n**PASUL 3 — Tratament termic:** Diferențiază gradele:\n— Fără tratament → K-29 (70 GPa)\n— Tratament mediu → K-49 (135 GPa)\n— Tratament extrem → K-149 (143–186 GPa)\n\n**Producători globali:**\n| Marcă | Producător | Țară |\n|---|---|---|\n| **Kevlar** | DuPont | SUA |\n| Twaron | Teijin Aramid | Olanda/Japonia |\n| Heracron | Kolon | Coreea de Sud |\n| Technora | Teijin | Japonia |`
+},
+{
+  id:'properties',
+  tags:['proprietati','mecanic','rezistenta','mpa','gpa','modul','tensil','tractiune','forte','densitate','greutate','alungire','elongatie','fluaj','creep','rigiditate','tenacitate','denier','dtex','specific strength','young','elastic','properties','mechanical','strength','tensile','weight','density','elongation','stiffness','toughness','modulus','elastic'],
+  weight:1.0,
+  relatedChips:[
+    ['Comportament termic', 'Care e comportamentul Kevlarului la temperaturi extreme?'],
+    ['Curba Stress/Strain', 'Explica curba stress strain a Kevlarului'],
+    ['Kevlar vs oțel', 'Kevlar vs oțel vs Dyneema — comparație']
+  ],
+  r:`**[MECHANICAL DATASHEET — KEVLAR FAMILY]**\n\n**Proprietăți K-29 (standard balistic):**\n— Densitate: **1.44 g/cm³** (oțel: 7.85 → de 5.5x mai ușor)\n— Rezistență tracțiune: **2,920–3,620 MPa**\n— Modul Young: **70.5 GPa**\n— Alungire la rupere: **3.5–4.0%**\n— Fluaj la 40% sarcină max: **<0.03%**\n\n| Variantă | E (GPa) | σt (GPa) | ε (%) | ρ (g/cm³) |\n|---|---|---|---|---|\n| **K-29** | 70 | 2.9–3.6 | 3.5–4.0 | 1.44 |\n| **K-49** | 135 | 2.9–3.6 | 2.5–2.8 | 1.44 |\n| **K-119** | 55 | 3.1 | 4.4 | 1.44 |\n| **K-129** | 99 | 3.4 | 3.3 | 1.45 |\n| **K-149** | 143–186 | 2.3–3.4 | 1.5 | 1.47 |\n| **KM2** | 85 | 3.8 | 4.5 | 1.44 |\n\n**Specific Strength**: **2,514 kN·m/kg**\n**Diametru filament**: **12 μm**`
+},
+{
+  id:'grades',
+  tags:['tipuri','tip','k-29','k-49','k29','k49','k119','k129','k149','kxp','km2','km2 plus','versiuni','grade','soiuri','variante','serie','775','protera','ap','xp','exo','types','type','grades','versions','variants','kinds','series','models'],
+  weight:1.0,
+  relatedChips:[
+    ['KM2 Plus detaliat', 'Ce este Kevlar KM2 Plus seria 775?'],
+    ['Kevlar EXO', 'Ce este Kevlar EXO si ce inovatii aduce?'],
+    ['Aplicații balistice', 'Cum functioneaza vesta antiglont din Kevlar?']
+  ],
+  r:`**[GRADE SELECTOR — KEVLAR PRODUCT FAMILY]**\n\n---\n\n**KEVLAR K-29** — *Gradul standard balistic*\n— Modul Young: **70.5 GPa** | Rezistență tracțiune: **2,920–3,620 MPa** | Alungire: **3.5–4.0%**\n— Densitate: 1.44 g/cm³ | Culoare: galben auriu caracteristic\n— **Utilizări:** Veste antiglonț poliție/civile (NIJ IIIA), cabluri flexibile, căști PASGT armata SUA\n— Standard de referință pentru toată familia Kevlar\n\n**KEVLAR K-49** — *Modul înalt pentru compozite*\n— Modul Young: **135 GPa** (aproape dublu față de K-29) | Alungire: **2.5–2.8%**\n— **Utilizări:** Compozite aviație (Airbus A380, Boeing 787), industria navală, bărci de curse\n— Excelent acolo unde rigiditatea contează mai mult decât flexibilitatea\n\n**KEVLAR K-100** — *Singurul tip colorat*\n— Proprietăți mecanice similare K-29, dar **poate fi vopsit în orice culoare**\n— **Utilizări:** Echipamente sport colorate, aplicații civile cu cerințe estetice\n— Celelalte grade sunt invariabil galben-auriu\n\n**KEVLAR K-119** — *Flexibilitate maximă*\n— Modul mai mic: **55 GPa** | Alungire maximă din familie: **4.4%**\n— **Utilizări:** Anvelope auto de performanță, curele de transmisie\n\n**KEVLAR K-129** — *Premium balistic avansat*\n— Rezistență: **3.4 GPa** | Modul: **99 GPa** | Alungire: **3.3%**\n— **Utilizări:** Căști militare avansate, plăci balistice rigide NIJ III+\n— Raport rezistență/masă superior K-29\n\n**KEVLAR K-149** — *Cel mai rigid din familie*\n— Modul extrem: **143–186 GPa** | Alungire: **1.5%** (foarte fragil la impact)\n— **Utilizări:** Exclusiv structuri aerospațiale — sateliți, telescoape orbitale\n— NU se folosește balistic — fracturează la impact direct\n\n**KEVLAR KM2** — *Specialist fragmente artilerie*\n— Rezistență: **3.8 GPa** | Alungire: **4.5%** (cea mai mare din gamă)\n— **Utilizări:** Protecție fragmente IED/artilerie, sistemul IOTV armata SUA\n— Certificat MIL-PRF-64169\n\n**KEVLAR KM2 Plus (seria 775)** — *US Army activ 2020+*\n— Îmbunătățire majoră față de KM2: **-35% masă** la protecție echivalentă\n— **Utilizări:** Vesta IOTV Gen III, echipamente operatori speciali Tier 1\n\n**KEVLAR EXO** — *Generația circulară*\n— Fără **PFAS** (substanțe chimice eterne, toxice)\n— Mai moale, mai confortabil | **Reciclabil chimic** la calitate primară\n\n**KEVLAR AP** — *Anti-penetrare*\n— +15% rezistență față de K-29 | Optimizat împotriva proiectilelor cu nucleu dur`
+},
+{
+  id:'thermal',
+  tags:['termic','temperatura','caldura','foc','arde','ardere','descompunere','criogenic','inghet','piroliza','loi','indice','rezistenta termica','rezistent la foc','rezistent la caldura','cat rezista','conductivitate termica','500','450','425','260','160','thermal','temperature','heat','fire','burn','burning','decomposition','cryogenic','freeze','pyrolysis','flame','resistant','hot','cold'],
+  weight:0.9,
+  relatedChips:[
+    ['Kevlar vs Dyneema la foc', 'De ce Dyneema e periculos la temperaturi ridicate?'],
+    ['Aplicații spațiale', 'Cum foloseste NASA Kevlarul in spatiu?'],
+    ['Proprietăți electrice', 'Care sunt proprietatile electrice ale Kevlarului?']
+  ],
+  r:`**[THERMAL PROFILE — PPTA STABILITY]**\n\nKevlarul **nu se topește** — se descompune direct prin piroliză:\n— **425–480°C** în aer\n— **~538°C** în azot inert\n\n**Degradare cumulativă:**\n— 160°C × 500 ore → **<10%** pierdere rezistență ✓\n— 260°C × 70 ore → **~50%** pierdere ⚠\n— Utilizare continuă: **149–177°C max**\n\n**La -196°C** (azot lichid) devine *mai rezistent* — perfect criogenic!\n\n| Parametru | Valoare |\n|---|---|\n| Conductivitate termică | **0.04 W/(m·K)** |\n| LOI | 29% |\n| Capacitate calorică 25°C | 0.34 cal/g·°C |\n| Capacitate calorică 180°C | 0.60 cal/g·°C |`
+},
+{
+  id:'uv',
+  tags:['uv','ultraviolet','soare','lumina','degradare','foto','oxidare','decolorat','galben','portocaliu','brun','fotochimica','stabilizare','uva','hals','tinuvin','basf'],
+  weight:0.85,
+  relatedChips:[
+    ['Soluții anti-UV', 'Ce aditivi UV se folosesc pentru Kevlar?'],
+    ['Higroscopicitate', 'Cum afectează apa Kevlarul?'],
+    ['Dezavantaje complete', 'Care sunt dezavantajele si limitele Kevlarului?']
+  ],
+  r:`**[UV THREAT — PHOTODEGRADATION]**\n\nKevlarul e **vulnerabil la UV** — cel mai mare inamic al lui în exterior.\n\n**Efecte:** galben → portocaliu → brun-maro. La 1000h expunere: **-10% până -20% rezistență**.\n\n**Soluții industriale:**\n- **UVA (benzotriazoli)** — captează fotoni UV înainte să atingă lanțurile amidice\n- **HALS** — elimină radicalii liberi generați de UV\n- **TiO₂ nanoparticule** — obstacol fizic\n- **TINUVIN (BASF)**, **ColorMatrix LightShield**, **Milliguard UVX**\n\nEficiență cu aditivi: **-30–40%** degradare.\n\n⚠ Vestele balistice trebuie înlocuite la **5–7 ani** fără protecție UV.`
+},
+{
+  id:'moisture',
+  tags:['umiditate','apa','higroscop','absorbtie','ud','umed','hidrofob','coroziune','electrica','conductivitate','wet','humid','protejeaza','acoperire','poliuretan','nano','aculon'],
+  weight:0.85,
+  relatedChips:[
+    ['Degradare UV', 'Cum se degradeaza Kevlarul la UV?'],
+    ['Cabluri submarine', 'Cum protejeaza Kevlarul cablurile submarine?'],
+    ['Kevlar EXO', 'Ce este Kevlar EXO si ce inovatii aduce?']
+  ],
+  r:`**[HUMIDITY ANALYSIS — HYGROSCOPIC BEHAVIOR]**\n\n**Absorbție umiditate:**\n— K-29: **7.0%** din greutate uscată\n— K-49: **3.5%**\n\n**Efecte:**\n1. Conductivitate electrică crește — problemă cabluri HV\n2. Rezistența balistică scade (~6% V50 în mod wet)\n3. BFD crește cu ~7% în condiții saturate\n4. Aderență slabă a lacurilor pe suprafața cristalină\n\n**Soluții:**\n— **Tratament nano-hidrofobic Aculon** — expulzează apa, zero masă adăugată\n— **Mantale polimerice**: poliuretan, policloropren, LDPE\n— **Multi-strat**: Kevlar → BoPET → polietilenă → elastomer`
+},
+{
+  id:'ballistic',
+  tags:['balistic','glont','vesta','vest','antiglont','protectie','impact','bullet','armura','nij','impuscat','fragmenta','srapnel','trauma','pasgt','infanterie','v50','bfd','back face','deformare','calibru','44 magnum','9mm','penetrare','energie','ballistic','bullet','vest','bulletproof','armor','armour','protection','impact','shot','fragment','shrapnel','penetration','energy'],
+  weight:1.0,
+  relatedChips:[
+    ['KM2 Plus - US Army', 'Ce este Kevlar KM2 Plus seria 775?'],
+    ['Fluid non-newtonian STF', 'Cum functioneaza fluidul STF in armurie?'],
+    ['NIJ standarde', 'Explica standardele NIJ pentru veste antiglont']
+  ],
+  r:`**[BALLISTIC DATASHEET — SOFT ARMOR]**\n\n**Cum funcționează:**\n1. Proiectil → deformează straturi împletite\n2. Energia cinetică → distribuită pe **sute de filamente simultan**\n3. Fibra se elonghează absorbind energia\n4. Impact pe arie mare = adâncitură, nu gaură\n\n| Parametru | Valoare |\n|---|---|\n| V50 Velocity | **440–470 m/s** (NIJ IIIA) |\n| BFD max | **44 mm** |\n| Oprește | .44 Magnum, 9mm FMJ |\n| Lovituri | 6+ impacturi NIJ |\n\n**Generații:**\n— K-29 / Protera → PASGT, poliție\n— KM2 → Fragmente artilerie (șrapnel)\n— KM2 Plus (775) → US Army activ, **-35% masă**\n\n**Inovație STF:** impregnare fluid non-newtonian → absorbție **+90%** cu **+15% masă**.`
+},
+{
+  id:'comparison',
+  tags:['vs','comparati','dyneema','otel','twaron','nomex','fibra sticla','carbon','pbo','zylon','compara','diferenta','mai bun','concurent','uhmwpe','polietilena','alternativa','technora','compare','comparison','steel','fiber','glass','difference','better','competitor','alternative','versus','against'],
+  weight:1.0,
+  relatedChips:[
+    ['Dyneema la foc', 'De ce Dyneema e periculos la temperaturi ridicate?'],
+    ['Carbon hibrid', 'Cum se folosesc compozitele hibride Kevlar-carbon?'],
+    ['Proprietăți electrice', 'Care sunt proprietatile electrice ale Kevlarului?']
+  ],
+  r:`**[MATERIAL COMPARISON MATRIX]**\n\n| Proprietate | **Kevlar** | Dyneema | Carbon | Oțel | PBO Zylon |\n|---|---|---|---|---|---|\n| Densitate (g/cm³) | **1.44** | 0.97 | 1.79 | 7.85 | 1.54 |\n| Rezistență (GPa) | 2.9–3.6 | ~3.0 | 5.49 | 1.0–2.0 | 5.8 |\n| Modul (GPa) | 70–186 | 172 | 294 | ~200 | 270 |\n| Topire/Descomp. | **425°C** | **150°C** | Extrem | 1400°C | Înalt |\n| Plutește? | Nu | **Da** | Nu | Nu | Nu |\n| Preț (€/kg) | 15–40 | 30–60 | 13–30 | <5 | >100 |\n\n**vs Dyneema:** plutește, raport greutate mai bun — dar **se topește la 150°C**, fluaj sever.\n**vs Carbon:** carbon mai rigid, dar **fragil la impact** → hibrizi Carbon+Kevlar.\n**vs Oțel:** Kevlar **5x mai rezistent** la aceeași masă, fără coroziune.`
+},
+{
+  id:'applications',
+  tags:['aplicatii','unde','folosit','utilizare','domeniu','industrie','sport','auto','anvelope','frana','manusi','pompieri','cabluri','cablu','marine','barca','biciclet','applications','where','used','use','domain','industry','sport','car','tires','brakes','gloves','firefighter','cable','boat','bicycle','uses'],
+  weight:0.9,
+  relatedChips:[
+    ['Aplicații spațiale', 'Cum foloseste NASA Kevlarul in spatiu?'],
+    ['Internet submarin', 'Cum protejeaza Kevlarul cablurile submarine?'],
+    ['Pod Aberfeldy', 'Povestea podului Aberfeldy din Kevlar']
+  ],
+  r:`**[APPLICATION MAP — KEVLAR ECOSYSTEM]**\n\n**PROTECȚIE:** veste antiglonț, căști militare, pompieri, mănuși anti-tăiere (ANSI A6+)\n\n**AEROSPAȚIAL:** ISS scuturi Whipple, Hubble, Chandra, Mars Pathfinder, Perseverance/SHERLOC, Airbus A380\n\n**TELECOMUNICAȚII:** 930,000 mile cabluri optice submarine (tot internetul global)\n\n**AUTO:** anvelope F1 și raliu, plăcuțe frână eco (înlocuitor azbest), rezervoare anti-crash, curele transmisie\n\n**INGINERIE CIVILĂ:** Pod Aberfeldy 1992 (primul pod FRP mondial), consolidare seismică patrimoniu (Italia, Polonia, Balcani)\n\n**SPORT:** caiace, biciclete cursă, snowboard, scuturi American Football`
+},
+{
+  id:'space',
+  tags:['spatiu','nasa','iss','mars','pathfinder','perseverance','hubble','chandra','orbital','satelit','cosmos','meteorit','debris','sherloc','misiune','rover','statie','orbitala','leo','space','satellite','meteor','mission','station','orbital','debris','shield'],
+  weight:0.95,
+  relatedChips:[
+    ['SHERLOC detaliat', 'Ce este instrumentul SHERLOC de pe Perseverance?'],
+    ['Pod Aberfeldy', 'Povestea podului Aberfeldy din Kevlar'],
+    ['Internet submarin', 'Cum protejeaza Kevlarul cablurile submarine?']
+  ],
+  r:`**[SPACE OPERATIONS LOG]**\n\n**ISS — WHIPPLE SHIELD:** deșeuri la **10–15 km/s**. Aluminiu sacrificiu → particulele devin plasmă → **Kevlar + ceramică poroasă** reține totul. Grosime: 3mm.\n\n**MARS PATHFINDER (1997):** aterizare pe perne gonflabile **cusute din Kevlar**. 40 milioane de mile, impact fără propulsie. Total intact.\n\n**PERSEVERANCE — SHERLOC (2021→):** eșantioane de 20mm² din Kevlar expuse **direct atmosferei marțiene** din 2021. Testează degradarea reală pentru costumele viitoare umane pe Marte.\n\nTelescoapele **Hubble** și **Chandra** = scuturi Kevlar stratificate pentru funcționare pe decenii.`
+},
+{
+  id:'civil',
+  tags:['pod','aberfeldy','civil','constructii','seismic','consolidare','frp','compozit','biserica','patrimoniu','zidarie','tay','cablu hobanat','parafil','scoția','bridge','construction','seismic','reinforcement','composite','church','heritage','cable','scotland','civil engineering'],
+  weight:0.9,
+  relatedChips:[
+    ['Burj Al Arab', 'Cum se foloseste Kevlarul la Burj Al Arab?'],
+    ['Consolidare seismică', 'Cum se consolideaza bisericile cu aramide?'],
+    ['Internet submarin', 'Cum protejeaza Kevlarul cablurile submarine?']
+  ],
+  r:`**[CIVIL ENGINEERING — ABERFELDY 1992]**\n\nPrimul pod din lume din compozite avansate. Râul Tay, Scoția.\nDeschideri: 25m + **63m** + 25m. Piloni 17m formă cadru A.\n\n**Cabluri Parafil — Kevlar 49 unidirecțional:**\n— Mantalate LDPE (impermeabil UV + umiditate)\n— Ancorare: **1930 N/mm²** cu terminale aluminiu cu pană conică\n\n**Paradox:** suprastructura = doar **14.5 tone** — au adăugat beton ca **balast contra vântului!**\n\n**Consolidare seismică patrimoniu:**\nBiserici și castele din Italia, Balcani, Polonia — plase aramid invizibile sub tencuială pe ziduri, bolți, domuri:\n— San Maria del Parco (Boiano)\n— San Francesco di Agnone\n— Palatul Łobzów (Polonia)`
+},
+{
+  id:'telecom',
+  tags:['telecomunicatii','fibra optica','cablu submarin','internet','oceanic','transatlantic','nexans','microsoft','facebook','profunzime','presiune','telecommunications','fiber optic','submarine cable','internet','oceanic','transatlantic','depth','pressure','undersea','underwater'],
+  weight:0.85,
+  relatedChips:[
+    ['Pod Aberfeldy', 'Povestea podului Aberfeldy din Kevlar'],
+    ['Aplicații spațiale', 'Cum foloseste NASA Kevlarul in spatiu?'],
+    ['Proprietăți electrice', 'Care sunt proprietatile electrice ale Kevlarului?']
+  ],
+  r:`**[GLOBAL INFRASTRUCTURE — SUBMARINE CABLES]**\n\n**~930,000 mile** (1,500,000 km) de cabluri optice submarine = tot internetul global.\n\nStructura unui cablu:\n1. Fibre optice sticlă → **$16/milă**\n2. Izolație polietilenă\n3. **Fire Kevlar** (armatura tracțiune) → **$3.6M/milă**\n4. Folie BoPET metalizată\n5. Mantalare exterioară\n\n**Un cablu transatlantic: $15 miliarde**\n(Microsoft + Facebook + Telefónica + AT&T)\n\n**Record Nexans: 12,000 km** secțiune neamplificată.\n**Economie: -25% masă** față de armatură metalică.\n\n**Bonus:** Kevlarul e **non-conductor** — zero interferențe electromagnetice la rețele HV.`
+},
+{
+  id:'recycling',
+  tags:['reciclare','sustenabil','ecologic','mediu','dupont','exo','kevlar exo','pfas','circular','deseuri','verde','emisii','regenerabil','hemlock','4r','pulp','staple floc'],
+  weight:0.85,
+  relatedChips:[
+    ['Kevlar EXO detaliat', 'Ce este Kevlar EXO si ce inovatii aduce?'],
+    ['Impact de mediu', 'Care este impactul de mediu al productiei de Kevlar?'],
+    ['Dezavantaje', 'Care sunt dezavantajele si limitele Kevlarului?']
+  ],
+  r:`**[SUSTAINABILITY — CIRCULAR ECONOMY]**\n\n**Problema:** PPTA e practic indestructibil — nu se topește, nu se degradează biologic.\n\n**Soluția actuală:** fibre uzate → **Kevlar Pulp** / **Staple Floc** → plăcuțe frână eco, armături plastice industriale.\n\n**Ținte DuPont:**\n| Obiectiv | Termen |\n|---|---|\n| -50% emisii Scope 1+2 | 2030 |\n| Zero emisii operaționale | 2050 |\n| Energie regenerabilă 60%+ | 2030 |\n| Uzina Hemlock MI deja la | 69% verde |\n\n**KEVLAR EXO — Revoluția:**\n— Elimină **PFAS** (chimicale eterne, acumulare în organism)\n— Vestă mai moale și flexibilă\n— La final de viață: **retopire chimică** și refolosire la calitate primară\n— Primul Kevlar cu adevărat circular`
+},
+{
+  id:'pros_cons',
+  tags:['dezavantaj','avantaj','limit','slab','problem','defect','negativ','contra','minus','pozitiv','pro','bun','excelent','ideal','tăiere','compresie'],
+  weight:0.9,
+  relatedChips:[
+    ['Soluții UV', 'Cum se protejeaza Kevlarul de UV?'],
+    ['Comparație materiale', 'Kevlar vs oțel vs Dyneema — comparație'],
+    ['Reciclare Kevlar', 'Cum se recicleaza Kevlarul?']
+  ],
+  r:`**[HONEST ASSESSMENT — PROS & CONS]**\n\n**✅ AVANTAJE:**\n— 5x mai rezistent decât oțelul la aceeași masă\n— Nu se topește (425–480°C descompunere, LOI 29%)\n— Izolator electric excelent (când e uscat)\n— Zero coroziune, inert chimic la solvenți organici\n— Fluaj <0.03% (Dyneema cedează în timp)\n— Mai rezistent la -196°C (criogenic!)\n— Rezistă la 200 Megarazi radiații electronice\n\n**❌ DEZAVANTAJE:**\n— UV degradează -10–20% la 1000h fără protecție\n— Higroscopic: absoarbe 5–7% apă\n— Slab la compresie longitudinală\n— Aderență slabă la rășini epoxidice\n— Dificil de tăiat (scule speciale)\n— Cost: 15–40 €/kg (fibra sticlă: 2–5 €/kg)\n— Reciclare limitată`
+},
+{
+  id:'stress_strain',
+  tags:['stress strain','curba','deformare','elastica','plastica','rupere','fractura','brittle','ductil','linear','elastic','young','modulus','alungire','elongation','break','grafic','diagrama','mecanica solidelor'],
+  weight:0.9,
+  relatedChips:[
+    ['Proprietăți mecanice complete', 'Care sunt proprietatile mecanice complete ale Kevlarului?'],
+    ['Kevlar vs oțel mecanică', 'Compara Kevlar vs otel din punct de vedere mecanic'],
+    ['Comportament balistic', 'Cum functioneaza vesta antiglont din Kevlar?']
+  ],
+  r:`**[STRESS/STRAIN — BRITTLE LINEAR-ELASTIC BEHAVIOR]**\n\n**Comportamentul real al Kevlarului:**\n1. **Faza elastică liniară (0% → 2.4% strain):** Tensiunea crește **proporțional** cu deformarea. Panta = Modulul Young.\n2. **Fractură bruscă:** La ~3,620 MPa și ~2.4% alungire, fibra **"pușcă"** instant.\n3. **Cădere verticală la zero** — tipic materialelor cristaline rigide.\n\n**Nu are platou (spre deosebire de oțel):**\nOțelul are dislocații cristaline → faza plastică vizibilă. PPTA = rețea rigidă, zero deformare plastică.\n\n| Material | Tip comportament | Alungire rupere |\n|---|---|---|\n| **Kevlar K-29** | Linear elastic + fractură bruscă | 3.5–4.0% |\n| **Kevlar K-149** | Idem, mai rigid | 1.5% |\n| Oțel | Elastic + plastic + ductil | 20–30% |\n\n**Implicație:** Kevlarul stochează **mai multă energie elastică/kg** decât oțelul — explozie de energie la rupere. De aceea e eficient balistic.`
+},
+{
+  id:'electrical',
+  tags:['electric','izolator','conductivitate','dielectric','tensiune','cablu','hv','scurtcircuit','radio','electromagnetic','rezistivitate'],
+  weight:0.8,
+  relatedChips:[
+    ['Cabluri submarine', 'Cum protejeaza Kevlarul cablurile submarine?'],
+    ['Higroscopicitate', 'Cum afectează apa Kevlarul?'],
+    ['Carbon vs Kevlar', 'Compara Kevlar vs fibra de carbon din punct de vedere electric']
+  ],
+  r:`**[ELECTRICAL PROPERTIES — DIELECTRIC]**\n\nKevlarul uscat = **izolator electric excelent**.\n\n**Avantaje:**\n— Cabluri ghidaj dronă/proiectil — zero interferențe electronice\n— Cabluri HV aeriene — non-conductor elimină arcul electric\n— Componente radar și antenă\n\n**Atenție — umiditate:** La 7% absorbție apă, conductivitatea crește → NU izolator fiabil ud!\n\n**Kevlar vs Carbon:** Carbon e **conductiv** — nu poate fi folosit lângă electronice. Kevlarul = zero interferențe EM.`
+},
+/* ─── STEPHANIE KWOLEK — BIOGRAFIE ─── */
+{
+  id:'kwolek',
+  tags:['kwolek','stephanie','cine a inventat','inventator','chimista','biografie','viata','nascut','murit','cariera','personal','femeia','dupont','familie','educatie','copilarie','polska','poloneza','nationalitate','premii','nationalitate','new york','carnegie','buffalo','virginia','richmond','biography','life','born','died','career','personal','woman','family','education','childhood','polish','nationality','awards','inventor','chemist','who invented','who created'],
+  weight:1.0,
+  relatedChips:[
+    ['Descoperirea Kevlarului', 'Povestea descoperirii Kevlarului'],
+    ['Chimia PPTA', 'Explică structura moleculară a Kevlarului'],
+    ['Impactul global Kevlar', 'Unde se foloseste Kevlarul in industrie?']
+  ],
+  r:`**[BIOGRAPHICAL RECORD — STEPHANIE LOUISE KWOLEK]**\n\n**Date personale:**\n— Născută: **31 iulie 1923**, New Kensington, Pennsylvania, SUA\n— Decedată: **18 iunie 2014**, Wilmington, Delaware (90 ani)\n— Naționalitate: americano-poloneză (părinți emigranți polonezi)\n\n**Educație:**\n— **1946** — Licență în Chimie, Carnegie Mellon University (atunci Carnegie Institute of Technology)\n— A aplicat la medicină, dar nu-și permitea financiar așteptarea admiterii → a acceptat un job temporar la DuPont\n— *"Temporarul" a durat 40 de ani"*\n\n**Cariera la DuPont (1946–1986):**\n— Specializată în **polimeri la temperaturi joase**\n— 1965: Descoperă PPTA — viitorul Kevlar\n— A obținut **17 brevete** personale\n— Una din primele femei chimiste senior la DuPont\n\n**Recunoaștere:**\n— **1994** — National Inventors Hall of Fame (a 4-a femeie din istorie)\n— **1996** — Perkin Medal (cea mai prestigioasă distincție în chimie aplicată)\n— **1999** — National Medal of Technology and Innovation (SUA)\n— **1997** — Lemelson–MIT Lifetime Achievement Award\n— **2003** — Polimeri industriali: Societatea ACS o declară "Hero of Chemistry"\n\n**Caracter și personalitate:**\n— Extrem de modestă: spunea că "a avut noroc că a insistat să testeze soluția"\n— A mentorat zeci de femei chimiste pe parcursul carierei\n— Nu a devenit celebră și bogată din descoperire — DuPont deținea brevetul\n— A continuat să lucreze voluntar în educație după pensionare\n\n**Moștenire:**\nKevlarul a salvat mii de vieți direct (veste antiglonț) și indirect (echipamente de urgență, ISS, infrastructură globală). Kwolek a declarat că scrisorile de la ofițeri de poliție salvați o mișcau mai mult decât orice premiu.`
+},
+
+/* ─── CUNOȘTINȚE GENERALE ─── */
+{
+  id:'general_knowledge',
+  tags:['ce an','ce ora','cati ani','cum te cheama','cine esti','ce esti','tu esti','esti ai','esti robot','esti chatbot','esti om','esti real','cum functionezi','de ce existi','ce poti face','ajuta ma','vrei sa','multumesc','mersi','ok','da','nu','bine','salut','buna ziua','noapte buna','la revedere','pa'],
+  weight:0.7,
+  relatedChips:[
+    ['Kevlar — intro', 'Ce este Kevlarul?'],
+    ['Chimie PPTA', 'Explică structura moleculară a Kevlarului'],
+    ['Balistică', 'Cum funcționează vesta antiglonț din Kevlar?']
+  ],
+  r:`**[KEVLAR AI — SISTEM INFORMAȚII]**\n\nSunt un AI specializat exclusiv în **Kevlar și materiale para-aramidice**. Nu am acces la internet și nu știu ora sau data curentă.\n\nPot să te ajut cu:\n— **Chimia** moleculară a PPTA și cristale lichide\n— **Proprietățile** mecanice, termice, electrice și balistice\n— **Istoricul** descoperirii (Stephanie Kwolek, 1965)\n— **Aplicații** — de la ISS la cabluri submarine\n— **Comparații** cu Dyneema, carbon, oțel\n— **Gradele** K-29, K-49, KM2, EXO și altele\n\nCe vrei să afli despre Kevlar?`
+},
+
+
+{
+  id:'intro',
+  tags:['ce este','ce e','despre','kevlar','prezinta','explica','spune','info','informatii','general','introduce','ce stii','cine esti','hello','buna','salut','hey','what is','about','explain','information','general','introduce','who are you','hi','hello','hey','what'],
+  weight:0.8,
+  relatedChips:[
+    ['Istoricul descoperirii', 'Povestea descoperirii Kevlarului'],
+    ['Proprietăți cheie', 'Care sunt proprietatile mecanice complete ale Kevlarului?'],
+    ['Aplicații principale', 'Unde se foloseste Kevlarul in industrie?']
+  ],
+  r:`**[KEVLAR SYSTEM BRIEF]**\n\nKevlarul e probabil cel mai important material sintetic al secolului XX — și puțini știu că a apărut aproape din greșeală.\n\nChimic: **poli-para-fenilen-tereftalamidă (PPTA)** — descoperit în **1965** de **Stephanie Kwolek** la DuPont.\n\n| Proprietate | Kevlar | Oțel |\n|---|---|---|\n| Densitate | 1.44 g/cm³ | 7.85 g/cm³ |\n| Rezistență | 3,620 MPa | ~700 MPa |\n| Raport forță/masă | **5x superior** | referință |\n| Se topește? | **Nu** (425°C descomp.) | Da (1400°C) |\n\nNu se topește — se carbonizează. La -196°C devine mai rezistent.\n\nÎl găsești în veste antiglonț, pe ISS, în cablurile submarine ce transportă internetul, pe Marte (Perseverance/SHERLOC), în anvelope de Formula 1, și în poduri din Scoția.`
+},
+{
+  id:'specs',
+  tags:['denier','dtex','weave','tesatura','twill','satin','plain','areal','g/m2','filament','diametru','grosime','microni','micron','structura tesatura'],
+  weight:0.8,
+  relatedChips:[
+    ['Procesul de fabricare', 'Cum se produce Kevlarul la nivel industrial?'],
+    ['Gradele Kevlar', 'Ce tipuri de Kevlar există?'],
+    ['Balistică detaliată', 'Cum functioneaza vesta antiglont din Kevlar?']
+  ],
+  r:`**[FABRICATION SPECS — FIBER & FABRIC]**\n\n| Parametru | Valoare |\n|---|---|\n| Diametru filament | **12 μm** |\n| Denier | 1000D |\n| Dtex | 1111T |\n| Culoare naturală | Galben-auriu |\n\n**Tipuri de țesătură:**\n| Pattern | Utilizare |\n|---|---|\n| **Plain weave 2×2** | Veste NIJ |\n| Twill | Aplicații complexe |\n| Satin | Compozite aerospațiale |\n| Unidirecțional (UD) | Cabluri Parafil, structurale |\n\n**Areal Density:**\n— Standard balistic: **180 g/m²**\n— Vestă poliție IIIA: 20–30 straturi\n— Cască militară: 35–45 straturi`
+},
+{
+  id:'more',
+  tags:['mai mult','continua','detalii','spune mai mult','elaboreaza','extinde','aprofunda','altceva','in plus'],
+  weight:0.5,
+  relatedChips:[
+    ['Chimia PPTA', 'Explica structura moleculara a Kevlarului'],
+    ['Balistică', 'Cum functioneaza vesta antiglont din Kevlar?'],
+    ['Aplicații spațiale', 'Cum foloseste NASA Kevlarul in spatiu?']
+  ],
+  r:`Pot detalia orice aspect. Ce te interesează?\n\n— **Chimie** (PPTA, cristale lichide)\n— **Proprietăți** (K-29 → K-149 tabel complet)\n— **Stress/Strain** (comportament brittle linear-elastic)\n— **Balistică** (V50, BFD, NIJ)\n— **Termică** (pirograma, criogenic, LOI)\n— **UV** (mecanism + soluții)\n— **Comparații** (Dyneema, carbon, oțel)\n— **ISS / Mars / Hubble**\n— **Pod Aberfeldy**\n— **Internet submarin** (930,000 mile)\n— **Kevlar EXO** și economia circulară`
+}
+]; // END MEGA_KB
+
+/* ════════════════════════════════════════
+   SEMANTIC AI ENGINE — TF.js USE
+   ════════════════════════════════════════ */
+let useModel = null;
+let semanticVectors = []; // {id, text, vector}
+let aiReady = false;
+let aiLoading = false;
+
+function initSemanticAI() {
+  // Keyword engine — instant, no external dependencies
+  updateAIStatus('ENGINE ● LIVE');
+}
+
+async function buildSemanticIndex() {
+  semanticVectors = [];
+  const texts = MEGA_KB.map(e => e.tags.slice(0,8).join(' ') + ' ' + e.r.slice(0,200).replace(/\*\*/g,'').replace(/\n/g,' '));
+  const embeddings = await useModel.embed(texts);
+  const arr = await embeddings.array();
+  MEGA_KB.forEach((entry, i) => {
+    semanticVectors.push({ id: entry.id, vector: arr[i] });
+  });
+  // Also index live page content
+  await indexPageContent();
+}
+
+async function indexPageContent() {
+  try {
+    const elements = document.querySelectorAll('p,h1,h2,h3,li,span,div');
+    const pageTexts = [];
+    elements.forEach(el => {
+      const t = (el.innerText || '').trim();
+      if (t.length > 80 && t.length < 500 && !el.closest('#chatPanel')) pageTexts.push(t);
+    });
+    if (pageTexts.length > 0 && useModel) {
+      const embeddings = await useModel.embed(pageTexts.slice(0,30));
+      const arr = await embeddings.array();
+      pageTexts.slice(0,30).forEach((text, i) => {
+        semanticVectors.push({ id: 'page_' + i, vector: arr[i], rawText: text });
+      });
+    }
+  } catch(e) {}
+}
+
+function cosine(a, b) {
+  let dot = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) { dot += a[i]*b[i]; na += a[i]*a[i]; nb += b[i]*b[i]; }
+  return dot / (Math.sqrt(na) * Math.sqrt(nb) + 1e-10);
+}
+
+async function semanticSearch(question) {
+  if (!useModel || !aiReady) return null;
+  try {
+    const qEmb = await useModel.embed([question]);
+    const qVec = (await qEmb.array())[0];
+    const scores = semanticVectors.map(v => ({ id: v.id, score: cosine(qVec, v.vector), rawText: v.rawText || null }));
+    scores.sort((a,b) => b.score - a.score);
+    return scores.slice(0, 5);
+  } catch(e) { return null; }
+}
+
+function updateAIStatus(msg) {
+  const statsEl = document.querySelector('.topbar-stats');
+  if (statsEl) {
+    const aiSpan = statsEl.querySelector('.ai-status');
+    if (aiSpan) aiSpan.innerHTML = `AI <span>${msg}</span>`;
+  }
+}
+
+/* ════════════════════════════════════════
+   KEYWORD SEARCH ENGINE (fallback)
+   ════════════════════════════════════════ */
+function normalize(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s\-\.]/g,' ');
+}
+function tokenize(str) { return normalize(str).split(/\s+/).filter(w => w.length >= 2); }
+function lev(a, b) {
+  if (!a.length) return b.length; if (!b.length) return a.length;
+  const dp = Array.from({length:a.length+1},(_,i)=>Array.from({length:b.length+1},(_,j)=>i||j));
+  for (let i=1;i<=a.length;i++) for (let j=1;j<=b.length;j++)
+    dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[a.length][b.length];
+}
+function keywordScore(entry, tokens, rawNorm) {
+  let score = 0;
+  for (const tag of entry.tags) {
+    const tNorm = normalize(tag);
+    if (rawNorm.includes(tNorm)) { score += tag.length > 5 ? 5 : 3; continue; }
+    for (const qt of tokens) {
+      for (const tt of tokenize(tag)) {
+        if (qt === tt) { score += 2; break; }
+        if (qt.includes(tt) || tt.includes(qt)) { score += 1; break; }
+        if (qt.length >= 4 && tt.length >= 4) {
+          const maxEdit = Math.max(1, Math.floor(Math.min(qt.length, tt.length) / 5));
+          if (lev(qt, tt) <= maxEdit) { score += 0.8; break; }
         }
-        let kcBusy = false;
-        const kcMsgsEl = document.getElementById('kcMsgs');
-        function kcTs() { return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
-        function kcFmt(text) {
-            text = text.replace(/((\|.+\|\n?)+)/g, match => {
-                const rows = match.trim().split('\n').filter(r => r.trim());
-                if (rows.length < 2) return match;
-                let html = '<div class="tbl-wrap"><table>';
-                rows.forEach((row, i) => {
-                    if (/^\|[\s\-|]+\|$/.test(row.trim())) return;
-                    const cells = row.split('|').filter((_, j, a) => j > 0 && j < a.length - 1);
-                    const tag = i === 0 ? 'th' : 'td';
-                    html += '<tr>' + cells.map(c => `<${tag}>${c.trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</${tag}>`).join('') + '</tr>';
-                });
-                return html + '</table></div>';
-            });
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            text = text.replace(/\n/g, '<br>');
-            return text;
-        }
-        function kcAddMsg(role, text) {
-            document.getElementById('kcTyping')?.remove();
-            const d = document.createElement('div'); d.className = `kc-msg kc-${role}`;
-            const meta = role === 'user' ? `<span>${kcTs()}</span><div class="kc-tag">USER</div>` : `<div class="kc-tag">KEVLAR_AI</div><span>${kcTs()}</span>`;
-            d.innerHTML = `<div class="kc-meta">${meta}</div><div class="kc-bubble">${kcFmt(text)}</div>`;
-            kcMsgsEl.appendChild(d); kcMsgsEl.scrollTop = kcMsgsEl.scrollHeight;
-        }
-        function kcShowTyping() {
-            const el = document.createElement('div'); el.id = 'kcTyping'; el.className = 'kc-msg kc-ai';
-            el.innerHTML = `<div class="kc-meta"><div class="kc-tag">KEVLAR_AI</div> PROCESSING...</div><div class="kc-typing">ANALYZING <div class="kc-tdots"><span></span><span></span><span></span></div></div>`;
-            kcMsgsEl.appendChild(el); kcMsgsEl.scrollTop = kcMsgsEl.scrollHeight;
-        }
-        function kcSend() {
-            if (kcBusy) return;
-            const inp = document.getElementById('kcInp');
-            const txt = inp.value.trim(); if (!txt) return;
-            inp.value = ''; inp.style.height = 'auto';
-            kcBusy = true; document.getElementById('kcSbtn').disabled = true;
-            kcAddMsg('user', txt); kcShowTyping();
-            setTimeout(() => {
-                kcAddMsg('ai', kcGetReply(txt));
-                kcBusy = false; document.getElementById('kcSbtn').disabled = false; inp.focus();
-            }, 400 + Math.random() * 400);
-        }
-        function kcQ(t) { document.getElementById('kcInp').value = t; kcSend(); }
-        function kcHandleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); kcSend(); } }
-        function kcResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 96) + 'px'; }
-        let kcOpen = false;
-        function kcToggle() {
-            kcOpen = !kcOpen;
-            document.getElementById('kcPanel').classList.toggle('open', kcOpen);
-            if (kcOpen) {
-                document.getElementById('kcNotif').style.display = 'none';
-                const r = document.getElementById('kcRipple');
-                r.classList.remove('go'); void r.offsetWidth; r.classList.add('go');
-                setTimeout(() => document.getElementById('kcInp').focus(), 450);
-            }
-        }
-    </script>
+      }
+    }
+  }
+  return score * entry.weight;
+}
+
+/* ════════════════════════════════════════
+   CONVERSATION MEMORY
+   ════════════════════════════════════════ */
+const conversationMemory = [];
+function addToMemory(role, text, entryId) {
+  conversationMemory.push({ role, text, entryId });
+  if (conversationMemory.length > 10) conversationMemory.shift();
+}
+function getLastTopicId() {
+  for (let i = conversationMemory.length - 1; i >= 0; i--) {
+    if (conversationMemory[i].role === 'ai' && conversationMemory[i].entryId) return conversationMemory[i].entryId;
+  }
+  return null;
+}
+function isFollowUp(query) {
+  const fw = ['dar','si','acum','insa','totusi','cum','de ce','cat','unde','cand','ce inseamna','mai','deci','asta','spune','explica','detalii','mai multe','continua','si cum','si de','si ce'];
+  const qt = tokenize(query);
+  return qt.length <= 5 && fw.some(s => normalize(query).includes(normalize(s)));
+}
+
+function isMoreDetails(query) {
+  const morePatterns = ['mai multe detalii','mai mult','detalii','detaliat','extinde','aprofundeaza','elaboreaza','continua','mai mult despre','spune mai','explica mai','ce mai','si mai'];
+  const qn = normalize(query);
+  return morePatterns.some(p => qn.includes(normalize(p)));
+}
+
+/* ════════════════════════════════════════
+   CONTEXT AWARENESS (mouse)
+   ════════════════════════════════════════ */
+let contextText = '';
+document.addEventListener('mouseover', e => {
+  const t = (e.target.innerText || '').trim();
+  if (t && t.length > 40 && !document.getElementById('chatPanel').contains(e.target)) {
+    contextText = t.slice(0, 400);
+  }
+}, { passive: true });
+
+/* ════════════════════════════════════════
+   MAIN REPLY ENGINE (Hybrid: USE + Keyword)
+   ════════════════════════════════════════ */
+// Client-side language detection — no API needed
+const EN_WORDS = new Set(['what','how','why','when','where','who','which','tell','explain','show','give','list','is','are','was','were','does','do','did','can','could','would','should','the','a','an','of','in','on','at','to','for','with','about','and','or','but','not','history','types','grades','chemistry','properties','manufacturing','ballistic','thermal','space','applications','compare','comparison','vs','versus','bullet','vest','fiber','fibre','strength','weight','structure','molecule','process','make','made','uses','use','used','where','kevlar','aramid','dupont','kwolek']);
+
+function detectLang(text) {
+  const words = text.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/).filter(w => w.length > 1);
+  if (!words.length) return 'ro';
+  const enCount = words.filter(w => EN_WORDS.has(w)).length;
+  const ratio = enCount / words.length;
+  // If more than 25% of words are English OR starts with common English question words
+  const startsEn = /^(what|how|why|when|where|who|which|tell|explain|show|give|is|are|does|do|can|could|the|a)\b/i.test(text.trim());
+  return (ratio > 0.25 || startsEn) ? 'en' : 'ro';
+}
+
+// Translate using MyMemory — free, no API key, works offline/downloaded
+async function translateChunk(chunk) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=ro|en`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
+    return data.responseData.translatedText;
+  }
+  return chunk;
+}
+
+async function translateResponse(text, targetLang) {
+  if (targetLang === 'ro') return text;
+  try {
+    // Strip markdown symbols before translating, re-apply after
+    // Split into chunks of max 500 chars (MyMemory limit per request)
+    const lines = text.split('\n');
+    const chunks = [];
+    let current = '';
+    for (const line of lines) {
+      if ((current + '\n' + line).length > 480) {
+        if (current) chunks.push(current);
+        current = line;
+      } else {
+        current = current ? current + '\n' + line : line;
+      }
+    }
+    if (current) chunks.push(current);
+
+    // Translate all chunks in parallel
+    const translated = await Promise.all(chunks.map(c => translateChunk(c)));
+    return translated.join('\n');
+  } catch(e) {
+    return text; // fallback: return Romanian
+  }
+}
+
+async function getReply(userMsg) {
+  // Client-side language detection — works offline, no API needed
+  const detectedLang = detectLang(userMsg);
+  const searchQuery = userMsg; // search directly — KB now has English tags too
+
+  const tokens = tokenize(searchQuery);
+  const rawNorm = normalize(searchQuery);
+  const fullQuery = searchQuery + (contextText ? ' ' + contextText.slice(0,100) : '');
+  const lastId = getLastTopicId();
+
+  let bestEntry = null;
+  let bestScore = 0;
+
+  // 1. Keyword scoring
+  let keyScored = MEGA_KB.map(e => ({ entry: e, score: keywordScore(e, tokens, rawNorm) }));
+
+  // Follow-up boost — if user says "more details" or short follow-up, boost last topic
+  const followUp = isFollowUp(userMsg);
+  const moreDetails = isMoreDetails(userMsg);
+  if ((followUp || moreDetails) && lastId) {
+    // Only boost if there's at least some base relevance OR it's a genuine short follow-up
+    keyScored = keyScored.map(s => {
+      if (s.entry.id !== lastId) return s;
+      const baseScore = s.score;
+      // Only apply boost for very short queries (true follow-ups) or if base score > 0
+      if (moreDetails || (followUp && tokens.length <= 3) || baseScore > 0.5) {
+        return {...s, score: baseScore + 4};
+      }
+      return s;
+    });
+  }
+
+  keyScored.sort((a,b) => b.score - a.score);
+  const keyBest = keyScored[0];
+
+  // Require a meaningful score AND that at least one token is 3+ chars
+  const hasRealTokens = tokens.some(t => t.length >= 3);
+  if (hasRealTokens && keyBest.score >= 2.5) {
+    bestEntry = keyBest.entry;
+    bestScore = keyBest.score;
+  }
+
+  // Extra safety: if follow-up boost pushed it over, still require base score
+  if (bestEntry && !followUp && !moreDetails && keyBest.score < 2.5) {
+    bestEntry = null;
+  }
+
+  if (!bestEntry) {
+    return { text: generateFallback(), entryId: null };
+  }
+
+  // 2. Detect "same response" scenario — if asking more details about same topic already answered
+  const alreadyAnswered = conversationMemory.some(m => m.role === 'ai' && m.entryId === bestEntry.id);
+  if (alreadyAnswered && moreDetails && bestEntry.id !== 'grades') {
+    // Try to return a related entry instead
+    const related = MEGA_KB.filter(e => {
+      if (e.id === bestEntry.id) return false;
+      const graphLinks = KNOWLEDGE_GRAPH[bestEntry.id] || [];
+      return graphLinks.some(link => e.tags.some(tag => tag.includes(link)));
+    });
+    if (related.length > 0) {
+      const altEntry = related[Math.floor(Math.random() * Math.min(related.length, 3))];
+      const prefix = `**[CONTEXT EXTINS — continuând de la ${bestEntry.id.toUpperCase()}]**\n\n`;
+      addToMemory('ai', prefix + altEntry.r, altEntry.id);
+      updateDynamicChips(altEntry.id);
+      return { text: prefix + altEntry.r, entryId: altEntry.id };
+    }
+  }
+
+  // Mode-aware response tuning
+  let response = bestEntry.r;
+  if (currentMode === 'student') {
+    response = `**[EXPLICAȚIE SIMPLĂ]**\n\n` + response.replace(/\*\*\[.*?\]\*\*/g, '').trim();
+  } else if (currentMode === 'deep') {
+    response += `\n\n---\n**[DEEP MODE — KNOWLEDGE GRAPH]**\nTopicuri conexe: ${(KNOWLEDGE_GRAPH[bestEntry.id] || KNOWLEDGE_GRAPH['kevlar']).map(t => '`'+t+'`').join(', ')}`;
+  }
+
+  // Translate response to English if needed
+  let finalResponse = response;
+  if (detectedLang === 'en') {
+    finalResponse = await translateResponse(response, 'en');
+  }
+
+  addToMemory('ai', finalResponse, bestEntry.id);
+  return { text: finalResponse, entryId: bestEntry.id };
+}
+
+function generateFallback() {
+  const responses = [
+    `**Hmm...** nu am găsit asta în baza de date Kevlar. 🔍\n\nÎncearcă unul din topicurile disponibile:\n— **Chimie** moleculară PPTA\n— **Balistică** — cum funcționează vesta antiglonț\n— **Tipuri** — K-29, K-49, KM2, EXO\n— **Temperaturi** — stabilitate termică și criogenic\n— **Comparații** — Kevlar vs Dyneema vs Carbon\n— **Spațiu** — ISS, Mars, Hubble\n— **Istorie** — Stephanie Kwolek 1965`,
+    `**Nu am găsit un răspuns aramidic la asta.** 🤖\n\nSunt expert exclusiv în **Kevlar și para-aramide**. Câteva idei:\n— *\"Cum funcționează vesta antiglonț?\"*\n— *\"Ce tipuri de Kevlar există?\"*\n— *\"Kevlar pe Marte — ce face NASA?\"*\n— *\"De ce Kevlarul nu se topește?\"*`,
+    `**Hmm, asta depășește spectrul meu aramidic.** ⚗️\n\nKEVLAR AI știe tot despre PPTA — dar nimic altceva!\n\nSugestii bune:\n— Chimia cristalelor lichide liofotropice\n— Parametrii balistici V50, BFD, NIJ IIIA\n— Internetul global protejat de Kevlar (930,000 mile!)\n— Podul Aberfeldy — primul pod din lume din compozite`
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+/* ════════════════════════════════════════
+   DYNAMIC CHIPS ENGINE
+   ════════════════════════════════════════ */
+const DEFAULT_CHIPS = [
+  ['// CHIMIE', 'Explică structura moleculară a Kevlarului'],
+  ['// TIPURI', 'Ce tipuri de Kevlar există? K-29, K-49, K-149...'],
+  ['// BALISTIC', 'Cum funcționează vesta antiglonț din Kevlar?'],
+  ['// PRODUCȚIE', 'Cum se produce Kevlarul la nivel industrial?'],
+  ['// ISTORIE', 'Povestea descoperirii Kevlarului'],
+  ['// LIMITE', 'Care sunt dezavantajele și limitele Kevlarului?'],
+  ['// VS', 'Kevlar vs oțel vs Dyneema — comparație'],
+];
+
+function renderChips(chipsData) {
+  const chipsEl = document.getElementById('chips');
+  chipsEl.innerHTML = '';
+  chipsData.forEach(([label, query]) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = label;
+    btn.onclick = () => q(query);
+    chipsEl.appendChild(btn);
+  });
+}
+
+function updateDynamicChips(entryId) {
+  if (!entryId) { renderChips(DEFAULT_CHIPS); return; }
+  const entry = MEGA_KB.find(e => e.id === entryId);
+  if (!entry || !entry.relatedChips || entry.relatedChips.length === 0) {
+    renderChips(DEFAULT_CHIPS); return;
+  }
+  // Mix: related chips + 2 default ones to keep variety
+  const related = entry.relatedChips.map(([label, q]) => [`→ ${label}`, q]);
+  const extras = DEFAULT_CHIPS.filter(([l]) => !related.some(([rl]) => rl.includes(l))).slice(0,2);
+  renderChips([...related, ...extras]);
+}
+
+/* ════════════════════════════════════════
+   VOICE SYNTHESIS
+   ════════════════════════════════════════ */
+let voiceEnabled = false;
+let bestEnVoice = null;
+
+function loadEnglishVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  // Priority: native en-US high quality voices
+  const priority = [
+    v => v.name.includes('Google US English'),
+    v => v.name.includes('Google') && v.lang.startsWith('en'),
+    v => v.name === 'Samantha',        // macOS
+    v => v.name === 'Alex',            // macOS
+    v => v.name.includes('Zira'),      // Windows
+    v => v.name.includes('David'),     // Windows
+    v => v.lang === 'en-US',
+    v => v.lang.startsWith('en'),
+  ];
+  for (const test of priority) {
+    const v = voices.find(test);
+    if (v) { bestEnVoice = v; break; }
+  }
+}
+
+function cleanForSpeech(text) {
+  let t = text;
+  // Remove markdown headers/tags like [ORIGIN LOG — KEVLAR GENESIS]
+  t = t.replace(/\[([^\]]+)\]/g, '');
+  // Remove table rows entirely (lines with | chars)
+  t = t.replace(/^\|.*\|$/gm, '');
+  // Remove table separator rows
+  t = t.replace(/^[|\s\-:]+$/gm, '');
+  // Remove bold/italic markers
+  t = t.replace(/\*\*(.*?)\*\*/g, '$1');
+  t = t.replace(/\*(.*?)\*/g, '$1');
+  // Remove inline code
+  t = t.replace(/`[^`]+`/g, '');
+  // Remove hr
+  t = t.replace(/---+/g, '');
+  // Remove bullet dash at line start
+  t = t.replace(/^[—\-\–]\s*/gm, '');
+  // Remove emoji
+  t = t.replace(/[\u{1F300}-\u{1FFFF}\u{2600}-\u{27FF}]/gu, '');
+  // Remove special symbols
+  t = t.replace(/[#►▶■◆→←→✓✗⚠🔍🔒⛔🤖🧠🏆🎤]/g, '');
+  // Remove percentage/unit combos that sound weird
+  t = t.replace(/\d+[.,]?\d*\s?[²³°]/g, match => match.replace(/[²³°]/g, ''));
+  // Multiple newlines to period-space
+  t = t.replace(/\n{2,}/g, '. ');
+  t = t.replace(/\n/g, ' ');
+  // Remove leftover special chars
+  t = t.replace(/[|<>{}\[\]]/g, '');
+  // Clean up multiple spaces and dots
+  t = t.replace(/\.{2,}/g, '.');
+  t = t.replace(/\s{2,}/g, ' ');
+  t = t.replace(/\.\s*\./g, '.');
+  return t.trim();
+}
+
+// Translate to English via Claude API, then speak
+async function speak(text) {
+  if (!voiceEnabled || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  if (!bestEnVoice) loadEnglishVoice();
+
+  const clean = cleanForSpeech(text);
+  if (!clean) return;
+
+  let toRead = clean;
+  // Translate to clean English using Claude API
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: 'Translate the following text to clear, natural English suitable for text-to-speech. Remove all markdown, tables, bullet points, technical notation. Output ONLY the translated text, nothing else:\n\n' + clean.slice(0, 1500)
+        }]
+      })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0] && data.content[0].text) {
+      toRead = data.content[0].text.trim();
+    }
+  } catch(e) {
+    console.warn('[SPEAK] Translation failed, reading as-is:', e);
+  }
+
+  // Split into sentence chunks to avoid TTS cut-off
+  const sentences = toRead.match(/[^.!?]+[.!?]*/g) || [toRead];
+  let chunk = '', chunks = [];
+  for (const s of sentences) {
+    if ((chunk + s).length > 220) { if (chunk) chunks.push(chunk.trim()); chunk = s; }
+    else chunk += s;
+  }
+  if (chunk.trim()) chunks.push(chunk.trim());
+
+  function speakChunk(i) {
+    if (i >= chunks.length || !voiceEnabled) return;
+    const msg = new SpeechSynthesisUtterance(chunks[i]);
+    if (bestEnVoice) msg.voice = bestEnVoice;
+    msg.lang = 'en-US';
+    msg.rate = 0.88;
+    msg.pitch = 1.0;
+    msg.volume = 1.0;
+    msg.onend = () => speakChunk(i + 1);
+    window.speechSynthesis.speak(msg);
+  }
+  speakChunk(0);
+}
+
+// Load voices as soon as they are available
+if (window.speechSynthesis.onvoiceschanged !== undefined) {
+  window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
+}
+setTimeout(loadEnglishVoice, 500);
+
+/* ════════════════════════════════════════
+   UI RUNTIME
+   ════════════════════════════════════════ */
+let busy = false;
+const msgsEl = document.getElementById('msgs');
+function ts() { return new Date().toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+
+function formatMsg(text) {
+  // Tables
+  text = text.replace(/((\|.+\|\n?)+)/g, (match) => {
+    const rows = match.trim().split('\n').filter(r => r.trim());
+    if (rows.length < 2) return match;
+    let html = '<div class="tbl-wrap"><table>';
+    rows.forEach((row, i) => {
+      if (/^\|[\s\-|]+\|$/.test(row.trim())) return;
+      const cells = row.split('|').filter((_,j,a) => j>0 && j<a.length-1);
+      const tag = i === 0 ? 'th' : 'td';
+      html += '<tr>' + cells.map(c => `<${tag}>${c.trim().replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</${tag}>`).join('') + '</tr>';
+    });
+    html += '</table></div>';
+    return html;
+  });
+  text = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  text = text.replace(/`([^`]+)`/g,'<code style="background:rgba(0,255,65,0.08);padding:1px 5px;font-family:monospace;color:#00ff41;border:1px solid rgba(0,255,65,0.2);">$1</code>');
+  text = text.replace(/\n---\n/g,'<hr style="border:none;border-top:1px solid rgba(0,255,65,0.15);margin:10px 0;">');
+  text = text.replace(/\n/g,'<br>');
+  return text;
+}
+
+function addMsg(role, text, entryId) {
+  document.getElementById('typing')?.remove();
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  const fmt = formatMsg(text);
+  const meta = role === 'user'
+    ? `<span>${ts()}</span><div class="tag">USER</div>`
+    : `<div class="tag">KEVLAR_AI</div><span>${ts()}</span>`;
+
+  // Add voice button for AI messages
+  const voiceBtn = role === 'ai' ? `<button onclick="speak('${text.replace(/'/g,"\\'").slice(0,200)}')" style="background:transparent;border:1px solid rgba(0,255,65,0.2);color:rgba(0,255,65,0.5);font-size:9px;padding:2px 6px;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:1px;" title="🔊 Ascultă">▶ VOX</button>` : '';
+
+  d.innerHTML = `<div class="meta">${meta}${voiceBtn}</div><div class="bubble">${fmt}</div>`;
+  msgsEl.appendChild(d);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  if (role === 'user') addToMemory('user', text, null);
+}
+
+function showTyping() {
+  const el = document.createElement('div');
+  el.id = 'typing'; el.className = 'msg ai';
+  const modeLabel = AI_MODES[currentMode]?.label || 'SCIENTIST';
+  const engineLabel = aiReady ? 'SEMANTIC AI' : 'KEYWORD';
+  el.innerHTML = `<div class="meta"><div class="tag">KEVLAR_AI</div> [${modeLabel}] [${engineLabel}]</div><div class="typing-row">PROCESARE CORPUS PPTA <div class="tdots"><span></span><span></span><span></span></div></div>`;
+  msgsEl.appendChild(el);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+async function send() {
+  if (busy) return;
+  const inp = document.getElementById('inp');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  inp.value = ''; inp.style.height = 'auto';
+  busy = true;
+  document.getElementById('sbtn').disabled = true;
+  addMsg('user', txt);
+  showTyping();
+
+  // Slight delay for UX realism
+  await new Promise(r => setTimeout(r, 300 + Math.random()*300));
+
+  const result = await getReply(txt);
+  addMsg('ai', result.text, result.entryId);
+  updateDynamicChips(result.entryId);
+  if (voiceEnabled) speak(result.text); // speak() auto-translates to English via Claude API
+
+  busy = false;
+  document.getElementById('sbtn').disabled = false;
+  inp.focus();
+}
+
+function q(t) { document.getElementById('inp').value = t; send(); }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function resizeInp(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 96) + 'px'; }
+
+/* ════════════════════════════════════════
+   TOPBAR STATS + MODE SELECTOR
+   ════════════════════════════════════════ */
+(function initTopbar() {
+  const statsEl = document.querySelector('.topbar-stats');
+  if (!statsEl) return;
+  statsEl.innerHTML = `
+    <div class="ts ai-status">AI <span>LOADING...</span></div>
+    <div class="ts">KB <span>${MEGA_KB.length} ENTRIES</span></div>
+    <div class="ts mode-sel" style="cursor:pointer;user-select:none;" onclick="cycleMode()" title="Schimbă modul AI">MODE <span id="modeSpan">SCIENTIST</span></div>
+  `;
+})();
+
+function cycleMode() {
+  const modes = ['student','scientist','deep'];
+  const idx = modes.indexOf(currentMode);
+  currentMode = modes[(idx+1) % modes.length];
+  document.getElementById('modeSpan').textContent = AI_MODES[currentMode].label;
+  document.getElementById('modeSpan').style.color = currentMode==='deep'?'#ff9900':currentMode==='student'?'#00ccff':'#00ff41';
+}
+
+function toggleVoice() {
+  voiceEnabled = !voiceEnabled;
+  document.getElementById('voxSpan').textContent = voiceEnabled ? 'ON' : 'OFF';
+  document.getElementById('voxSpan').style.color = voiceEnabled ? '#00ff41' : 'rgba(0,255,65,0.4)';
+  if (voiceEnabled) {
+    loadEnglishVoice();
+    speak('Kevlar AI voice mode activated. Responses will be translated and read in clear English.');
+  } else {
+    window.speechSynthesis.cancel();
+  }
+}
+
+/* ════════════════════════════════════════
+   MIC — SPEECH TO TEXT INPUT
+   ════════════════════════════════════════ */
+let micActive = false;
+let recognition = null;
+let micLang = 'ro-RO'; // default Romanian
+
+function initMic() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    console.warn('[KEVLAR AI] Speech Recognition not supported in this browser');
+    return null;
+  }
+  const r = new SpeechRecognition();
+  r.continuous = false;
+  r.interimResults = true;
+  r.lang = micLang;
+  r.maxAlternatives = 3;
+
+  r.onstart = () => {
+    micActive = true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('inp').placeholder = '🎤 Listening... speak now';
+  };
+
+  r.onresult = (event) => {
+    let finalText = '';
+    let interimText = '';
+    for (let i = 0; i < event.results.length; i++) {
+      const t = event.results[i][0].transcript;
+      if (event.results[i].isFinal) finalText += t;
+      else interimText += t;
+    }
+    const inp = document.getElementById('inp');
+    inp.value = finalText || interimText;
+    resizeInp(inp);
+  };
+
+  r.onerror = (e) => {
+    console.warn('[MIC] Error:', e.error);
+    stopMic();
+    if (e.error === 'not-allowed') {
+      document.getElementById('inp').placeholder = '⚠ Microphone access denied';
+    }
+  };
+
+  r.onend = () => {
+    stopMic();
+    // Auto-focus input so user can press Enter
+    const inp = document.getElementById('inp');
+    inp.focus();
+    // If there's text, place cursor at end
+    const val = inp.value;
+    inp.setSelectionRange(val.length, val.length);
+  };
+
+  return r;
+}
+
+function toggleMic() {
+  if (micActive) {
+    if (recognition) { recognition.stop(); recognition = null; }
+    stopMic();
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('inp').placeholder = '⚠ Use Chrome or Edge for voice input';
+    return;
+  }
+  // Request mic permission explicitly first — this shows the browser permission dialog
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      // Permission granted — stop the raw stream (recognition handles its own)
+      stream.getTracks().forEach(t => t.stop());
+      // Always create a fresh instance to avoid stale state
+      recognition = initMic();
+      try {
+        document.getElementById('inp').value = '';
+        recognition.start();
+      } catch(e) {
+        console.warn('[MIC] Start failed, retrying:', e);
+        setTimeout(() => {
+          recognition = initMic();
+          recognition.start();
+        }, 300);
+      }
+    })
+    .catch(err => {
+      stopMic();
+      const inp = document.getElementById('inp');
+      if (err.name === 'NotAllowedError') {
+        inp.placeholder = '⚠ Allow microphone in browser settings, then try again';
+        inp.style.color = '#ff4444';
+        setTimeout(() => { inp.style.color = ''; inp.placeholder = 'INTRODUCEȚI INTEROGAREA...'; }, 4000);
+      } else {
+        inp.placeholder = '⚠ Microphone error: ' + err.name;
+      }
+    });
+}
+
+function toggleMicLang() {
+  micLang = micLang === 'ro-RO' ? 'en-US' : 'ro-RO';
+  const btn = document.getElementById('langBtn');
+  if (micLang === 'ro-RO') {
+    btn.textContent = 'RO';
+    btn.classList.remove('en');
+  } else {
+    btn.textContent = 'EN';
+    btn.classList.add('en');
+  }
+  // Reset recognition so it picks up new language
+  if (recognition) { recognition.stop(); recognition = null; }
+}
+
+function stopMic() {
+  micActive = false;
+  recognition = null;
+  const btn = document.getElementById('micBtn');
+  if (btn) btn.classList.remove('recording');
+  const inp = document.getElementById('inp');
+  if (inp) inp.placeholder = 'INTRODUCEȚI INTEROGAREA...';
+}
+
+/* Init: render default chips + start AI loading */
+renderChips(DEFAULT_CHIPS);
+initSemanticAI();
+
+
+
+
+</script>
 
     <!-- ══ HUD NEW CSS ══ -->
     <style>

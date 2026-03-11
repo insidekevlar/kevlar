@@ -774,7 +774,7 @@ function initKevlarBg() {
     try {
         bgComposer = new THREE.EffectComposer(bgRenderer);
         bgComposer.addPass(new THREE.RenderPass(bgScene, bgCamera));
-        bgComposer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(W(), H()), 1.8, 0.6, 0.1));
+        bgComposer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(Math.floor(W()/2), Math.floor(H()/2)), 1.8, 0.6, 0.1));
     } catch (e) { bgComposer = null; }
 
     bgClock = new THREE.Clock();
@@ -1001,8 +1001,8 @@ function initKevlarBg() {
             if (fpsBadge) fpsBadge.textContent = bgCurrentFps;
         }
 
-        // HUD — always update for live animations
-        {
+        // HUD — throttled every 6 frames
+        if (bgFpsFrames % 6 === 0) {
             const $ = id => document.getElementById(id);
             const cx = bgCamera.position.x, cy = bgCamera.position.y, cz = bgCamera.position.z;
             const hcx = $('hcx'); if (hcx) hcx.textContent = cx.toFixed(3);
@@ -1935,7 +1935,7 @@ function launchBallisticTest() {
         let kLabel = '→ BULLET IN TRAJECTORY';
         if (kHit && kState.impactAge < 0.4) kLabel = '⚡ IMPACT DETECTAT';
         else if (kHit && !kState.bulletDone) kLabel = '〜 DISIPARE ENERGIE';
-        else if (kState.bulletDone) kLabel = '✓ THREAT STOPPED';
+        else if (kState.bulletDone) kLabel = '✓ AMENINTARE OPRITA';
         bKevlarCtx.font = '9px "Share Tech Mono", monospace';
         bKevlarCtx.fillStyle = kState.bulletDone ? '#00ffcc' : '#ffd700';
         bKevlarCtx.textAlign = 'center';
@@ -1982,7 +1982,7 @@ function launchBallisticTest() {
         let sLabel = '→ BULLET IN TRAJECTORY';
         if (sHit && sState.holeR < 15) sLabel = '💥 PERFORATION IN PROGRESS';
         else if (sHit && !sState.bulletDone) sLabel = '☠ STEEL FAILED';
-        else if (sState.bulletDone) sLabel = '☠ FULL PENETRATION';
+        else if (sState.bulletDone) sLabel = '☠ PENETRARE COMPLETA';
         bSteelCtx.font = '9px "Share Tech Mono", monospace';
         bSteelCtx.fillStyle = sHit ? '#ff4444' : '#aaa';
         bSteelCtx.textAlign = 'center';
@@ -1993,7 +1993,7 @@ function launchBallisticTest() {
             kDoneShown = true;
             const el = document.getElementById('kevlar-impact-result');
             if (el) {
-                el.textContent = '✅ ENERGY ABSORBED — THREAT NEUTRALIZED';
+                el.textContent = '✅ ENERGIE ABSORBITA — AMENINTARE NEUTRALIZATA';
                 el.className = 'ballistic-result show-kevlar';
             }
         }
@@ -2002,7 +2002,7 @@ function launchBallisticTest() {
             sDoneShown = true;
             const el = document.getElementById('steel-impact-result');
             if (el) {
-                el.textContent = '❌ MATERIAL PERFORATED — LETHAL PENETRATION';
+                el.textContent = '❌ MATERIAL PERFORAT — PENETRARE LETALA';
                 el.className = 'ballistic-result show-steel';
             }
         }
@@ -2237,7 +2237,7 @@ function launchBallisticTest() {
             verdict.textContent = '⚠ PARTIAL PROTECTION — MODERATE RISK';
             verdict.className = 'calc-verdict warning';
         } else {
-            verdict.textContent = '❌ PROBABLE PENETRATION — INSUFFICIENT PROTECTION';
+            verdict.textContent = '❌ PENETRARE PROBABILA — PROTECTIE INSUFICIENTA';
             verdict.className = 'calc-verdict danger';
         }
 

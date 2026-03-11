@@ -8148,6 +8148,7 @@ body::after {
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .rcn-btn {
@@ -8167,6 +8168,8 @@ body::after {
     min-width: 175px;
     justify-content: center;
     font-weight: 700;
+    height: 50px;
+    box-sizing: border-box;
 }
 
 .rcn-btn::before {
@@ -8244,10 +8247,11 @@ body::after {
 }
 
 .rcn-label {
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Share Tech Mono', 'Noto Sans Mono', 'Courier New', monospace;
     letter-spacing: 2.5px;
     font-size: 0.88rem;
     font-weight: 700;
+    line-height: 1;
 }
 
 /* ================================================================
