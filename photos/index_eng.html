@@ -61,15 +61,16 @@
             cursor: pointer;
             border: 1px solid rgba(0, 204, 255, 0.2);
             transition: all 0.4s ease;
-            background: #001111; /* Add background for loading */
-            aspect-ratio: 4/3; /* Enforce uniform aspect ratio */
-            display: flex; /* Centers content if needed */
+            background: #001111;
+            aspect-ratio: 4/3;
+            display: flex;
             justify-content: center;
             align-items: center;
             width: 315px;
             max-width: 100%;
         }
 
+        /* Aici se creeaza efectul de contur si glow la hover */
         .gallery-item:hover {
             border-color: #00ccff;
             box-shadow: 0 0 20px rgba(0, 204, 255, 0.4);
@@ -83,42 +84,12 @@
             object-fit: cover;
             transition: transform 0.5s ease;
             filter: brightness(0.8) contrast(1.1);
-            display: block; /* Remove small margin at bottom of inline elements */
+            display: block;
         }
 
         .gallery-item:hover img {
             transform: scale(1.1);
             filter: brightness(1) contrast(1.2);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-text {
-            color: #00ccff;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
-            transform: translateY(10px);
-            transition: transform 0.4s ease;
-        }
-
-        .gallery-item:hover .gallery-text {
-            transform: translateY(0);
         }
 
         /* Lightbox Styles */
@@ -174,7 +145,7 @@
              text-shadow: 0 0 10px #00ccff;
         }
         
-        /* Loading animation for grid items if needed */
+        /* Loading animation */
         .loading-scan {
             position: absolute;
             top: -100%;
@@ -203,94 +174,91 @@
         BACK TO BASE
     </a>
 
-    <div class="section-content" style="text-align: center; margin-top: 40px; margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <div class="data-stream">[FILE_ACCESS] // KEVLAR_VISUAL_ARCHIVE</div>
-        <h1 class="military-text section-title" style="color: #00ccff; text-shadow: 0 0 15px rgba(0,204,255,0.6); margin: 10px 0;">DECLASSIFIED GALLERY</h1>
-        <p class="section-subtitle" style="color: rgba(255,255,255,0.7); margin: 0;">Visual records from the field and laboratory tests</p>
+    <div class="section-content" style="width: 100%; text-align: center; margin: 40px auto 30px auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="data-stream" style="text-align: center; width: 100%;">[FILE_ACCESS] // KEVLAR_VISUAL_ARCHIVE</div>
+        <h1 class="military-text section-title" style="color: #00ccff; text-shadow: 0 0 15px rgba(0,204,255,0.6); margin: 10px auto; text-align: center; width: 100%;">DECLASSIFIED GALLERY</h1>
     </div>
 
     <div class="gallery-container">
-        <!-- Generat din file din folder -->
         <div class="gallery-item" onclick="openLightbox('20260310_120118.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_120118.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_120118</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_120124.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_120124.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_120124</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_120133.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_120133.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_120133</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_120726.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_120726.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_120726</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_120800.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_120800.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_120800</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_123950.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_123950.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_123950</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_123952.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_123952.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_123952</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_124401.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_124401.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_124401</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_124716.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_124716.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_124716</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_124725.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_124725.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_124725</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_124743.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_124743.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_124743</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('20260310_125442.jpg')">
             <div class="loading-scan"></div>
             <img src="20260310_125442.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: 20260310_125442</span></div>
         </div>
-
+        <div class="gallery-item" onclick="openLightbox('20260310_125450.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_125450.jpg" alt="Gallery Image">
+        </div>
+        <div class="gallery-item" onclick="openLightbox('IMG-20260311-WA0029.jpg')">
+            <div class="loading-scan"></div>
+            <img src="IMG-20260311-WA0029.jpg" alt="Gallery Image">
+        </div>
+        <div class="gallery-item" onclick="openLightbox('IMG-20260311-WA0031.jpg')">
+            <div class="loading-scan"></div>
+            <img src="IMG-20260311-WA0031.jpg" alt="Gallery Image">
+        </div>
+        <div class="gallery-item" onclick="openLightbox('IMG-20260311-WA0033.jpg')">
+            <div class="loading-scan"></div>
+            <img src="IMG-20260311-WA0033.jpg" alt="Gallery Image">
+        </div>
         <div class="gallery-item" onclick="openLightbox('foc_1.jpg')">
             <div class="loading-scan"></div>
             <img src="foc_1.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: foc_1</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('foc_2.jpg')">
             <div class="loading-scan"></div>
             <img src="foc_2.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: foc_2</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('taiere_1.jpg')">
             <div class="loading-scan"></div>
             <img src="taiere_1.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: taiere_1</span></div>
         </div>
         <div class="gallery-item" onclick="openLightbox('taiere_2.jpg')">
             <div class="loading-scan"></div>
             <img src="taiere_2.jpg" alt="Gallery Image">
-            <div class="gallery-overlay"><span class="gallery-text">FILE: taiere_2</span></div>
         </div>
     </div>
 
@@ -318,7 +286,6 @@
             }
         }
 
-        // Add CSS for twinkling stars
         const style = document.createElement('style');
         style.textContent = `
             .stars-bg {
@@ -340,29 +307,26 @@
             const img = document.getElementById('lightbox-img');
             img.src = src;
             lightbox.classList.add('visible');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+            document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox(e) {
-            // Close if clicked outside the image or on the close button
             if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
                 const lightbox = document.getElementById('lightbox');
                 lightbox.classList.remove('visible');
                 document.body.style.overflow = 'auto';
                 
-                // Clear out src after transition to avoid flicker on next open
                 setTimeout(() => {
                     document.getElementById('lightbox-img').src = '';
                 }, 300);
             }
         }
         
-        // Escape key to close
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const lightbox = document.getElementById('lightbox');
                 if (lightbox.classList.contains('visible')) {
-                    closeLightbox({target: lightbox}); // simulate click on bg
+                    closeLightbox({target: lightbox});
                 }
             }
         });
