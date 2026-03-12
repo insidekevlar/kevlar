@@ -2106,14 +2106,20 @@ function launchBallisticTest() {
             } else if (integrity < 30) {
                 status.textContent = '⚠ CRITICAL DEGRADATION';
                 status.className = 'break-status danger';
+                broken = false;
             } else if (integrity < 60) {
                 status.textContent = '⚠ PARTIAL DEGRADATION';
                 status.className = 'break-status danger';
+                broken = false;
             } else {
                 status.textContent = 'STRUCTURE INTACT';
                 status.className = 'break-status';
                 broken = false;
             }
+            ['break-force', 'break-temp', 'break-ph', 'break-uv'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = broken;
+            });
         }
     }
 

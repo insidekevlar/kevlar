@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>KEVLAR 3D SUPREMACY - Sisteme Elite de Apărare</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
@@ -17,6 +17,18 @@
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=2">
     <style>
+        /* ── BOX-SIZING RESET & OVERFLOW PREVENTION ── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        img, canvas, video, iframe {
+            max-width: 100%;
+        }
+
         /* ── SCROLL REVEAL ANIMATIONS ── */
         .scroll-reveal {
             opacity: 0;
