@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>KEVLAR - Galerie Foto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+Mono:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Nav back button */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(0, 8, 6, 0.9);
+            border: 1.5px solid rgba(0, 204, 255, 0.4);
+            border-radius: 4px;
+            color: #00ccff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.1);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(0, 255, 204, 0.8);
+            color: #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            transition: all 0.4s ease;
+            background: #001111; /* Add background for loading */
+            aspect-ratio: 4/3; /* Enforce uniform aspect ratio */
+            display: flex; /* Centers content if needed */
+            justify-content: center;
+            align-items: center;
+            width: 315px;
+            max-width: 100%;
+        }
+
+        .gallery-item:hover {
+            border-color: #00ccff;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.4);
+            transform: translateY(-5px) scale(1.02);
+            z-index: 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            filter: brightness(0.8) contrast(1.1);
+            display: block; /* Remove small margin at bottom of inline elements */
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+            filter: brightness(1) contrast(1.2);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-text {
+            color: #00ccff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(0, 204, 255, 0.5);
+            transform: translateY(10px);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-text {
+            transform: translateY(0);
+        }
+
+        /* Lightbox Styles */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        #lightbox.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.3);
+            border: 2px solid rgba(0, 204, 255, 0.5);
+            border-radius: 4px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        #lightbox.visible #lightbox-img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            transition: color 0.3s ease;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+             color: #00ccff;
+             text-shadow: 0 0 10px #00ccff;
+        }
+        
+        /* Loading animation for grid items if needed */
+        .loading-scan {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0,204,255,0.2), transparent);
+            animation: scan 2s infinite linear;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars-bg"></div>
+
+    <a href="../index.html" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        ÎNAPOI LA BAZĂ
+    </a>
+
+    <div class="section-content" style="text-align: center; margin-top: 40px; margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="data-stream">[ACCES_FIȘIERE] // ARHIVĂ_VIZUALĂ_KEVLAR</div>
+        <h1 class="military-text section-title" style="color: #00ccff; text-shadow: 0 0 15px rgba(0,204,255,0.6); margin: 10px 0;">GALERIE DECLASIFICATĂ</h1>
+        <p class="section-subtitle" style="color: rgba(255,255,255,0.7); margin: 0;">Înregistrări vizuale din teren și teste de laborator</p>
+    </div>
+
+    <div class="gallery-container">
+        <!-- Generat din file din folder -->
+        <div class="gallery-item" onclick="openLightbox('20260310_120118.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_120118.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_120118</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_120124.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_120124.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_120124</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_120133.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_120133.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_120133</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_120726.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_120726.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_120726</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_120800.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_120800.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_120800</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_123950.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_123950.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_123950</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_123952.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_123952.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_123952</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_124401.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_124401.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_124401</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_124716.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_124716.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_124716</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_124725.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_124725.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_124725</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_124743.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_124743.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_124743</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('20260310_125442.jpg')">
+            <div class="loading-scan"></div>
+            <img src="20260310_125442.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: 20260310_125442</span></div>
+        </div>
+
+        <div class="gallery-item" onclick="openLightbox('foc_1.jpg')">
+            <div class="loading-scan"></div>
+            <img src="foc_1.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: foc_1</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('foc_2.jpg')">
+            <div class="loading-scan"></div>
+            <img src="foc_2.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: foc_2</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('taiere_1.jpg')">
+            <div class="loading-scan"></div>
+            <img src="taiere_1.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: taiere_1</span></div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('taiere_2.jpg')">
+            <div class="loading-scan"></div>
+            <img src="taiere_2.jpg" alt="Gallery Image">
+            <div class="gallery-overlay"><span class="gallery-text">FIȘIER: taiere_2</span></div>
+        </div>
+    </div>
+
+    <div id="lightbox" onclick="closeLightbox(event)">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Enlarged Image">
+    </div>
+
+    <!-- Generare stele pentru fundal (similar cu main app.js) -->
+    <script>
+        // Stars background
+        const starsBg = document.querySelector('.stars-bg');
+        if (starsBg) {
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.width = Math.random() * 2 + 'px';
+                star.style.height = star.style.width;
+                star.style.background = '#fff';
+                star.style.borderRadius = '50%';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = Math.random() * 0.8 + 0.2;
+                star.style.animation = `twinkle ${Math.random() * 3 + 1}s infinite alternate`;
+                starsBg.appendChild(star);
+            }
+        }
+
+        // Add CSS for twinkling stars
+        const style = document.createElement('style');
+        style.textContent = `
+            .stars-bg {
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                z-index: -1;
+                pointer-events: none;
+            }
+            @keyframes twinkle {
+                0% { opacity: 0.2; transform: scale(0.8); }
+                100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 5px #fff; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Lightbox logic
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.classList.add('visible');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeLightbox(e) {
+            // Close if clicked outside the image or on the close button
+            if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('visible');
+                document.body.style.overflow = 'auto';
+                
+                // Clear out src after transition to avoid flicker on next open
+                setTimeout(() => {
+                    document.getElementById('lightbox-img').src = '';
+                }, 300);
+            }
+        }
+        
+        // Escape key to close
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const lightbox = document.getElementById('lightbox');
+                if (lightbox.classList.contains('visible')) {
+                    closeLightbox({target: lightbox}); // simulate click on bg
+                }
+            }
+        });
+    </script>
+</body>
+</html>
