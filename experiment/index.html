@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXPERIMENTE REALE — KEVLAR LAB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold: #e8c547;
+            --cyan: #00ffcc;
+            --orange: #ff9900;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            background: #050a12;
+            color: #e8e6f2;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── BACKGROUND ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: -3; pointer-events: none;
+            background:
+                radial-gradient(ellipse 70% 60% at 50% 50%,
+                    rgba(120,40,200,0.18) 0%, rgba(80,20,140,0.12) 30%,
+                    rgba(40,10,80,0.08) 60%, transparent 80%),
+                radial-gradient(ellipse at center, #0a0414 0%, #06020e 100%);
+        }
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            background:
+                radial-gradient(ellipse 20% 60% at 8% 50%, rgba(160,60,255,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 20% 60% at 92% 50%, rgba(100,30,200,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 30% 30% at 25% 20%, rgba(180,80,255,0.07) 0%, transparent 50%),
+                radial-gradient(ellipse 30% 30% at 75% 80%, rgba(140,50,220,0.07) 0%, transparent 50%);
+            animation: ambientPulse 10s ease-in-out infinite;
+        }
+        @keyframes ambientPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+
+        #web-canvas { position:fixed; inset:0; z-index:-1; opacity:.18; pointer-events:none; }
+
+        /* ── BACK BUTTON ── */
+        .back-btn {
+            position: fixed; top: 22px; left: 22px; z-index: 9999;
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 20px;
+            background: rgba(0,8,6,0.9);
+            border: 1.5px solid rgba(255,215,0,0.45);
+            color: #ffd700;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 3px;
+            text-decoration: none; cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s;
+            animation: idlePulse 2.5s infinite alternate;
+        }
+        .back-btn:hover {
+            border-color: rgba(0,255,204,0.8); color: #00ffcc;
+            box-shadow: 0 0 22px rgba(0,255,204,0.3);
+        }
+        @keyframes idlePulse {
+            0%   { box-shadow: 0 0 10px rgba(255,215,0,0.05); }
+            100% { box-shadow: 0 0 18px rgba(255,215,0,0.25); }
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            text-align: center;
+            padding: 100px 24px 60px;
+        }
+        .data-stream {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.62rem; letter-spacing: 5px;
+            color: rgba(255,153,0,0.5); margin-bottom: 18px;
+        }
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 900; letter-spacing: 4px;
+            color: #ff9900;
+            text-shadow: 0 0 40px rgba(255,120,0,0.6), 0 0 90px rgba(255,80,0,0.3);
+            margin-bottom: 14px;
+        }
+        .page-subtitle {
+            font-size: 1.05rem; letter-spacing: 2px;
+            color: rgba(200,210,230,0.55);
+            max-width: 680px; margin: 0 auto;
+        }
+        .header-rule {
+            width: 220px; height: 1px;
+            background: linear-gradient(90deg, transparent, #ff9900, transparent);
+            margin: 28px auto 0; opacity: .6;
+        }
+
+        /* ── EXPERIMENT SECTIONS ── */
+        .experiments-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 32px 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 100px;
+        }
+
+        .exp-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.7s cubic-bezier(.22,1,.36,1),
+                        transform 0.7s cubic-bezier(.22,1,.36,1);
+        }
+        .exp-section.visible { opacity: 1; transform: translateY(0); }
+
+        /* Section label row */
+        .exp-label-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .exp-num {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem; letter-spacing: 4px;
+            color: rgba(255,153,0,0.45);
+            white-space: nowrap;
+        }
+        .exp-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-weight: 900; letter-spacing: 4px;
+            color: #ff9900;
+            text-shadow: 0 0 14px rgba(255,153,0,0.5);
+        }
+        .exp-rule {
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, rgba(255,153,0,0.4), transparent);
+        }
+        .exp-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.6rem; letter-spacing: 2px;
+            padding: 3px 10px;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+        .tag-cyan   { color:#00ffcc; border-color:rgba(0,255,204,0.4); background:rgba(0,255,204,0.06); }
+        .tag-gold   { color:#ffd700; border-color:rgba(255,215,0,0.4); background:rgba(255,215,0,0.06); }
+        .tag-red    { color:#ff5533; border-color:rgba(255,85,51,0.4);  background:rgba(255,85,51,0.06); }
+        .tag-orange { color:#ff9900; border-color:rgba(255,153,0,0.4);  background:rgba(255,153,0,0.06); }
+
+        /* ── MAIN CONTENT LAYOUT ── */
+        .exp-body {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 32px;
+            align-items: start;
+        }
+        .exp-body.no-sidebar { grid-template-columns: 1fr; }
+
+        /* ── VIDEO BLOCK ── */
+        .video-block {
+            position: relative;
+            background: #000;
+            border: 1px solid rgba(255,153,0,0.25);
+            cursor: pointer;
+            overflow: hidden;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .video-block:hover {
+            border-color: rgba(255,153,0,0.6);
+            box-shadow: 0 0 50px rgba(255,120,0,0.15);
+        }
+        .video-block::before {
+            content: '';
+            position: absolute; top:0; left:0; right:0; height:2px; z-index:5;
+            background: linear-gradient(90deg, transparent, #ff9900, transparent);
+        }
+        .video-block video {
+            display: block; width: 100%; height: auto;
+        }
+        /* scan overlay */
+        .video-block .vscan {
+            position: absolute; inset:0; pointer-events:none; z-index:3;
+            background: repeating-linear-gradient(0deg,
+                transparent, transparent 2px,
+                rgba(255,153,0,0.022) 3px, rgba(255,153,0,0.022) 4px);
+        }
+        /* HUD corners */
+        .vc { position:absolute; width:18px; height:18px; pointer-events:none; z-index:4; }
+        .vc-tl { top:10px; left:10px;  border-top:2px solid rgba(255,153,0,.7); border-left:2px solid rgba(255,153,0,.7); }
+        .vc-tr { top:10px; right:10px; border-top:2px solid rgba(255,153,0,.7); border-right:2px solid rgba(255,153,0,.7); }
+        .vc-bl { bottom:10px; left:10px;  border-bottom:2px solid rgba(255,153,0,.7); border-left:2px solid rgba(255,153,0,.7); }
+        .vc-br { bottom:10px; right:10px; border-bottom:2px solid rgba(255,153,0,.7); border-right:2px solid rgba(255,153,0,.7); }
+        /* fullscreen btn */
+        .fs-btn {
+            position: absolute; bottom:14px; right:14px; z-index:10;
+            width:38px; height:38px;
+            background:rgba(0,0,0,.75);
+            border:1px solid rgba(255,153,0,.5);
+            color:#ff9900;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; opacity:0;
+            transition: opacity .2s, box-shadow .2s;
+            backdrop-filter:blur(4px);
+        }
+        .video-block:hover .fs-btn { opacity:1; }
+        .fs-btn:hover { box-shadow:0 0 14px rgba(255,153,0,.5); border-color:#ff9900; }
+
+        /* ── DESCRIPTION SIDEBAR ── */
+        .exp-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .desc-block {
+            background: rgba(8,14,22,0.9);
+            border: 1px solid rgba(255,153,0,0.18);
+            padding: 22px 24px;
+            position: relative;
+        }
+        .desc-block::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:1px;
+            background:linear-gradient(90deg, #ff9900, transparent);
+            opacity:.5;
+        }
+        .desc-heading {
+            font-family: 'Share Tech Mono', monospace;
+            font-size:0.62rem; letter-spacing:3px;
+            color:rgba(255,153,0,.5); margin-bottom:10px;
+        }
+        .desc-text {
+            font-size:.95rem; line-height:1.75;
+            color:rgba(210,220,240,.72);
+        }
+        .desc-stats {
+            margin-top:14px;
+            display:flex; flex-direction:column; gap:8px;
+        }
+        .stat-row {
+            display:flex; justify-content:space-between;
+            font-family:'Share Tech Mono', monospace; font-size:.7rem;
+        }
+        .stat-label { color:rgba(255,255,255,.35); letter-spacing:1px; }
+        .stat-val   { color:#ff9900; }
+        .stat-val.cyan { color:#00ffcc; }
+
+        /* ── PHOTOS GRID ── */
+        .photos-block {
+            margin-top: 28px;
+        }
+        .photos-label {
+            font-family:'Share Tech Mono', monospace;
+            font-size:.62rem; letter-spacing:3px;
+            color:rgba(255,153,0,.45); margin-bottom:14px;
+        }
+        .photos-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap:16px;
+        }
+        .photo-item {
+            position:relative;
+            border:1px solid rgba(255,153,0,0.2);
+            overflow:hidden;
+            background:#000;
+            cursor:pointer;
+            transition:border-color .3s, box-shadow .3s;
+        }
+        .photo-item:hover {
+            border-color:rgba(255,153,0,0.55);
+            box-shadow:0 0 30px rgba(255,120,0,0.12);
+        }
+        .photo-item img {
+            display:block; width:100%; height:auto;
+            filter:contrast(1.05) saturate(0.92);
+            transition: transform .4s;
+        }
+        .photo-item:hover img { transform:scale(1.03); }
+        .photo-item .ph-corner {
+            position:absolute; width:12px; height:12px; pointer-events:none; z-index:3;
+        }
+        .ph-tl { top:6px; left:6px;  border-top:1px solid rgba(255,153,0,.7); border-left:1px solid rgba(255,153,0,.7); }
+        .ph-br { bottom:6px; right:6px; border-bottom:1px solid rgba(255,153,0,.7); border-right:1px solid rgba(255,153,0,.7); }
+        .photo-item .ph-expand {
+            position:absolute; bottom:8px; right:8px; z-index:5;
+            width:30px; height:30px;
+            background:rgba(0,0,0,.7);
+            border:1px solid rgba(255,153,0,.5);
+            color:#ff9900;
+            display:flex; align-items:center; justify-content:center;
+            opacity:0; transition:opacity .2s; cursor:pointer;
+        }
+        .photo-item:hover .ph-expand { opacity:1; }
+
+        /* ── FULLSCREEN OVERLAY ── */
+        .fs-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,.96);
+            z-index:99999;
+            align-items:center; justify-content:center; flex-direction:column;
+        }
+        .fs-overlay.active { display:flex; }
+        .fs-inner {
+            position:relative;
+            max-width:95vw; max-height:90vh;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .fs-inner video, .fs-inner img {
+            max-width:95vw; max-height:88vh;
+            width:auto; height:auto; display:block;
+            border:1px solid rgba(255,153,0,0.3);
+            box-shadow:0 0 80px rgba(255,100,0,.2);
+        }
+        .fs-corner-d { position:absolute; width:22px; height:22px; pointer-events:none; }
+        .fsc-tl { top:-10px; left:-10px; border-top:2px solid #ff9900; border-left:2px solid #ff9900; }
+        .fsc-tr { top:-10px; right:-10px; border-top:2px solid #ff9900; border-right:2px solid #ff9900; }
+        .fsc-bl { bottom:-10px; left:-10px; border-bottom:2px solid #ff9900; border-left:2px solid #ff9900; }
+        .fsc-br { bottom:-10px; right:-10px; border-bottom:2px solid #ff9900; border-right:2px solid #ff9900; }
+        .fs-title-bar {
+            margin-top:18px;
+            font-family:'Orbitron', sans-serif; font-size:.75rem;
+            letter-spacing:4px; color:#ff9900; opacity:.8;
+        }
+        .fs-close-btn {
+            position:fixed; top:20px; right:20px;
+            width:46px; height:46px;
+            background:rgba(0,0,0,.85);
+            border:1px solid rgba(255,153,0,.4);
+            color:#ff9900; font-size:1.3rem;
+            cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition:all .2s; z-index:100000;
+        }
+        .fs-close-btn:hover {
+            border-color:#ff9900;
+            box-shadow:0 0 20px rgba(255,153,0,.4);
+        }
+        .fs-esc-hint {
+            position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+            font-family:'Share Tech Mono', monospace; font-size:.62rem;
+            letter-spacing:2px; color:rgba(255,255,255,.22);
+        }
+
+        /* ── DIVIDER ── */
+        .section-divider {
+            width:100%; height:1px;
+            background:linear-gradient(90deg, transparent, rgba(255,153,0,0.2), transparent);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width:900px) {
+            .exp-body { grid-template-columns:1fr; }
+            .experiments-wrap { padding:20px 20px 80px; gap:70px; }
+            .page-title { font-size:1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="web-canvas"></canvas>
+
+<a href="../index.html" class="back-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    ÎNAPOI
+</a>
+
+<!-- HEADER -->
+<div class="page-header">
+    <div class="data-stream">[EXPERIMENTE_REALE] // KEVLAR_FIELD_LAB v1.0 // 2026</div>
+    <h1 class="page-title">🎬 EXPERIMENTE REALE</h1>
+    <p class="page-subtitle">Teste efectuate în laborator cu mostre reale de Kevlar, Nylon și Bumbac</p>
+    <div class="header-rule"></div>
+</div>
+
+<div class="experiments-wrap">
+
+    <!-- ═══════════════════════════════════════
+         EXP 01 — TEST FIR / AC
+    ════════════════════════════════════════ -->
+    <div class="exp-section">
+        <div class="exp-label-row">
+            <span class="exp-num">EXP_01</span>
+            <span class="exp-title">TEST FIR / AC</span>
+            <span class="exp-tag tag-cyan">ÎNȚEPARE</span>
+            <div class="exp-rule"></div>
+        </div>
+        <div class="exp-body">
+            <div class="video-block" data-title="EXP_01 — TEST FIR / AC" data-type="video">
+                <video autoplay loop muted playsinline>
+                    <source src="video_fir.mp4" type="video/mp4">
+                </video>
+                <div class="vscan"></div>
+                <div class="vc vc-tl"></div><div class="vc vc-tr"></div>
+                <div class="vc vc-bl"></div><div class="vc vc-br"></div>
+                <button class="fs-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="exp-sidebar">
+                <div class="desc-block">
+                    <div class="desc-heading">// DESCRIERE EXPERIMENT</div>
+                    <div class="desc-text">
+                        Testăm dacă un ac poate penetra țesătura de Kevlar fixată pe un bloc acrilic. Acul este împins manual cu forță constantă perpendicular pe suprafața fibrei.
+                        <br><br>
+                        Fibrele aramidice deviază acul datorită structurii lor moleculare înalt orientate și rezistenței la rupere de peste 3.600 MPa — de aproape 5× mai mult decât oțelul.
+                    </div>
+                    <div class="desc-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">MATERIAL</span>
+                            <span class="stat-val">KEVLAR® 49</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">TIP TEST</span>
+                            <span class="stat-val cyan">PENETRARE AC</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">REZULTAT</span>
+                            <span class="stat-val">REZISTĂ ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════
+         EXP 02 — TEST TĂIERE
+    ════════════════════════════════════════ -->
+    <div class="exp-section">
+        <div class="exp-label-row">
+            <span class="exp-num">EXP_02</span>
+            <span class="exp-title">TEST TĂIERE</span>
+            <span class="exp-tag tag-gold">TĂIERE</span>
+            <div class="exp-rule"></div>
+        </div>
+        <div class="exp-body">
+            <div class="video-block" data-title="EXP_02 — TEST TĂIERE" data-type="video">
+                <video autoplay loop muted playsinline>
+                    <source src="video_taiere.mp4" type="video/mp4">
+                </video>
+                <div class="vscan"></div>
+                <div class="vc vc-tl"></div><div class="vc vc-tr"></div>
+                <div class="vc vc-bl"></div><div class="vc vc-br"></div>
+                <button class="fs-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="exp-sidebar">
+                <div class="desc-block">
+                    <div class="desc-heading">// DESCRIERE EXPERIMENT</div>
+                    <div class="desc-text">
+                        Se încearcă tăierea Kevlarului cu un cutter obișnuit cu lama nouă. Forța aplicată este semnificativă, dar fibra rezistă tăierii directe.
+                        <br><br>
+                        Structura țesută a fibrei distribuie forța de-a lungul mai multor fire, împiedicând propagarea tăieturii. De aceea Kevlarul este folosit în mănuși anti-tăiere și armuri.
+                    </div>
+                    <div class="desc-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">MATERIAL</span>
+                            <span class="stat-val">KEVLAR® WOVEN</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">UNEALTĂ</span>
+                            <span class="stat-val cyan">CUTTER LAMA</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">REZULTAT</span>
+                            <span class="stat-val">REZISTĂ ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PHOTOS -->
+        <div class="photos-block">
+            <div class="photos-label">// FOTOGRAFII EXPERIMENT</div>
+            <div class="photos-grid">
+                <div class="photo-item" data-src="taiere_1.jpg" data-title="Test Tăiere — Fig.1">
+                    <img src="taiere_1.jpg" alt="Test tăiere Kevlar 1" loading="lazy">
+                    <div class="ph-corner ph-tl"></div>
+                    <div class="ph-corner ph-br"></div>
+                    <div class="ph-expand">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="photo-item" data-src="taiere_2.jpg" data-title="Test Tăiere — Fig.2">
+                    <img src="taiere_2.jpg" alt="Test tăiere Kevlar 2" loading="lazy">
+                    <div class="ph-corner ph-tl"></div>
+                    <div class="ph-corner ph-br"></div>
+                    <div class="ph-expand">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════
+         EXP 03 — ARDERE KEVLAR
+    ════════════════════════════════════════ -->
+    <div class="exp-section">
+        <div class="exp-label-row">
+            <span class="exp-num">EXP_03</span>
+            <span class="exp-title">ARDERE KEVLAR</span>
+            <span class="exp-tag tag-red">TERMICĂ</span>
+            <div class="exp-rule"></div>
+        </div>
+        <div class="exp-body">
+            <div class="video-block" data-title="EXP_03 — ARDERE KEVLAR" data-type="video">
+                <video autoplay loop muted playsinline>
+                    <source src="video_ardere_kevlar.mp4" type="video/mp4">
+                </video>
+                <div class="vscan"></div>
+                <div class="vc vc-tl"></div><div class="vc vc-tr"></div>
+                <div class="vc vc-bl"></div><div class="vc vc-br"></div>
+                <button class="fs-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="exp-sidebar">
+                <div class="desc-block">
+                    <div class="desc-heading">// DESCRIERE EXPERIMENT</div>
+                    <div class="desc-text">
+                        Kevlarul este expus direct la flacără. Observăm că fibra nu se topește și nu se inflamează — carbonizează local, menținând integritatea structurală a zonelor neafectate.
+                        <br><br>
+                        Punctul de descompunere al Kevlarului este de ~450°C, față de polietilenă (~120°C). Această proprietate îl face esențial în echipamente de pompieri și blindaje termice.
+                    </div>
+                    <div class="desc-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">MATERIAL</span>
+                            <span class="stat-val">KEVLAR® 29</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">TEMP. DESCOMP.</span>
+                            <span class="stat-val cyan">~450°C</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">COMPORTAMENT</span>
+                            <span class="stat-val">CARBONIZARE ✓</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">SE TOPEȘTE?</span>
+                            <span class="stat-val">NU ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PHOTOS -->
+        <div class="photos-block">
+            <div class="photos-label">// FOTOGRAFII — KEVLAR DUPĂ ARDERE</div>
+            <div class="photos-grid">
+                <div class="photo-item" data-src="foc_1.jpg" data-title="Ardere Kevlar — Fig.1">
+                    <img src="foc_1.jpg" alt="Kevlar după ardere 1" loading="lazy">
+                    <div class="ph-corner ph-tl"></div>
+                    <div class="ph-corner ph-br"></div>
+                    <div class="ph-expand">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="photo-item" data-src="foc_2.jpg" data-title="Ardere Kevlar — Fig.2">
+                    <img src="foc_2.jpg" alt="Kevlar după ardere 2" loading="lazy">
+                    <div class="ph-corner ph-tl"></div>
+                    <div class="ph-corner ph-br"></div>
+                    <div class="ph-expand">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════
+         EXP 04 — ARDERE NYLON
+    ════════════════════════════════════════ -->
+    <div class="exp-section">
+        <div class="exp-label-row">
+            <span class="exp-num">EXP_04</span>
+            <span class="exp-title">ARDERE NYLON</span>
+            <span class="exp-tag tag-red">TERMICĂ</span>
+            <div class="exp-rule"></div>
+        </div>
+        <div class="exp-body">
+            <div class="video-block" data-title="EXP_04 — ARDERE NYLON" data-type="video">
+                <video autoplay loop muted playsinline>
+                    <source src="video_ardere_nylon.mp4" type="video/mp4">
+                </video>
+                <div class="vscan"></div>
+                <div class="vc vc-tl"></div><div class="vc vc-tr"></div>
+                <div class="vc vc-bl"></div><div class="vc vc-br"></div>
+                <button class="fs-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="exp-sidebar">
+                <div class="desc-block">
+                    <div class="desc-heading">// DESCRIERE EXPERIMENT — COMPARAȚIE</div>
+                    <div class="desc-text">
+                        Nylonul (poliamidă alifatică) este expus la aceeași flacără. Spre deosebire de Kevlar, nylonul se <strong style="color:#ff9900;">topește și se contractă</strong> rapid, formând picături arzânde.
+                        <br><br>
+                        Punctul de topire al nylonului este ~220°C — de două ori mai mic decât temperatura de descompunere a Kevlarului. Comportamentul este complet diferit, confirmând superioritatea structurii aromatice din Kevlar.
+                    </div>
+                    <div class="desc-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">MATERIAL</span>
+                            <span class="stat-val">NYLON PA6</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">TEMP. TOPIRE</span>
+                            <span class="stat-val cyan">~220°C</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">COMPORTAMENT</span>
+                            <span class="stat-val" style="color:#ff5533;">SE TOPEȘTE ✗</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════════════════════════════════
+         EXP 05 — ARDERE BUMBAC
+    ════════════════════════════════════════ -->
+    <div class="exp-section">
+        <div class="exp-label-row">
+            <span class="exp-num">EXP_05</span>
+            <span class="exp-title">ARDERE BUMBAC</span>
+            <span class="exp-tag tag-red">TERMICĂ</span>
+            <div class="exp-rule"></div>
+        </div>
+        <div class="exp-body">
+            <div class="video-block" data-title="EXP_05 — ARDERE BUMBAC" data-type="video">
+                <video autoplay loop muted playsinline>
+                    <source src="video_ardere_bumbac.mp4" type="video/mp4">
+                </video>
+                <div class="vscan"></div>
+                <div class="vc vc-tl"></div><div class="vc vc-tr"></div>
+                <div class="vc vc-bl"></div><div class="vc vc-br"></div>
+                <button class="fs-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="exp-sidebar">
+                <div class="desc-block">
+                    <div class="desc-heading">// DESCRIERE EXPERIMENT — COMPARAȚIE</div>
+                    <div class="desc-text">
+                        Bumbacul arde <strong style="color:#ff5533;">continuu și rapid</strong>, fără autoextingere, producând flacără vizibilă și cenușă. Celuloza din bumbac este extrem de inflamabilă.
+                        <br><br>
+                        Comparând cele trei materiale, Kevlarul demonstrează o superioritate termică clară: carbonizare controlată vs. topire (Nylon) vs. ardere completă (Bumbac).
+                    </div>
+                    <div class="desc-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">MATERIAL</span>
+                            <span class="stat-val">BUMBAC</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">COMPORTAMENT</span>
+                            <span class="stat-val" style="color:#ff5533;">ARDERE ✗</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">AUTOEXTINGERE?</span>
+                            <span class="stat-val" style="color:#ff5533;">NU ✗</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end experiments-wrap -->
+
+<!-- FULLSCREEN OVERLAY -->
+<div class="fs-overlay" id="fs-overlay">
+    <button class="fs-close-btn" id="fs-close">✕</button>
+    <div class="fs-inner" id="fs-inner">
+        <div class="fs-corner-d fsc-tl"></div>
+        <div class="fs-corner-d fsc-tr"></div>
+        <div class="fs-corner-d fsc-bl"></div>
+        <div class="fs-corner-d fsc-br"></div>
+        <!-- content inserted by JS -->
+    </div>
+    <div class="fs-title-bar" id="fs-title-bar"></div>
+    <div class="fs-esc-hint">APASĂ ESC SAU ✕ PENTRU A IEȘI</div>
+</div>
+
+<script>
+/* ── SPIDER WEB CANVAS ── */
+(function(){
+    const c = document.getElementById('web-canvas');
+    const ctx = c.getContext('2d');
+    const nodes = Array.from({length:55}, ()=>({
+        x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight,
+        vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3
+    }));
+    function draw(){
+        c.width=window.innerWidth; c.height=window.innerHeight;
+        ctx.clearRect(0,0,c.width,c.height);
+        nodes.forEach(n=>{
+            n.x+=n.vx; n.y+=n.vy;
+            if(n.x<0||n.x>c.width) n.vx*=-1;
+            if(n.y<0||n.y>c.height) n.vy*=-1;
+        });
+        for(let i=0;i<nodes.length;i++) for(let j=i+1;j<nodes.length;j++){
+            const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+            const d=Math.hypot(dx,dy);
+            if(d<180){
+                ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y);
+                ctx.strokeStyle=`rgba(180,80,255,${(1-d/180)*.5})`; ctx.lineWidth=.5; ctx.stroke();
+            }
+        }
+        nodes.forEach(n=>{ ctx.beginPath(); ctx.arc(n.x,n.y,1.5,0,Math.PI*2); ctx.fillStyle='rgba(200,120,255,.6)'; ctx.fill(); });
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+/* ── SCROLL REVEAL ── */
+(function(){
+    const io = new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+            if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+    },{threshold:.08});
+    document.querySelectorAll('.exp-section').forEach(s=>io.observe(s));
+})();
+
+/* ── FULLSCREEN ── */
+(function(){
+    const overlay = document.getElementById('fs-overlay');
+    const inner   = document.getElementById('fs-inner');
+    const titleBar= document.getElementById('fs-title-bar');
+    const closeBtn= document.getElementById('fs-close');
+
+    function openMedia(src, title, isVideo){
+        // Clear previous
+        inner.querySelectorAll('video,img').forEach(el=>el.remove());
+        let el;
+        if(isVideo){
+            el = document.createElement('video');
+            el.autoplay = true; el.loop = true; el.muted = true; el.playsInline = true;
+            const s = document.createElement('source');
+            s.src = src; s.type = 'video/mp4';
+            el.appendChild(s);
+        } else {
+            el = document.createElement('img');
+            el.src = src; el.alt = title;
+        }
+        inner.appendChild(el);
+        titleBar.textContent = title;
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function close(){
+        overlay.classList.remove('active');
+        inner.querySelectorAll('video').forEach(v=>{ v.pause(); v.src=''; });
+        inner.querySelectorAll('video,img').forEach(el=>el.remove());
+        document.body.style.overflow='';
+    }
+
+    // Video fullscreen buttons
+    document.querySelectorAll('.video-block').forEach(block=>{
+        const src   = block.querySelector('source').src;
+        const title = block.dataset.title || '';
+        block.querySelector('.fs-btn').addEventListener('click', e=>{
+            e.stopPropagation(); openMedia(src, title, true);
+        });
+        block.addEventListener('click', ()=>openMedia(src, title, true));
+    });
+
+    // Photo fullscreen
+    document.querySelectorAll('.photo-item').forEach(item=>{
+        item.addEventListener('click', ()=>{
+            openMedia(item.dataset.src, item.dataset.title||'', false);
+        });
+    });
+
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', e=>{ if(e.target===overlay) close(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+})();
+</script>
+</body>
+</html>
