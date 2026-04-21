@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Molecular Architecture — PPTA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000a14;overflow:hidden;font-family:'Courier New',monospace;color:#e0e8f0;width:100vw;height:100vh}
+canvas#mol{position:absolute;inset:0;z-index:1}
+.hud{position:absolute;z-index:10;pointer-events:none}
+/* Title */
+.mol-title{top:25px;left:25px;font-size:0.55rem;letter-spacing:3px;color:rgba(0,212,255,0.5)}
+.mol-title h1{font-size:clamp(0.9rem,2vw,1.4rem);letter-spacing:4px;color:#00d4ff;text-shadow:0 0 15px rgba(0,212,255,0.4);margin:4px 0;font-weight:900}
+.mol-title .sub{color:rgba(0,255,136,0.6);font-size:0.55rem}
+/* Stats */
+.mol-stats{bottom:25px;left:25px;display:flex;flex-direction:column;gap:8px}
+.stat-row{display:flex;align-items:baseline;gap:8px;opacity:0;animation:statIn 0.6s ease forwards}
+.stat-row:nth-child(1){animation-delay:1s}
+.stat-row:nth-child(2){animation-delay:1.3s}
+.stat-row:nth-child(3){animation-delay:1.6s}
+.stat-row:nth-child(4){animation-delay:1.9s}
+.stat-row:nth-child(5){animation-delay:2.2s}
+@keyframes statIn{to{opacity:1}}
+.stat-label{font-size:0.45rem;letter-spacing:2px;color:rgba(0,212,255,0.6);min-width:80px}
+.stat-value{font-size:clamp(0.8rem,1.5vw,1.1rem);font-weight:900;color:#fff;text-shadow:0 0 8px rgba(0,212,255,0.3)}
+.stat-unit{font-size:0.5rem;color:rgba(255,255,255,0.4);margin-left:2px}
+/* Legend */
+.mol-legend{bottom:25px;right:25px;display:flex;flex-direction:column;gap:6px;font-size:0.45rem;letter-spacing:2px}
+.legend-item{display:flex;align-items:center;gap:6px;opacity:0;animation:statIn 0.6s ease forwards}
+.legend-item:nth-child(1){animation-delay:2.5s}
+.legend-item:nth-child(2){animation-delay:2.7s}
+.legend-item:nth-child(3){animation-delay:2.9s}
+.legend-item:nth-child(4){animation-delay:3.1s}
+.legend-dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 6px var(--c)}
+/* Scan overlay */
+.scan{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,212,255,0.01) 3px,rgba(0,212,255,0.01) 6px)}
+</style>
+</head>
+<body>
+<canvas id="mol"></canvas>
+<div class="scan"></div>
+
+<div class="hud mol-title">
+    <div>KEVLAR MOLECULAR STRUCTURE</div>
+    <h1>PPTA — POLY(P-PHENYLENE TEREPHTHALAMIDE)</h1>
+    <div class="sub">[-CO-C₆H₄-CO-NH-C₆H₄-NH-]ₙ</div>
+</div>
+
+<div class="hud mol-stats">
+    <div class="stat-row"><span class="stat-label">FORMULA</span><span class="stat-value">[-CO-C₆H₄-CO-NH-C₆H₄-NH-]<span class="stat-unit">ₙ</span></span></div>
+    <div class="stat-row"><span class="stat-label">CRYSTALLINITY</span><span class="stat-value">92.4<span class="stat-unit">%</span></span></div>
+    <div class="stat-row"><span class="stat-label">H-BOND</span><span class="stat-value">3.5<span class="stat-unit">Å</span></span></div>
+    <div class="stat-row"><span class="stat-label">TENSILE STR</span><span class="stat-value">3,620<span class="stat-unit">MPa</span></span></div>
+    <div class="stat-row"><span class="stat-label">DENSITY</span><span class="stat-value">1.44<span class="stat-unit">g/cm³</span></span></div>
+</div>
+
+<div class="hud mol-legend">
+    <div class="legend-item" style="--c:#333"><span class="legend-dot" style="background:#444"></span>CARBON (C)</div>
+    <div class="legend-item" style="--c:#4488ff"><span class="legend-dot" style="background:#4488ff"></span>NITROGEN (N)</div>
+    <div class="legend-item" style="--c:#ff4444"><span class="legend-dot" style="background:#ff4444"></span>OXYGEN (O)</div>
+    <div class="legend-item" style="--c:#ffffff"><span class="legend-dot" style="background:#ddd"></span>HYDROGEN (H)</div>
+</div>
+
+<script>
+const canvas = document.getElementById('mol');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+// PPTA monomer atoms (simplified but accurate topology)
+// Benzene ring 1 (terephthalic acid side)
+// Benzene ring 2 (p-phenylenediamine side)
+// Connected by amide bonds: -CO-NH-
+const ATOM_TYPES = {
+    C: { color: '#555555', glow: 'rgba(100,100,100,0.3)', r: 7 },
+    N: { color: '#4488ff', glow: 'rgba(68,136,255,0.5)', r: 6.5 },
+    O: { color: '#ff4444', glow: 'rgba(255,68,68,0.5)', r: 6 },
+    H: { color: '#dddddd', glow: 'rgba(255,255,255,0.3)', r: 4 }
+};
+
+// Build two repeating units
+function buildMolecule() {
+    const atoms = [];
+    const bonds = [];
+    const units = 2;
+    const spacing = 5.5;
+
+    for (let u = 0; u < units; u++) {
+        const ox = (u - (units-1)/2) * spacing;
+        const base = atoms.length;
+
+        // Benzene ring 1 (6 carbons in hexagonal arrangement)
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i - Math.PI / 6;
+            atoms.push({ type: 'C', x: ox + Math.cos(angle) * 1.2, y: Math.sin(angle) * 1.2, z: (Math.random()-0.5)*0.3 });
+        }
+        // Ring 1 bonds
+        for (let i = 0; i < 6; i++) bonds.push([base+i, base+(i+1)%6]);
+
+        // C=O (carbonyl)
+        atoms.push({ type: 'C', x: ox + 2.0, y: 0.3, z: 0.1 }); // C(=O)
+        atoms.push({ type: 'O', x: ox + 2.7, y: 1.1, z: 0.2 }); // =O
+        bonds.push([base+1, base+6]); // ring to C
+        bonds.push([base+6, base+7]); // C=O
+
+        // N-H (amide nitrogen)
+        atoms.push({ type: 'N', x: ox + 2.8, y: -0.3, z: -0.1 }); // N
+        atoms.push({ type: 'H', x: ox + 3.3, y: -1.0, z: -0.3 }); // H
+        bonds.push([base+6, base+8]); // C-N
+        bonds.push([base+8, base+9]); // N-H
+
+        // Benzene ring 2
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i + Math.PI / 6;
+            atoms.push({ type: 'C', x: ox + 4.2 + Math.cos(angle) * 1.2, y: Math.sin(angle) * 1.2, z: (Math.random()-0.5)*0.3 });
+        }
+        // Ring 2 bonds
+        for (let i = 0; i < 6; i++) bonds.push([base+10+i, base+10+(i+1)%6]);
+        bonds.push([base+8, base+10]); // N to ring2
+
+        // Second amide: NH-CO
+        atoms.push({ type: 'N', x: ox + 5.8, y: 0.3, z: 0.1 });
+        atoms.push({ type: 'H', x: ox + 6.3, y: 1.1, z: 0.2 });
+        atoms.push({ type: 'C', x: ox + 6.5, y: -0.2, z: -0.1 });
+        atoms.push({ type: 'O', x: ox + 7.2, y: -1.0, z: -0.2 });
+        bonds.push([base+11, base+16]); // ring2 to N
+        bonds.push([base+16, base+17]); // N-H
+        bonds.push([base+16, base+18]); // N-C(=O)
+        bonds.push([base+18, base+19]); // C=O
+
+        // Inter-unit bond
+        if (u > 0) {
+            const prevBase = base - 20;
+            bonds.push([prevBase + 18, base + 0]); // C(=O) to ring1
+        }
+
+        // Add some H atoms on rings for visual richness
+        for (let i = 2; i < 6; i += 2) {
+            const angle = (Math.PI / 3) * i - Math.PI / 6;
+            const hi = atoms.length;
+            atoms.push({ type: 'H', x: ox + Math.cos(angle) * 2.0, y: Math.sin(angle) * 2.0, z: (Math.random()-0.5)*0.2 });
+            bonds.push([base+i, hi]);
+        }
+        for (let i = 2; i < 6; i += 2) {
+            const angle = (Math.PI / 3) * i + Math.PI / 6;
+            const hi = atoms.length;
+            atoms.push({ type: 'H', x: ox + 4.2 + Math.cos(angle) * 2.0, y: Math.sin(angle) * 2.0, z: (Math.random()-0.5)*0.2 });
+            bonds.push([base+10+i, hi]);
+        }
+    }
+    return { atoms, bonds };
+}
+
+const mol = buildMolecule();
+let angle = 0;
+let tilt = 0.3;
+
+// Hydrogen bond dashes (inter-chain)
+const hBonds = [
+    { x1: -3, y1: 2.5, z1: 0, x2: -3, y2: 4, z2: 0 },
+    { x1: 1, y1: -2.5, z1: 0, x2: 1, y2: -4, z2: 0 },
+    { x1: 4, y1: 2.5, z1: 0, x2: 4, y2: 4, z2: 0 },
+];
+
+// Background particles
+const bgParts = Array.from({length:40}, () => ({
+    x: Math.random()*2-1, y: Math.random()*2-1, z: Math.random()*2-1,
+    s: Math.random()*1.5+0.3, a: Math.random()*0.3+0.05
+}));
+
+function project(x, y, z) {
+    // Rotate Y
+    const cosA = Math.cos(angle), sinA = Math.sin(angle);
+    let rx = x * cosA - z * sinA;
+    let rz = x * sinA + z * cosA;
+    // Rotate X (tilt)
+    const cosT = Math.cos(tilt), sinT = Math.sin(tilt);
+    let ry = y * cosT - rz * sinT;
+    rz = y * sinT + rz * cosT;
+    // Perspective
+    const fov = 8;
+    const scale = fov / (fov + rz + 5);
+    return { sx: W/2 + rx * scale * W * 0.06, sy: H/2 + ry * scale * H * 0.06, scale, depth: rz };
+}
+
+function render() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Dark gradient background
+    const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W,H)*0.7);
+    grad.addColorStop(0, '#001422');
+    grad.addColorStop(1, '#000508');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(0,212,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let i = -10; i <= 10; i++) {
+        const p1 = project(i, 5, -10);
+        const p2 = project(i, 5, 10);
+        ctx.beginPath(); ctx.moveTo(p1.sx, p1.sy); ctx.lineTo(p2.sx, p2.sy); ctx.stroke();
+        const p3 = project(-10, 5, i);
+        const p4 = project(10, 5, i);
+        ctx.beginPath(); ctx.moveTo(p3.sx, p3.sy); ctx.lineTo(p4.sx, p4.sy); ctx.stroke();
+    }
+
+    // Background particles
+    for (const p of bgParts) {
+        const pp = project(p.x*8, p.y*8, p.z*8);
+        ctx.beginPath();
+        ctx.arc(pp.sx, pp.sy, p.s * pp.scale, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(0,212,255,${p.a * pp.scale})`;
+        ctx.fill();
+    }
+
+    // Collect all renderable items with depth for sorting
+    const items = [];
+
+    // Bonds
+    for (const [i, j] of mol.bonds) {
+        const a = mol.atoms[i], b = mol.atoms[j];
+        const pa = project(a.x, a.y, a.z);
+        const pb = project(b.x, b.y, b.z);
+        items.push({ type: 'bond', pa, pb, depth: (pa.depth + pb.depth) / 2 });
+    }
+
+    // H-bonds (dashed)
+    for (const hb of hBonds) {
+        const pa = project(hb.x1, hb.y1, hb.z1);
+        const pb = project(hb.x2, hb.y2, hb.z2);
+        items.push({ type: 'hbond', pa, pb, depth: (pa.depth + pb.depth) / 2 });
+    }
+
+    // Atoms
+    for (const atom of mol.atoms) {
+        const p = project(atom.x, atom.y, atom.z);
+        const info = ATOM_TYPES[atom.type];
+        items.push({ type: 'atom', p, info, depth: p.depth });
+    }
+
+    // Sort by depth (back to front)
+    items.sort((a, b) => a.depth - b.depth);
+
+    // Draw
+    for (const item of items) {
+        if (item.type === 'bond') {
+            ctx.beginPath();
+            ctx.moveTo(item.pa.sx, item.pa.sy);
+            ctx.lineTo(item.pb.sx, item.pb.sy);
+            ctx.strokeStyle = `rgba(100,180,220,${0.4 * Math.min(item.pa.scale, 1)})`;
+            ctx.lineWidth = 2 * Math.min(item.pa.scale + 0.3, 1.5);
+            ctx.stroke();
+        } else if (item.type === 'hbond') {
+            ctx.setLineDash([4, 6]);
+            ctx.beginPath();
+            ctx.moveTo(item.pa.sx, item.pa.sy);
+            ctx.lineTo(item.pb.sx, item.pb.sy);
+            ctx.strokeStyle = 'rgba(0,255,136,0.25)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.setLineDash([]);
+        } else if (item.type === 'atom') {
+            const r = item.info.r * item.p.scale;
+            // Glow
+            const grd = ctx.createRadialGradient(item.p.sx, item.p.sy, 0, item.p.sx, item.p.sy, r * 3);
+            grd.addColorStop(0, item.info.glow);
+            grd.addColorStop(1, 'transparent');
+            ctx.fillStyle = grd;
+            ctx.fillRect(item.p.sx - r*3, item.p.sy - r*3, r*6, r*6);
+            // Sphere
+            const sGrad = ctx.createRadialGradient(item.p.sx - r*0.3, item.p.sy - r*0.3, 0, item.p.sx, item.p.sy, r);
+            sGrad.addColorStop(0, '#ffffff');
+            sGrad.addColorStop(0.3, item.info.color);
+            sGrad.addColorStop(1, 'rgba(0,0,0,0.5)');
+            ctx.beginPath();
+            ctx.arc(item.p.sx, item.p.sy, r, 0, Math.PI * 2);
+            ctx.fillStyle = sGrad;
+            ctx.fill();
+        }
+    }
+
+    angle += 0.004;
+    tilt = 0.3 + Math.sin(angle * 0.5) * 0.1;
+    requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEVIN AI — ADVANCED MATERIAL COMPARISON</title>
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.7.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+    }}
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="comparison-3d.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="load-content">
+            <div class="load-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" class="ring-bg"/><circle cx="50" cy="50" r="45" class="ring-fill"/></svg></div>
+            <div class="load-title">KEVIN AI — MATERIAL ANALYSIS</div>
+            <div class="load-bar"><div class="load-fill"></div></div>
+            <div class="load-sub">WEBGL 2.0 • CINEMATIC BLOOM • AI CORE • RTX ENVIRONMENT</div>
+            <div class="load-percent" id="load-pct">0%</div>
+        </div>
+    </div>
+
+    <canvas id="main-canvas"></canvas>
+
+    <!-- Fullscreen monitor overlay (when clicking monitor) -->
+    <div id="monitor-overlay">
+        <div id="monitor-fullscreen">
+            <canvas id="monitor-fs-canvas" style="display:none;"></canvas>
+            <div id="kevin-os-container" style="width:100%;height:100%;position:relative;"></div>
+            <div id="monitor-close">✕ CLOSE</div>
+        </div>
+    </div>
+
+    <div id="ui-layer">
+        <!-- ═══ RGB HUD MATERIAL CARDS ═══ -->
+        <div id="rgb-hud-overlay">
+            <div class="hud-grid-bg"></div>
+            <div class="hud-scanlines"></div>
+            <div id="hud-particles" class="hud-particles"></div>
+
+            <div class="hud-header">
+                <div class="hud-header-title">◈ MATERIAL ANALYSIS SYSTEM — KEVIN HUD v4.2 ◈</div>
+                <div class="hud-divider"></div>
+            </div>
+
+            <div class="hud-cards">
+                <!-- STEEL CARD -->
+                <div class="hud-card steel">
+                    <div class="hud-card-corner tl"></div><div class="hud-card-corner tr"></div>
+                    <div class="hud-card-corner bl"></div><div class="hud-card-corner br"></div>
+                    <div class="hud-card-label"><div class="hud-dot"></div><span>STEEL (FE)</span></div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">DENSITY</div>
+                        <div class="hud-stat-val">7.85 g/cm³</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:58%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">TENSILE STRENGTH</div>
+                        <div class="hud-stat-val">400 MPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:10%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">ELASTIC MODULUS</div>
+                        <div class="hud-stat-val">210 GPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:100%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                </div>
+
+                <!-- KEVLAR CARD -->
+                <div class="hud-card kevlar">
+                    <div class="hud-card-corner tl"></div><div class="hud-card-corner tr"></div>
+                    <div class="hud-card-corner bl"></div><div class="hud-card-corner br"></div>
+                    <div class="hud-card-label"><div class="hud-dot"></div><span>KEVLAR (ARAMID)</span></div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">DENSITY</div>
+                        <div class="hud-stat-val">1.44 g/cm³</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:11%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">TENSILE STRENGTH</div>
+                        <div class="hud-stat-val">3620 MPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:100%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">ELASTIC MODULUS</div>
+                        <div class="hud-stat-val">130 GPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:62%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                </div>
+
+                <!-- ALUMINUM CARD -->
+                <div class="hud-card al">
+                    <div class="hud-card-corner tl"></div><div class="hud-card-corner tr"></div>
+                    <div class="hud-card-corner bl"></div><div class="hud-card-corner br"></div>
+                    <div class="hud-card-label"><div class="hud-dot"></div><span>ALUMINUM (AL)</span></div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">DENSITY</div>
+                        <div class="hud-stat-val">2.70 g/cm³</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:20%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">TENSILE STRENGTH</div>
+                        <div class="hud-stat-val">600 MPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:16%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                    <div class="hud-stat-row">
+                        <div class="hud-stat-label">ELASTIC MODULUS</div>
+                        <div class="hud-stat-val">70 GPa</div>
+                        <div class="hud-bar-track"><div class="hud-bar-fill" style="--w:33%"></div><div class="hud-bar-scan"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hud-footer">▸ CLICK MODELS TO ANALYZE &nbsp;◈&nbsp; KEVIN ROBOTIC SYSTEM ACTIVE</div>
+        </div>
+
+        <!-- ═══ LEFT PANEL: MATERIAL COMPARISON ═══ -->
+        <div id="left-comparison-panel">
+          <div class="lcp-inner">
+            <div class="lcp-status-bar">
+              <span class="lcp-status"><span class="lcp-blink g"></span>SYSTEM ONLINE</span>
+              <span class="lcp-status"><span class="lcp-blink g"></span>ANALYSIS ACTIVE</span>
+              <span class="lcp-status" id="lcp-clock">00:00:00</span>
+              <span class="lcp-status"><span class="lcp-blink r"></span>LIVE DATA</span>
+            </div>
+            <div class="lcp-header">
+              <div class="lcp-tag">// ADVANCED MATERIALS INTELLIGENCE v4.2 //</div>
+              <div class="lcp-title">MATERIAL COMPARISON</div>
+              <div class="lcp-sub">STEEL &nbsp;·&nbsp; KEVLAR &nbsp;·&nbsp; ALUMINIUM</div>
+            </div>
+            <div class="lcp-divider"></div>
+            <div class="lcp-cards">
+              <div class="lcp-card steel">
+                <div class="lcp-cname">STEEL</div>
+                <div class="lcp-chem">Fe · C · Mn · Si</div>
+                <div class="lcp-row"><span class="lcp-rl">Density</span><span class="lcp-rv" id="lcs1">7.85 g/cm³</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Tensile</span><span class="lcp-rv" id="lcs2">400 MPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Elasticity</span><span class="lcp-rv" id="lcs3">200 GPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Impact</span><span class="lcp-rv" id="lcs4">30 J/m²</span></div>
+              </div>
+              <div class="lcp-card kevlar">
+                <div class="lcp-cname">KEVLAR</div>
+                <div class="lcp-chem">C₁₄H₁₀N₂O₂ · Aramid</div>
+                <div class="lcp-row"><span class="lcp-rl">Density</span><span class="lcp-rv" id="lck1">1.44 g/cm³</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Tensile</span><span class="lcp-rv" id="lck2">3620 MPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Elasticity</span><span class="lcp-rv" id="lck3">70 GPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Impact</span><span class="lcp-rv" id="lck4">3060 J/m²</span></div>
+              </div>
+              <div class="lcp-card aluminum">
+                <div class="lcp-cname">ALUMINIUM</div>
+                <div class="lcp-chem">Al · Mg · Si · Cu</div>
+                <div class="lcp-row"><span class="lcp-rl">Density</span><span class="lcp-rv" id="lca1">2.71 g/cm³</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Tensile</span><span class="lcp-rv" id="lca2">270 MPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Elasticity</span><span class="lcp-rv" id="lca3">69 GPa</span></div>
+                <div class="lcp-row"><span class="lcp-rl">Impact</span><span class="lcp-rv" id="lca4">131 J/m²</span></div>
+              </div>
+            </div>
+            <div class="lcp-divider"></div>
+            <div class="lcp-bars-section">
+              <div class="lcp-section-title">TENSILE STRENGTH (MPa)</div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot s"></span>Steel</span><span class="lcp-bval s">400</span></div>
+              <div class="lcp-track"><div class="lcp-fill s" style="--bw:11%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot k"></span>Kevlar</span><span class="lcp-bval k">3620</span></div>
+              <div class="lcp-track"><div class="lcp-fill k" style="--bw:100%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot a"></span>Aluminium</span><span class="lcp-bval a">270</span></div>
+              <div class="lcp-track"><div class="lcp-fill a" style="--bw:7.5%"></div></div>
+            </div>
+            <div class="lcp-bars-section">
+              <div class="lcp-section-title">IMPACT RESISTANCE (J/m²)</div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot s"></span>Steel</span><span class="lcp-bval s">30</span></div>
+              <div class="lcp-track"><div class="lcp-fill s" style="--bw:1%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot k"></span>Kevlar</span><span class="lcp-bval k">3060</span></div>
+              <div class="lcp-track"><div class="lcp-fill k" style="--bw:100%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot a"></span>Aluminium</span><span class="lcp-bval a">131</span></div>
+              <div class="lcp-track"><div class="lcp-fill a" style="--bw:4.3%"></div></div>
+            </div>
+            <div class="lcp-bars-section">
+              <div class="lcp-section-title">ELASTIC MODULUS (GPa)</div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot s"></span>Steel</span><span class="lcp-bval s">200</span></div>
+              <div class="lcp-track"><div class="lcp-fill s" style="--bw:100%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot k"></span>Kevlar</span><span class="lcp-bval k">70</span></div>
+              <div class="lcp-track"><div class="lcp-fill k" style="--bw:35%"></div></div>
+              <div class="lcp-bar-row"><span class="lcp-bname"><span class="lcp-dot a"></span>Aluminium</span><span class="lcp-bval a">69</span></div>
+              <div class="lcp-track"><div class="lcp-fill a" style="--bw:34.5%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="monitor-status"><div class="ms-dot"></div><span id="monitor-status-text">AI CORE: SCANNING</span></div>
+        <div id="click-hint"><span>▶ CLICK MODELS TO ANALYZE • CLICK MONITOR TO INTERACT</span></div>
+    </div>
+
+    <script type="module" src="comparison-3d.js"></script>
+    <script>
+    // Spawn HUD floating particles
+    const hudColors=['#00e5ff','#ffd000','#ff2d78','#bf5fff','#00ffaa'];
+    const pc=document.getElementById('hud-particles');
+    if(pc){for(let i=0;i<22;i++){
+      const p=document.createElement('div');p.className='hud-particle';
+      const col=hudColors[i%hudColors.length];
+      p.style.cssText=`left:${Math.random()*100}%;background:${col};box-shadow:0 0 4px ${col};--drift:${(Math.random()-.5)*50}px;animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*6}s`;
+      pc.appendChild(p);
+    }}
+    // Left panel live clock
+    function lcpTick(){
+      const now=new Date();
+      const t=[now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+      const el=document.getElementById('lcp-clock');if(el)el.textContent=t;
+    }
+    lcpTick();setInterval(lcpTick,1000);
+    </script>
+</body>
+</html>

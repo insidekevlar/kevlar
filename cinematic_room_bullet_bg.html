@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;}
+#w{width:100%;height:100vh;position:relative;overflow:hidden;background:#000;}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+</style>
+</head>
+<body>
+<div id="w"><canvas id="c"></canvas></div>
+<script>
+const wrap=document.getElementById('w');
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let W,H,t=0;
+
+function resize(){W=wrap.clientWidth;H=wrap.clientHeight;canvas.width=W;canvas.height=H;}
+
+// Dust particles
+const dust=Array.from({length:80},()=>({
+  x:Math.random()*1,y:Math.random(),vx:(Math.random()-.5)*.0003,vy:-Math.random()*.0002-.0001,
+  r:Math.random()*1.5+.3,a:Math.random()*.5+.1
+}));
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, floor=H*.72, vanishY=H*.28, tableW=W*.55, tableH=H*.07;
+  const tableTop=floor-tableH, tableLeft=cx-tableW/2, tableRight=cx+tableW/2;
+
+  // ── ROOM BACKGROUND ──
+  // Back wall
+  const wall=ctx.createLinearGradient(0,0,0,floor);
+  wall.addColorStop(0,'#06080f');
+  wall.addColorStop(.5,'#0a101c');
+  wall.addColorStop(1,'#0d1420');
+  ctx.fillStyle=wall; ctx.fillRect(0,0,W,floor);
+
+  // Floor
+  const floorG=ctx.createLinearGradient(0,floor,0,H);
+  floorG.addColorStop(0,'#0c1118'); floorG.addColorStop(1,'#050810');
+  ctx.fillStyle=floorG; ctx.fillRect(0,floor,W,H-floor);
+
+  // Floor-wall seam
+  ctx.strokeStyle='rgba(0,180,255,0.06)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,floor); ctx.lineTo(W,floor); ctx.stroke();
+
+  // ── PERSPECTIVE FLOOR LINES ──
+  ctx.save();
+  ctx.strokeStyle='rgba(0,150,220,0.04)'; ctx.lineWidth=.8;
+  for(let i=0;i<=8;i++){
+    const x=W*.1+i*(W*.8/8);
+    ctx.beginPath(); ctx.moveTo(cx,floor); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let row=0;row<=5;row++){
+    const fy=floor+row*(H-floor)/5;
+    const shrink=1-(fy-floor)/(H-floor)*.7;
+    ctx.beginPath(); ctx.moveTo(cx-W*.4*shrink,fy); ctx.lineTo(cx+W*.4*shrink,fy); ctx.stroke();
+  }
+  ctx.restore();
+
+  // ── WALL PANEL LINES (subtle architecture) ──
+  ctx.save();
+  ctx.strokeStyle='rgba(0,100,160,0.055)'; ctx.lineWidth=.6;
+  [-W*.28,-W*.1,W*.1,W*.28].forEach(ox=>{
+    ctx.beginPath(); ctx.moveTo(cx+ox,H*.05); ctx.lineTo(cx+ox,floor); ctx.stroke();
+  });
+  ctx.beginPath(); ctx.moveTo(0,H*.55); ctx.lineTo(W,H*.55); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,H*.12); ctx.lineTo(W,H*.12); ctx.stroke();
+  ctx.restore();
+
+  // ── CEILING LIGHT / SPOTLIGHT ──
+  const spotA=Math.sin(t*.008)*.015;
+  const spotCX=cx+Math.sin(t*.005)*W*.01;
+  const lightG=ctx.createRadialGradient(spotCX,H*.0,0,spotCX,H*.0,H*.85);
+  lightG.addColorStop(0,'rgba(180,230,255,0.13)');
+  lightG.addColorStop(.18,'rgba(0,180,255,0.07)');
+  lightG.addColorStop(.4,'rgba(0,100,200,0.03)');
+  lightG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=lightG; ctx.fillRect(0,0,W,H);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(spotCX-18,0);
+  ctx.lineTo(spotCX-W*.26,tableTop+5);
+  ctx.lineTo(spotCX+W*.26,tableTop+5);
+  ctx.lineTo(spotCX+18,0);
+  ctx.closePath();
+  const coneG=ctx.createLinearGradient(0,0,0,tableTop);
+  coneG.addColorStop(0,'rgba(100,210,255,0.09)');
+  coneG.addColorStop(.6,'rgba(0,160,255,0.04)');
+  coneG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=coneG; ctx.fill();
+  ctx.restore();
+
+  // Lamp fixture
+  ctx.save();
+  ctx.fillStyle='rgba(200,220,255,0.7)';
+  ctx.shadowColor='rgba(100,220,255,1)'; ctx.shadowBlur=30;
+  ctx.beginPath(); ctx.ellipse(spotCX,8,22,5,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.beginPath(); ctx.ellipse(spotCX,8,10,3,0,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // ── TABLE ──
+  ctx.save();
+  const tsurf=ctx.createLinearGradient(tableLeft,tableTop,tableLeft,tableTop+tableH*.4);
+  tsurf.addColorStop(0,'#1a2535'); tsurf.addColorStop(.5,'#131d2b'); tsurf.addColorStop(1,'#0e1520');
+  ctx.fillStyle=tsurf;
+  ctx.beginPath();
+  ctx.moveTo(tableLeft-W*.04,tableTop);
+  ctx.lineTo(tableRight+W*.04,tableTop);
+  ctx.lineTo(tableRight+W*.02,tableTop+tableH*.35);
+  ctx.lineTo(tableLeft-W*.02,tableTop+tableH*.35);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle='rgba(0,200,255,0.18)'; ctx.lineWidth=1.2;
+  ctx.shadowColor='rgba(0,200,255,0.5)'; ctx.shadowBlur=12;
+  ctx.beginPath();
+  ctx.moveTo(tableLeft-W*.04,tableTop);
+  ctx.lineTo(tableRight+W*.04,tableTop);
+  ctx.stroke();
+  const tface=ctx.createLinearGradient(0,tableTop+tableH*.35,0,floor);
+  tface.addColorStop(0,'#101820'); tface.addColorStop(1,'#070d15');
+  ctx.fillStyle=tface;
+  ctx.beginPath();
+  ctx.moveTo(tableLeft-W*.02,tableTop+tableH*.35);
+  ctx.lineTo(tableRight+W*.02,tableTop+tableH*.35);
+  ctx.lineTo(tableRight+W*.015,floor);
+  ctx.lineTo(tableLeft-W*.015,floor);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle='rgba(0,120,180,0.04)'; ctx.lineWidth=.5;
+  for(let g=0;g<5;g++){
+    const gy=tableTop+tableH*.35+(floor-(tableTop+tableH*.35))*g/5;
+    ctx.beginPath(); ctx.moveTo(tableLeft-W*.02,gy); ctx.lineTo(tableRight+W*.02,gy); ctx.stroke();
+  }
+  ctx.restore();
+
+  ctx.save();
+  const refG=ctx.createRadialGradient(cx,tableTop+2,0,cx,tableTop+2,W*.3);
+  refG.addColorStop(0,'rgba(0,220,255,0.07)'); refG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=refG; ctx.fillRect(tableLeft-W*.05,tableTop,tableW+W*.1,tableH*.4);
+  ctx.restore();
+
+  // ── BULLET ON TABLE ──
+  const bx=cx+W*.04, by=tableTop-1;
+  const bw=W*.085, bh=H*.032;
+  const bAngle=-.08+Math.sin(t*.003)*.002;
+  ctx.save();
+  ctx.translate(bx,by);
+  ctx.rotate(bAngle);
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  ctx.beginPath(); ctx.ellipse(0,bh*.6,bw*.42,bh*.22,0,0,Math.PI*2); ctx.fill();
+  ctx.shadowColor='rgba(0,229,255,0.6)'; ctx.shadowBlur=35;
+  const caseG=ctx.createLinearGradient(-bw*.4,-bh*.5,-bw*.4,bh*.5);
+  caseG.addColorStop(0,'rgba(200,170,60,0.9)');
+  caseG.addColorStop(.35,'rgba(255,210,80,0.98)');
+  caseG.addColorStop(.65,'rgba(180,140,40,0.9)');
+  caseG.addColorStop(1,'rgba(100,80,20,0.8)');
+  ctx.fillStyle=caseG;
+  ctx.beginPath();
+  ctx.roundRect(-bw*.5,-bh*.45,bw*.6,bh*.9,bh*.08);
+  ctx.fill();
+  ctx.beginPath(); ctx.arc(-bw*.44,0,bh*.22,0,Math.PI*2);
+  ctx.fillStyle='rgba(130,100,30,0.9)'; ctx.shadowBlur=0; ctx.fill();
+  ctx.beginPath(); ctx.arc(-bw*.44,0,bh*.1,0,Math.PI*2);
+  ctx.fillStyle='rgba(60,45,10,1)'; ctx.fill();
+  ctx.shadowColor='rgba(0,229,255,0.9)'; ctx.shadowBlur=25;
+  ctx.beginPath();
+  ctx.moveTo(bw*.1,-bh*.45);
+  ctx.bezierCurveTo(bw*.45,-bh*.45,bw*.65,-bh*.18,bw*.65,0);
+  ctx.bezierCurveTo(bw*.65,bh*.18,bw*.45,bh*.45,bw*.1,bh*.45);
+  ctx.closePath();
+  const tipG=ctx.createLinearGradient(bw*.1,0,bw*.65,0);
+  tipG.addColorStop(0,'rgba(210,210,230,0.95)');
+  tipG.addColorStop(.4,'rgba(180,190,220,0.9)');
+  tipG.addColorStop(1,'rgba(80,90,120,0.85)');
+  ctx.fillStyle=tipG; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(bw*.15,-bh*.28); ctx.lineTo(bw*.5,-bh*.18);
+  ctx.strokeStyle='rgba(255,255,255,0.45)'; ctx.lineWidth=1.5; ctx.shadowBlur=6; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-bw*.42,-bh*.3); ctx.lineTo(bw*.08,-bh*.3);
+  ctx.strokeStyle='rgba(255,230,120,0.35)'; ctx.lineWidth=1.2; ctx.shadowBlur=4; ctx.stroke();
+  ctx.restore();
+
+  ctx.save(); ctx.globalAlpha=.18;
+  ctx.translate(bx,by+bh*1.1);
+  ctx.scale(1,-0.25);
+  ctx.rotate(bAngle);
+  const refBG=ctx.createLinearGradient(-bw*.5,0,bw*.65,0);
+  refBG.addColorStop(0,'rgba(200,160,50,0.6)');refBG.addColorStop(.5,'rgba(180,185,210,0.5)');refBG.addColorStop(1,'rgba(80,90,120,0.4)');
+  ctx.fillStyle=refBG;
+  ctx.beginPath(); ctx.roundRect(-bw*.5,-bh*.45,bw*1.15,bh*.9,bh*.08); ctx.fill();
+  ctx.restore();
+
+  // ── AMBIENT PARTICLES / DUST ──
+  dust.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<0)p.y=1; if(p.x<0)p.x=1; if(p.x>1)p.x=0;
+    const px=p.x*W, py=p.y*H;
+    const distToSpot=Math.abs(px-spotCX)/W;
+    const inLight=(py<tableTop+30&&distToSpot<.28)?1:0;
+    ctx.save();
+    ctx.globalAlpha=p.a*(inLight?.9:.2);
+    ctx.shadowColor='rgba(100,220,255,0.8)'; ctx.shadowBlur=inLight?8:0;
+    ctx.fillStyle=inLight?'rgba(200,240,255,0.9)':'rgba(100,160,200,0.4)';
+    ctx.beginPath(); ctx.arc(px,py,p.r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+
+  // ── CYAN AMBIENT GLOW CORNERS ──
+  ctx.save();
+  const lg=ctx.createRadialGradient(0,H,0,0,H,W*.4);
+  lg.addColorStop(0,'rgba(0,100,180,0.08)'); lg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=lg; ctx.fillRect(0,0,W,H);
+  const rg2=ctx.createRadialGradient(W,0,0,W,0,W*.35);
+  rg2.addColorStop(0,'rgba(0,60,120,0.06)'); rg2.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=rg2; ctx.fillRect(0,0,W,H);
+  ctx.restore();
+
+  // ── VIGNETTE ──
+  const vig=ctx.createRadialGradient(cx,H*.5,H*.2,cx,H*.5,H*.85);
+  vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(1,'rgba(0,0,0,0.82)');
+  ctx.fillStyle=vig; ctx.fillRect(0,0,W,H);
+
+  // Scanlines
+  for(let y=0;y<H;y+=3){ctx.fillStyle='rgba(0,0,0,0.055)';ctx.fillRect(0,y,W,1);}
+
+  t++; requestAnimationFrame(draw);
+}
+
+resize(); draw();
+window.addEventListener('resize',()=>{resize();});
+</script>
+</body>
+</html>
