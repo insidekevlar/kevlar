@@ -2100,9 +2100,15 @@ function launchBallisticTest() {
         if (label) label.textContent = Math.round(integrity) + '%';
         if (status) {
             if (integrity <= 0) {
-                status.textContent = '⚠ MATERIAL RUPT!';
+                status.textContent = '⚠ MATERIAL BROKEN!';
                 status.className = 'break-status broken';
-                broken = true;
+                if (!broken) {
+                    broken = true;
+                    ['break-force', 'break-temp', 'break-ph', 'break-uv'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) { el.disabled = true; el.style.opacity = '0.3'; el.style.cursor = 'not-allowed'; }
+                    });
+                }
             } else if (integrity < 30) {
                 status.textContent = '⚠ CRITICAL DEGRADATION';
                 status.className = 'break-status danger';
@@ -2173,7 +2179,12 @@ function launchBallisticTest() {
     document.getElementById('break-reset')?.addEventListener('click', () => {
         ['break-force', 'break-temp', 'break-ph', 'break-uv'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.value = id === 'break-temp' ? 20 : id === 'break-ph' ? 7 : 0;
+            if (el) {
+                el.value = id === 'break-temp' ? 20 : id === 'break-ph' ? 7 : 0;
+                el.disabled = false;
+                el.style.opacity = '';
+                el.style.cursor = '';
+            }
         });
         integrity = 100;
         broken = false;

@@ -19,7 +19,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=3">
     <style>
         /* ── SCROLL REVEAL ANIMATIONS ── */
         .scroll-reveal {
@@ -709,7 +709,7 @@
     <!-- Main Content -->
     <div class="content-wrapper">
         <!-- Hero Section -->
-        <section class="content-section hero-section">
+        <section class="content-section hero-section" data-kevin-context="kevlar-structure">
             <div class="hero-content">
                 <div class="data-stream">[KEVLAR_INIT] // MOLECULAR_SYSTEMS // ENGAGED</div>
 
@@ -872,7 +872,7 @@
 
 
         <!-- Steel Comparison Section -->
-        <section id="comparison-section" class="content-section comparison-section hidden">
+        <section id="comparison-section" class="content-section comparison-section hidden" data-kevin-context="tensile-strength">
             <div class="section-content">
                 <div class="data-stream">[COMPARISON] // KEVLAR_VS_MATERIALS_3D</div>
                 <h2 class="military-text section-title gold-glow">KEVLAR VS STEEL VS ALUMINUM</h2>
@@ -960,6 +960,96 @@
                         </div>
                     </div>
                 </div>
+                    <!-- ╔══════════════════════════════════════╗ -->
+                    <!-- ║  BALLISTIC SIMULATION INTERACTIVE    ║ -->
+                    <!-- ╚══════════════════════════════════════╝ -->
+                    <div class="ballistic-sim-wrapper tactical-border" data-kevin-context="ballistic-impact">
+                        <div class="data-stream" style="text-align:center; margin-bottom:0.75rem;">
+                            [BALLISTIC_SIMULATION] // INTERACTIVE_IMPACT_TEST // REAL_TIME
+                        </div>
+                        <h3 class="military-text ballistic-sim-title rgb-text">⚡ BALLISTIC IMPACT TEST</h3>
+                        <p class="ballistic-sim-subtitle">Press the button to visualize kinetic energy dissipation in
+                            real time</p>
+
+                        <div class="ballistic-panels">
+
+                            <!-- KEVLAR PANEL -->
+                            <div class="ballistic-panel">
+                                <div class="ballistic-mat-label military-text gold">
+                                    <span class="mat-dot gold-dot"></span>KEVLAR 3D MESH
+                                </div>
+                                <div class="ballistic-canvas-wrapper">
+                                    <canvas id="kevlar-impact-canvas" class="ballistic-canvas"></canvas>
+                                    <div class="bcan-corner tl"></div>
+                                    <div class="bcan-corner tr"></div>
+                                    <div class="bcan-corner bl"></div>
+                                    <div class="bcan-corner br"></div>
+                                </div>
+                                <div id="kevlar-impact-result" class="ballistic-result"></div>
+                                <div class="ballistic-data-row">
+                                    <span class="bdata-item gold">NIJ: IIIA+</span>
+                                    <span class="bdata-sep">|</span>
+                                    <span class="bdata-item gold">490 m/s</span>
+                                    <span class="bdata-sep">|</span>
+                                    <span class="bdata-item gold">1.44 g/cm³</span>
+                                </div>
+                            </div>
+
+                            <!-- CENTER CONTROLS -->
+                            <div class="ballistic-center-col">
+                                <div class="bullet-info-box">
+                                    <div class="military-text"
+                                        style="font-size:0.65rem; color:#888; letter-spacing:2px; margin-bottom:0.5rem;">
+                                        PROJECTILE</div>
+                                    <div class="bullet-icon">🎯</div>
+                                    <div class="military-text" style="font-size:0.9rem; color:#ffd700;">9mm FMJ</div>
+                                    <div
+                                        style="font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#aaa; margin-top:0.25rem;">
+                                        v₀ = 370 m/s</div>
+                                </div>
+
+                                <button id="test-impact-btn" class="rgb-glow-btn primary-btn ballistic-fire-btn">
+                                    <span class="btn-text">FIRE TEST IMPACT</span>
+                                    <span class="btn-glow"></span>
+                                    <span class="btn-rgb-border"></span>
+                                </button>
+
+                                <div class="kinetic-meter">
+                                    <div class="military-text km-label">KINETIC ENERGY</div>
+                                    <div class="km-bar-outer">
+                                        <div id="kinetic-bar" class="km-bar-inner"></div>
+                                    </div>
+                                    <div id="kinetic-value" class="km-value gold">1,800 J</div>
+                                </div>
+
+                                <div id="impact-phase-label" class="impact-phase-label">STANDBY</div>
+                            </div>
+
+                            <!-- STEEL PANEL -->
+                            <div class="ballistic-panel">
+                                <div class="ballistic-mat-label military-text" style="color:#aaa;">
+                                    <span class="mat-dot steel-dot"></span>STEEL 10mm
+                                </div>
+                                <div class="ballistic-canvas-wrapper">
+                                    <canvas id="steel-impact-canvas" class="ballistic-canvas"></canvas>
+                                    <div class="bcan-corner tl"></div>
+                                    <div class="bcan-corner tr"></div>
+                                    <div class="bcan-corner bl"></div>
+                                    <div class="bcan-corner br"></div>
+                                </div>
+                                <div id="steel-impact-result" class="ballistic-result"></div>
+                                <div class="ballistic-data-row">
+                                    <span class="bdata-item" style="color:#aaa;">NIJ: —</span>
+                                    <span class="bdata-sep">|</span>
+                                    <span class="bdata-item" style="color:#aaa;">7.85 g/cm³</span>
+                                    <span class="bdata-sep">|</span>
+                                    <span class="bdata-item" style="color:#aaa;">400 MPa</span>
+                                </div>
+                            </div>
+
+                        </div><!-- /.ballistic-panels -->
+                    </div><!-- /.ballistic-sim-wrapper -->
+
 
                 <!-- VIDEO SECTION -->
                 <div class="video-intelligence-wrapper">
@@ -1123,95 +1213,6 @@
                         </div>
                     </div>
 
-                    <!-- ╔══════════════════════════════════════╗ -->
-                    <!-- ║  BALLISTIC SIMULATION INTERACTIVE    ║ -->
-                    <!-- ╚══════════════════════════════════════╝ -->
-                    <div class="ballistic-sim-wrapper tactical-border">
-                        <div class="data-stream" style="text-align:center; margin-bottom:0.75rem;">
-                            [BALLISTIC_SIMULATION] // INTERACTIVE_IMPACT_TEST // REAL_TIME
-                        </div>
-                        <h3 class="military-text ballistic-sim-title rgb-text">⚡ BALLISTIC IMPACT TEST</h3>
-                        <p class="ballistic-sim-subtitle">Press the button to visualize kinetic energy dissipation in
-                            real time</p>
-
-                        <div class="ballistic-panels">
-
-                            <!-- KEVLAR PANEL -->
-                            <div class="ballistic-panel">
-                                <div class="ballistic-mat-label military-text gold">
-                                    <span class="mat-dot gold-dot"></span>KEVLAR 3D MESH
-                                </div>
-                                <div class="ballistic-canvas-wrapper">
-                                    <canvas id="kevlar-impact-canvas" class="ballistic-canvas"></canvas>
-                                    <div class="bcan-corner tl"></div>
-                                    <div class="bcan-corner tr"></div>
-                                    <div class="bcan-corner bl"></div>
-                                    <div class="bcan-corner br"></div>
-                                </div>
-                                <div id="kevlar-impact-result" class="ballistic-result"></div>
-                                <div class="ballistic-data-row">
-                                    <span class="bdata-item gold">NIJ: IIIA+</span>
-                                    <span class="bdata-sep">|</span>
-                                    <span class="bdata-item gold">490 m/s</span>
-                                    <span class="bdata-sep">|</span>
-                                    <span class="bdata-item gold">1.44 g/cm³</span>
-                                </div>
-                            </div>
-
-                            <!-- CENTER CONTROLS -->
-                            <div class="ballistic-center-col">
-                                <div class="bullet-info-box">
-                                    <div class="military-text"
-                                        style="font-size:0.65rem; color:#888; letter-spacing:2px; margin-bottom:0.5rem;">
-                                        PROJECTILE</div>
-                                    <div class="bullet-icon">🎯</div>
-                                    <div class="military-text" style="font-size:0.9rem; color:#ffd700;">9mm FMJ</div>
-                                    <div
-                                        style="font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#aaa; margin-top:0.25rem;">
-                                        v₀ = 370 m/s</div>
-                                </div>
-
-                                <button id="test-impact-btn" class="rgb-glow-btn primary-btn ballistic-fire-btn">
-                                    <span class="btn-text">FIRE TEST IMPACT</span>
-                                    <span class="btn-glow"></span>
-                                    <span class="btn-rgb-border"></span>
-                                </button>
-
-                                <div class="kinetic-meter">
-                                    <div class="military-text km-label">KINETIC ENERGY</div>
-                                    <div class="km-bar-outer">
-                                        <div id="kinetic-bar" class="km-bar-inner"></div>
-                                    </div>
-                                    <div id="kinetic-value" class="km-value gold">1,800 J</div>
-                                </div>
-
-                                <div id="impact-phase-label" class="impact-phase-label">STANDBY</div>
-                            </div>
-
-                            <!-- STEEL PANEL -->
-                            <div class="ballistic-panel">
-                                <div class="ballistic-mat-label military-text" style="color:#aaa;">
-                                    <span class="mat-dot steel-dot"></span>STEEL 10mm
-                                </div>
-                                <div class="ballistic-canvas-wrapper">
-                                    <canvas id="steel-impact-canvas" class="ballistic-canvas"></canvas>
-                                    <div class="bcan-corner tl"></div>
-                                    <div class="bcan-corner tr"></div>
-                                    <div class="bcan-corner bl"></div>
-                                    <div class="bcan-corner br"></div>
-                                </div>
-                                <div id="steel-impact-result" class="ballistic-result"></div>
-                                <div class="ballistic-data-row">
-                                    <span class="bdata-item" style="color:#aaa;">NIJ: —</span>
-                                    <span class="bdata-sep">|</span>
-                                    <span class="bdata-item" style="color:#aaa;">7.85 g/cm³</span>
-                                    <span class="bdata-sep">|</span>
-                                    <span class="bdata-item" style="color:#aaa;">400 MPa</span>
-                                </div>
-                            </div>
-
-                        </div><!-- /.ballistic-panels -->
-                    </div><!-- /.ballistic-sim-wrapper -->
 
 
                     <!-- Final Verdict -->
@@ -1237,7 +1238,7 @@
         </section>
 
         <!-- Timeline Section -->
-        <section id="timeline-section" class="content-section timeline-section timeline-collapsed">
+        <section id="timeline-section" class="content-section timeline-section timeline-collapsed" data-kevin-context="kevlar-history">
             <div class="section-content">
                 <div class="data-stream">[TIMELINE] // KEVLAR_DISCOVERY_HISTORY</div>
                 <h2 class="military-text section-title gold-glow">HISTORY OF KEVLAR</h2>
@@ -1519,7 +1520,7 @@
                         </div>
                     </div>
 
-                    <div class="hud-doc-card scroll-reveal delay-4" data-color="cyan">
+                    <div class="hud-doc-card scroll-reveal delay-4" data-color="cyan" data-kevin-context="f1-safety">
                         <div class="hdc-scan" style="animation-delay:-3.1s"></div>
                         <div class="hdc-corner tl"></div>
                         <div class="hdc-corner tr"></div>
@@ -1533,14 +1534,10 @@
                             </div>
                         </div>
                         <h4 class="hdc-title cyan">APPLICATIONS</h4>
-                        <p class="hdc-text">Bulletproof vests, ballistic helmets, vehicle armoring, Mars rover
-                            parachutes, sports equipment (skis, tennis rackets), puncture-resistant tires, marine
-                            platform ropes.</p>
+                        <p class="hdc-text">Bulletproof vests, ballistic helmets, vehicle armoring, Mars rover parachutes, sports equipment (skis, tennis rackets), puncture-resistant tires, marine platform ropes.</p>
                         <div class="hdc-stats-row">
-                            <div class="hdc-stat"><span class="hds-val cyan">200+</span><span class="hds-lbl">Global
-                                    applications</span></div>
-                            <div class="hdc-stat"><span class="hds-val cyan">∞</span><span class="hds-lbl">Lives
-                                    saved</span></div>
+                            <div class="hdc-stat"><span class="hds-val cyan">200+</span><span class="hds-lbl">Global applications</span></div>
+                            <div class="hdc-stat"><span class="hds-val cyan">∞</span><span class="hds-lbl">Lives saved</span></div>
                         </div>
                         <div class="hdc-bar-wrap">
                             <div class="hdc-bar cyan-bar" style="--bw:100%"></div>
@@ -1742,7 +1739,7 @@
                 <h2 class="military-text section-title" style="color:#ff4444;text-shadow:0 0 30px rgba(255,68,68,0.8);">
                     💥 BREAK THE KEVLAR</h2>
                 <p class="section-subtitle">Molecular fracture simulation — can you destroy the material?</p>
-                <div class="break-game-container tactical-border">
+                <div class="break-game-container tactical-border" data-kevin-context="stress-propagation">
                     <div class="break-canvas-wrap">
                         <canvas id="break-canvas"></canvas>
                         <div class="break-status" id="break-status">STRUCTURE INTACT</div>
@@ -1805,7 +1802,7 @@
 
         <!-- ══ BALLISTIC SCORE CALCULATOR ══ -->
         <!-- ══ RESEARCH & SCIENTIFIC SOURCES ══ -->
-        <section class="content-section research-section" id="research-section">
+        <section class="content-section research-section" id="research-section" data-kevin-context="research-database">
             <div class="section-content">
                 <div class="data-stream">[RESEARCH_DB] // SCIENTIFIC_LITERATURE_SCAN</div>
                 <h2 class="military-text section-title cyber-glow">🔬 RESEARCH DATABASE</h2>
@@ -2023,7 +2020,7 @@
         </section>
 
         <!-- ══ VIRTUAL LAB ══ -->
-        <section class="content-section lab-section" id="lab-section">
+        <section class="content-section lab-section" id="lab-section" data-kevin-context="synthesis-reaction">
             <div class="section-content">
                 <div class="data-stream">[VIRTUAL_LAB] // POLYMERIZATION_SIMULATION_ENGINE v4.2</div>
                 <h2 class="military-text section-title rgb-text">🧬 VIRTUAL LAB — KEVLAR SYNTHESIS</h2>
@@ -3506,9 +3503,11 @@ function cleanForSpeech(text) {
   return t.trim();
 }
 
+let currentSpeakId = 0;
 // Translate to English via Claude API, then speak
 async function speak(text) {
   if (!voiceEnabled || !window.speechSynthesis) return;
+  const speakId = ++currentSpeakId;
   window.speechSynthesis.cancel();
   if (!bestEnVoice) loadEnglishVoice();
 
@@ -3542,24 +3541,32 @@ async function speak(text) {
   const sentences = toRead.match(/[^.!?]+[.!?]*/g) || [toRead];
   let chunk = '', chunks = [];
   for (const s of sentences) {
-    if ((chunk + s).length > 220) { if (chunk) chunks.push(chunk.trim()); chunk = s; }
+    if ((chunk + s).length > 180) { if (chunk) chunks.push(chunk.trim()); chunk = s; }
     else chunk += s;
   }
   if (chunk.trim()) chunks.push(chunk.trim());
 
   function speakChunk(i) {
-    if (i >= chunks.length || !voiceEnabled) return;
+    if (speakId !== currentSpeakId || i >= chunks.length || !voiceEnabled) return;
     const msg = new SpeechSynthesisUtterance(chunks[i]);
     if (bestEnVoice) msg.voice = bestEnVoice;
     msg.lang = 'en-US';
     msg.rate = 0.88;
     msg.pitch = 1.0;
     msg.volume = 1.0;
-    msg.onend = () => speakChunk(i + 1);
+    msg.onend = () => { if(speakId === currentSpeakId) setTimeout(() => speakChunk(i + 1), 50); };
+    msg.onerror = (e) => { if (e.error !== 'interrupted' && e.error !== 'canceled' && speakId === currentSpeakId) speakChunk(i + 1); };
     window.speechSynthesis.speak(msg);
   }
   speakChunk(0);
 }
+
+// Add Chrome fix interval
+setInterval(() => {
+  if (window.speechSynthesis && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
+  }
+}, 5000);
 
 // Load voices as soon as they are available
 if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -4641,6 +4648,73 @@ initSemanticAI();
         })();
     </script>
 
+    <!-- KEVIN AI Integration - Broadcast scroll position and hover context to parent HUD frame -->
+    <script>
+        if (window.parent !== window) {
+            window.addEventListener('scroll', () => {
+                let bestMatch = null;
+                let minDistance = Infinity;
+                const centerY = window.innerHeight / 2;
+                
+                document.querySelectorAll('[data-kevin-context]').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    // We check if the element is fairly visible and which one is closest to the center
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        const elCenter = rect.top + rect.height / 2;
+                        const distance = Math.abs(centerY - elCenter);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            bestMatch = el.dataset.kevinContext;
+                        }
+                    }
+                });
+
+                if (bestMatch) {
+                    window.parent.postMessage({ type: 'KEVIN_IFRAME_SECTION_VISIBLE', contextId: bestMatch }, '*');
+                }
+            }, { passive: true });
+            
+            // Initial blast
+            setTimeout(() => window.dispatchEvent(new Event('scroll')), 500);
+
+            // Robust cursor-based context detection + coordinate tracking
+            let lastHoveredContext = null;
+            document.addEventListener('mousemove', (e) => {
+                const el = e.target.closest('[data-kevin-context]');
+                const contextId = el ? el.dataset.kevinContext : null;
+                
+                if (contextId !== lastHoveredContext) {
+                    lastHoveredContext = contextId;
+                    if (contextId) {
+                        window.parent.postMessage({ type: 'KEVIN_IFRAME_HOVER_IN', contextId: contextId }, '*');
+                    } else {
+                        window.parent.postMessage({ type: 'KEVIN_IFRAME_HOVER_OUT' }, '*');
+                    }
+                }
+
+                // Send raw cursor coordinates to Kevin HUD
+                window.parent.postMessage({
+                    type: 'KEVIN_CURSOR_TRACK',
+                    x: Math.round(e.clientX),
+                    y: Math.round(e.clientY),
+                    tag: e.target.tagName || 'UNKNOWN',
+                    cls: (e.target.className && typeof e.target.className === 'string') ? e.target.className.split(' ')[0] : '',
+                    section: contextId || 'NONE'
+                }, '*');
+            }, { passive: true });
+
+            // Forward typing to parent window's chat
+            document.addEventListener('keydown', (e) => {
+                if (document.activeElement && 
+                   (document.activeElement.tagName === 'INPUT' || 
+                    document.activeElement.tagName === 'TEXTAREA')) return;
+                    
+                if (!e.ctrlKey && !e.altKey && !e.metaKey && (e.key.length === 1 || e.key === 'Backspace')) {
+                    window.parent.postMessage({ type: 'KEVIN_IFRAME_KEYPRESS', key: e.key }, '*');
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
