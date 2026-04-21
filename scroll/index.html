@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KEVLAR — Cinematic Experience | Interactive 3D Science</title>
+<meta name="description" content="An immersive 3D cinematic journey through the science of Kevlar — manufacturing, ballistic protection, molecular analysis, F1 composites, and space applications. ICYS 2026.">
+<meta name="keywords" content="Kevlar, PPTA, DuPont, bulletproof, F1, NASA, molecular analysis, interactive 3D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--c:#00ffee;--p:#cc44ff;--g:#c8a84b;--bg:#000005;--r:#ff4444;--gold-glow:rgba(200,168,75,.4)}
+html{background:var(--bg);scroll-behavior:auto}
+body{background:var(--bg);color:#f0ebe0;font-family:'DM Sans',sans-serif;cursor:none;overflow-x:hidden}
+::selection{background:var(--g);color:#000}
+
+/* ═══ CYBERPUNK/CINEMATIC TEXT ANIMATION ═══ */
+@keyframes rgbShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.rgb-text{
+  background:linear-gradient(90deg, var(--c), #ffffff, var(--p), #ffffff, var(--g), var(--c));
+  background-size:400% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:rgbShift 4s ease-in-out infinite;
+}
+.rgb-glow{
+  text-shadow:0 0 20px rgba(0,255,238,.4),0 0 40px rgba(204,68,255,.3),0 0 60px rgba(200,168,75,.2);
+  animation: pulseGlow 2s ease-in-out infinite alternate;
+}
+@keyframes pulseGlow{
+  from{filter:brightness(1)}
+  to{filter:brightness(1.5) drop-shadow(0 0 10px var(--c))}
+}
+
+/* ═══ TEXT REVEAL ANIMATIONS ═══ */
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(28px);filter:blur(6px)}
+  to{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+@keyframes fadeSlideRight{
+  from{opacity:0;transform:translateX(-20px);filter:blur(4px)}
+  to{opacity:1;transform:translateX(0);filter:blur(0)}
+}
+@keyframes glowReveal{
+  0%{opacity:0;transform:scale(0.9) translateY(10px);letter-spacing:.1em;text-shadow:0 0 0 transparent}
+  40%{opacity:1;transform:scale(1.02) translateY(-2px);letter-spacing:.05em;text-shadow:0 0 40px rgba(0,255,238,.8),0 0 80px rgba(204,68,255,.5)}
+  100%{opacity:1;transform:scale(1) translateY(0);letter-spacing:normal;text-shadow:0 0 15px rgba(0,255,238,.3)}
+}
+@keyframes badgePop{
+  from{opacity:0;transform:scale(.6) translateY(12px) rotate(-5deg);filter:blur(4px)}
+  to{opacity:1;transform:scale(1) translateY(0) rotate(0);filter:blur(0)}
+}
+.reveal-tag{animation:fadeSlideRight .7s cubic-bezier(.22,1,.36,1) both}
+.reveal-title{animation:glowReveal 1s cubic-bezier(.22,1,.36,1) .15s both}
+.reveal-body{animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .3s both}
+.reveal-badges .spec-badge{animation:badgePop .5s cubic-bezier(.22,1,.36,1) both}
+.reveal-badges .spec-badge:nth-child(1){animation-delay:.4s}
+.reveal-badges .spec-badge:nth-child(2){animation-delay:.5s}
+.reveal-badges .spec-badge:nth-child(3){animation-delay:.6s}
+.reveal-chips .mol-chip{animation:badgePop .5s cubic-bezier(.22,1,.36,1) both}
+.reveal-chips .mol-chip:nth-child(1){animation-delay:.35s}
+.reveal-chips .mol-chip:nth-child(2){animation-delay:.45s}
+.reveal-chips .mol-chip:nth-child(3){animation-delay:.55s}
+
+/* ═══ CURSOR ═══ */
+#cur{position:fixed;width:6px;height:6px;background:var(--c);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--c),0 0 24px rgba(0,255,238,.3);mix-blend-mode:screen;transition:width .2s,height .2s}
+#cur-ring{position:fixed;width:40px;height:40px;border:1px solid rgba(0,255,238,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);mix-blend-mode:screen}
+
+/* ═══ CINEMATIC LOADER ═══ */
+#ldr{position:fixed;inset:0;background:#000003;z-index:8000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;perspective:1000px}
+#ldr::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%, rgba(0,255,238,0.05), transparent 60%);animation:pulseGlow 2s infinite alternate;}
+#ldr .scan{position:absolute;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.6;animation:scanA 2s cubic-bezier(0.4,0,0.6,1) infinite;box-shadow:0 0 20px var(--c)}
+@keyframes scanA{0%{top:-20px}100%{top:100%}}
+#lnum{font-family:'Orbitron',sans-serif;font-size:min(28vw,260px);font-weight:900;line-height:1;letter-spacing:-.04em;text-shadow:0 0 40px rgba(0,255,238,.2);z-index:2;position:relative}
+.ltxt{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.6em;color:rgba(0,255,238,.7);margin-top:20px;text-transform:uppercase;z-index:2;animation:blink .8s steps(2) infinite}
+@keyframes blink{50%{opacity:.4}}
+#lbar{width:320px;height:2px;background:rgba(255,255,255,.05);margin-top:40px;overflow:hidden;border-radius:2px;position:relative;z-index:2;box-shadow:0 0 10px rgba(0,0,0,.5)}
+#lbar::after{content:'';position:absolute;top:0;bottom:0;left:0;width:100%;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(0,0,0,.3) 5px,rgba(0,0,0,.3) 10px);z-index:3}
+#lfill{height:100%;background:linear-gradient(90deg,var(--p),var(--c),#fff);width:0;border-radius:2px;box-shadow:0 0 15px var(--c);position:relative;z-index:1;transition:width 0.1s linear}
+/* Loading status text (Sci-Fi logs) */
+#load-status{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.25em;color:rgba(0,255,238,0.7);margin-top:20px;text-transform:uppercase;min-height:16px;text-shadow:0 0 10px rgba(0,255,238,0.4);animation:blinkText 1s steps(2) infinite}
+@keyframes blinkText{50%{opacity:.5}}
+
+/* ═══ FIXED 3D CANVAS ═══ */
+#c3d{position:fixed;inset:0;z-index:0;width:100%;height:100%}
+
+/* ═══ OVERLAYS ═══ */
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 25%,rgba(0,0,5,.92) 100%);transition:opacity .8s ease}
+#scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 3px);opacity:.6}
+#flash{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(255,255,255,.9),rgba(0,255,238,.2),transparent)}
+#prog{position:fixed;bottom:0;left:0;height:2px;z-index:200;width:0;box-shadow:0 0 16px var(--c),0 0 4px var(--c)}
+#grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;padding:28px 52px;display:flex;align-items:center;justify-content:space-between;z-index:100;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,5,.7),transparent)}
+.nlog{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:.25em;color:#fff;pointer-events:auto;text-decoration:none;transition:text-shadow .4s}
+.nlog:hover{text-shadow:0 0 20px rgba(200,168,75,.5)}
+.nlog span{color:var(--g)}
+.nlnks{display:flex;gap:28px}
+.nlnks a{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.15);text-decoration:none;text-transform:uppercase;cursor:none;transition:color .4s,text-shadow .4s,letter-spacing .3s;pointer-events:auto;position:relative}
+.nlnks a:hover{color:var(--c);text-shadow:0 0 12px var(--c);letter-spacing:.24em}
+.nlnks a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--c);transition:width .3s ease;box-shadow:0 0 6px var(--c)}
+.nlnks a:hover::after{width:100%}
+
+/* ═══ SECTION HUD ═══ */
+#slbl{position:fixed;bottom:32px;left:52px;z-index:100;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.08);text-transform:uppercase;pointer-events:none;transition:color .6s,opacity .6s}
+#snum{position:fixed;bottom:32px;right:52px;z-index:100;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.12em;color:rgba(255,255,255,.06);pointer-events:none;transition:color .6s,opacity .6s}
+
+/* ═══ SECTIONS ═══ */
+.sec{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sec-inner{max-width:1100px;margin:0 auto;padding:0 52px;width:100%}
+
+/* ═══ HERO ═══ */
+#s1{height:100vh;text-align:center}
+.hero-eye{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.45em;text-transform:uppercase;margin-bottom:24px;opacity:0}
+.hero-title-wrap{position:relative;display:inline-block}
+.hero-title{font-family:'Orbitron',sans-serif;font-size:min(16vw,200px);font-weight:900;line-height:.88;letter-spacing:.02em;opacity:0}
+.gtl1,.gtl2{position:absolute;top:0;left:0;right:0;font-family:'Orbitron',sans-serif;font-size:min(16vw,200px);font-weight:900;line-height:.88;letter-spacing:.02em;pointer-events:none;opacity:0}
+.gtl1{color:var(--c);clip-path:polygon(0 15%,100% 15%,100% 38%,0 38%);animation:gla 2s infinite linear; text-shadow: -6px 0 rgba(0,255,238,0.9), 0 0 20px rgba(0,255,238,0.5);}
+.gtl2{color:var(--p);clip-path:polygon(0 58%,100% 58%,100% 78%,0 78%);animation:glb 1.5s infinite linear; text-shadow: 6px 0 rgba(204,68,255,0.9), 0 0 20px rgba(204,68,255,0.5);}
+@keyframes gla{0%,100%{transform:translateX(0); opacity:0.8}20%{transform:translateX(-12px) skewX(15deg); opacity:1}21%{transform:translateX(0); opacity:0.8}40%{transform:translateY(6px)}42%{transform:translateY(0)}60%{transform:translateX(20px) scale(1.05); opacity:1}62%{transform:translateX(0) scale(1); opacity:0.8}}
+@keyframes glb{0%,100%{transform:translateX(0); opacity:0.7}15%{transform:translateX(15px) skewX(-20deg); opacity:1}16%{transform:translateX(0); opacity:0.7}45%{transform:translateY(-8px)}47%{transform:translateY(0)}75%{transform:translateX(-25px) scale(0.95); opacity:1}77%{transform:translateX(0) scale(1); opacity:0.7}}
+.hero-sub{font-size:16px;color:rgba(240,235,224,.7);max-width:520px;margin:30px auto 0;line-height:1.9;font-weight:300;opacity:0;letter-spacing:.03em; text-shadow: 0 0 10px rgba(255,255,255,0.2);}
+.hero-stats{display:flex;gap:56px;justify-content:center;margin-top:52px;opacity:0; position:relative;}
+.hero-stats::after {content:'';position:absolute;top:-25px;left:50%;transform:translateX(-50%);width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--c),transparent); opacity:0.5;}
+.hstat-n{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;line-height:1;text-shadow:0 0 15px rgba(0,255,238,.3)}
+.hstat-l{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:10px}
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:60px;opacity:0}
+.scroll-hint span{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;color:rgba(0,255,238,.4);text-transform:uppercase; text-shadow: 0 0 10px rgba(0,255,238,0.2);}
+.sline{width:2px;height:60px;background:linear-gradient(to bottom,var(--c),transparent);animation:sla 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; box-shadow: 0 0 10px var(--c);}
+@keyframes sla{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top;box-shadow: 0 0 20px var(--c)}100%{transform:scaleY(1);transform-origin:bottom;opacity:0}}
+
+/* ═══ SCENE TEXT PANELS ═══ */
+.scene-panel{position:relative;z-index:10;pointer-events:none;perspective:1000px}
+.scene-panel::before { content:''; position:absolute; inset: -10px; background: linear-gradient(45deg, var(--c), var(--p), var(--g)); filter: blur(40px); opacity: 0.12; z-index: -1; animation: rgbBorder 5s infinite linear; border-radius: 12px; }
+.scene-panel .inner{max-width:560px;backdrop-filter:blur(24px) saturate(1.8);background:rgba(0,0,5,.6);padding:40px;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,255,238,.1); position:relative; overflow:hidden; transition: transform .6s cubic-bezier(.22,1,.36,1), box-shadow .6s ease; transform-style:preserve-3d}
+.scene-panel .inner:hover{transform:translateY(-5px) rotateX(2deg) rotateY(-2deg);box-shadow:0 30px 80px rgba(0,0,0,.9),0 0 40px rgba(0,255,238,.15), inset 0 0 0 1px rgba(0,255,238,.25)}
+.scene-panel .inner::before{content:'';position:absolute;inset:0;padding:2px;border-radius:8px;background:linear-gradient(45deg, transparent, var(--c), var(--p), transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);-webkit-mask-composite: xor;mask-composite: exclude; pointer-events:none; background-size:300% 300%; animation: rgbBorder 4s infinite linear; opacity: 0.8;}
+@keyframes rgbBorder{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.scene-panel.right .inner{margin-left:auto}
+.scene-panel.left .inner{margin-right:auto}
+.ptag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.4em;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ptag::before{content:'';width:24px;height:1px;flex-shrink:0}
+.ptag.cyan{color:var(--c);text-shadow:0 0 14px var(--c)}.ptag.cyan::before{background:var(--c);box-shadow:0 0 12px var(--c); animation: pulseGlow 1.5s infinite alternate}
+.ptag.gold{color:var(--g);text-shadow:0 0 14px var(--gold-glow)}.ptag.gold::before{background:var(--g);box-shadow:0 0 12px var(--gold-glow); animation: pulseGlow 1.8s infinite alternate}
+.ptag.purple{color:var(--p);text-shadow:0 0 14px var(--p)}.ptag.purple::before{background:var(--p);box-shadow:0 0 12px var(--p); animation: pulseGlow 2.1s infinite alternate}
+.bh{font-family:'Orbitron',sans-serif;font-size:min(4.5vw,52px);font-weight:900;color:#fff;line-height:1.05;margin-bottom:18px;letter-spacing:.02em; position:relative; z-index:1; animation: chromAb 6s infinite alternate;}
+@keyframes chromAb {
+  0% { text-shadow: 2px 0 0 rgba(0,255,238,0.4), -2px 0 0 rgba(204,68,255,0.4); }
+  50% { text-shadow: 1px 0 0 rgba(0,255,238,0.2), -1px 0 0 rgba(204,68,255,0.2); }
+  100% { text-shadow: 3px 0 0 rgba(0,255,238,0.6), -3px 0 0 rgba(204,68,255,0.6); }
+}
+.body-txt{font-size:14px;color:rgba(240,235,224,.5);line-height:1.95;font-weight:200;letter-spacing:.01em}
+.body-txt strong{font-weight:700; text-shadow: 0 0 8px rgba(255,255,255,0.3);}
+
+/* ═══ SPEC BADGES ═══ */
+.spec-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.spec-badge{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.14em;padding:5px 12px;border:1px solid rgba(0,255,238,.15);text-transform:uppercase;backdrop-filter:blur(4px);transition:border-color .3s,box-shadow .3s,transform .3s,background .3s;cursor:default}
+.spec-badge:hover{transform:translateY(-1px)}
+.spec-badge.cyan{color:var(--c);text-shadow:0 0 6px var(--c)}
+.spec-badge.cyan:hover{border-color:rgba(0,255,238,.5);box-shadow:0 0 16px rgba(0,255,238,.2);background:rgba(0,255,238,.04)}
+.spec-badge.gold{border-color:rgba(200,168,75,.2);color:var(--g);text-shadow:0 0 6px var(--gold-glow)}
+.spec-badge.gold:hover{border-color:rgba(200,168,75,.5);box-shadow:0 0 16px rgba(200,168,75,.2);background:rgba(200,168,75,.04)}
+
+/* ═══ SPACER ═══ */
+.spacer{min-height:50vh;position:relative;z-index:10}
+
+/* ═══ QUOTE ═══ */
+.quote{font-size:clamp(17px,2vw,24px);font-weight:200;font-style:italic;color:rgba(240,235,224,.7);line-height:1.65;padding-left:24px;border-left:2px solid var(--g);margin:20px 0}
+
+/* ═══ IMPACT ENERGY BAR (Section 3) ═══ */
+.energy-bar-wrap{margin-top:28px}
+.energy-bar-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;text-shadow:0 0 5px rgba(0,0,0,0.5)}
+.energy-bar{width:100%;height:8px;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,238,.1);border-radius:2px;overflow:hidden;position:relative;box-shadow:inset 0 0 10px rgba(0,0,0,.8)}
+.energy-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--c),var(--g));border-radius:2px;transition:width 1.5s cubic-bezier(.22,1,.36,1);box-shadow:0 0 20px var(--c),0 0 8px var(--c);position:relative}
+.energy-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(-45deg,transparent,transparent 6px,rgba(255,255,255,.3) 6px,rgba(255,255,255,.3) 12px);animation:enFlow .6s linear infinite;mix-blend-mode:overlay}
+@keyframes enFlow{0%{background-position:0 0}100%{background-position:17px 0}}
+.energy-bar-fill.active{width:97%}
+
+/* ═══ MOLECULAR INFO (Section 4) ═══ */
+.mol-info{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
+.mol-chip{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.1em;padding:6px 14px;background:rgba(204,68,255,.06);border:1px solid rgba(204,68,255,.15);color:var(--p);border-radius:2px;display:flex;align-items:center;gap:6px;transition:border-color .3s,box-shadow .3s,transform .3s}
+.mol-chip:hover{transform:translateY(-1px);border-color:rgba(204,68,255,.35);box-shadow:0 0 12px rgba(204,68,255,.15)}
+.mol-chip .dot{width:5px;height:5px;border-radius:50%;animation:molPulse 2s ease infinite}
+.mol-chip:nth-child(1) .dot{background:var(--p)}
+.mol-chip:nth-child(2) .dot{background:var(--c)}
+.mol-chip:nth-child(3) .dot{background:var(--g)}
+@keyframes molPulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+/* ═══ HIGH-END SOUND TOGGLE ═══ */
+#sound-toggle { position: fixed; bottom: 32px; right: 52px; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,8,0.6); border: 1px solid rgba(0,255,238,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999; transition: all 0.5s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 0 20px rgba(0,0,0,0.8); pointer-events: auto; backdrop-filter: blur(10px); }
+#sound-toggle::before { content: ''; position: absolute; inset: -1px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, var(--c), transparent 40%); animation: spinRing 4s linear infinite; opacity: 0; transition: opacity 0.5s; }
+#sound-toggle.active { background: rgba(0,255,238,0.08); border-color: rgba(0,255,238,0.5); box-shadow: 0 0 30px rgba(0,255,238,0.2), inset 0 0 15px rgba(0,255,238,0.1); transform: scale(1.05); }
+#sound-toggle.active::before { opacity: 1; animation: spinRing 2s linear infinite; }
+.st-icon { position: relative; z-index: 2; width: 14px; height: 14px; display: flex; align-items: center; justify-content: space-between; opacity: 0; transform: scale(0.5); transition: opacity 0.4s, transform 0.4s; }
+.st-mute-icon { position: absolute; z-index: 2; width: 22px; height: 22px; transition: opacity 0.5s cubic-bezier(.22,1,.36,1), transform 0.5s cubic-bezier(.22,1,.36,1); pointer-events: none; filter: drop-shadow(0 0 5px rgba(0,255,238,0.5)); }
+#sound-toggle.active .st-icon { opacity: 1; transform: scale(1); }
+#sound-toggle.active .st-mute-icon { opacity: 0; transform: scale(1.5) rotate(45deg); filter: blur(4px); }
+.st-bar { width: 2px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; transition: all 0.4s ease; }
+#sound-toggle:hover .st-bar { background: rgba(255,255,255,0.7); }
+#sound-toggle.active .st-bar { background: #fff; box-shadow: 0 0 8px var(--c); }
+#sound-toggle.active .st-bar:nth-child(1) { animation: eqAnim 0.7s ease-in-out infinite alternate; }
+#sound-toggle.active .st-bar:nth-child(2) { animation: eqAnim 0.8s ease-in-out infinite alternate 0.2s; }
+#sound-toggle.active .st-bar:nth-child(3) { animation: eqAnim 0.6s ease-in-out infinite alternate 0.4s; }
+#sound-toggle.active .st-bar:nth-child(4) { animation: eqAnim 0.9s ease-in-out infinite alternate 0.1s; }
+@keyframes eqAnim { 0% { height: 3px; } 100% { height: 18px; } }
+@keyframes spinRing { 100% { transform: rotate(360deg); } }
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--bg);border-top:1px solid rgba(255,255,255,.03);padding:52px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:10}
+.flogo{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:.15em}.flogo span{color:var(--g)}
+.fmeta{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;color:#151520;text-align:right;line-height:2.2;text-transform:uppercase}
+.fmeta strong{color:var(--g)}
+
+/* ═══ ANIMATE-IN ═══ */
+.ai{opacity:0;transform:translateY(25px)}
+
+/* ═══ ERROR TOAST ═══ */
+.model-error-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--r);background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.15);padding:10px 24px;border-radius:4px;z-index:9000;opacity:0;transition:opacity .5s;pointer-events:none;backdrop-filter:blur(8px)}
+.model-error-toast.show{opacity:1}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .sec-inner{padding:0 20px}
+  nav{padding:16px 20px}.nlnks{display:none}
+  .hero-stats{gap:18px;flex-wrap:wrap}
+  .bh{font-size:min(8vw,40px)}
+  .scene-panel .inner{padding:24px;max-width:100%}
+  footer{flex-direction:column;gap:24px;text-align:center;padding:36px 20px}.fmeta{text-align:center}
+  #cur,#cur-ring{display:none}
+  body{cursor:auto}
+  .mol-info{gap:8px}
+  .mol-chip{font-size:7px;padding:4px 10px}
+  .scene-panel[style] { transform: none !important; }
+  #sound-toggle{display:none}
+}
+@media(max-width:480px){
+  .hero-stats{gap:12px}
+  .hstat-n{font-size:24px}
+  .bh{font-size:min(10vw,32px)}
+  .body-txt{font-size:13px;line-height:1.8}
+  .spec-badge-row{gap:6px}
+  .spec-badge{font-size:7px;padding:4px 8px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="vig"></div>
+<div id="scanlines"></div>
+<div id="grain"></div>
+<div id="flash"></div>
+<div id="prog"></div>
+<canvas id="c3d"></canvas>
+
+<!-- LOADER -->
+<div id="ldr">
+  <div class="scan"></div>
+  <div id="lnum" class="rgb-text">0</div>
+  <div class="ltxt">INITIALIZING KEVLAR MATRIX // K-29 // PPTA</div>
+  <div id="lbar"><div id="lfill"></div></div>
+  <div id="load-status"></div>
+</div>
+
+<nav>
+  <a href="#" class="nlog">KEVLAR <span>K—29</span></a>
+  <div class="nlnks">
+    <a href="#s2">Synthesis</a>
+    <a href="#s3">Ballistics</a>
+    <a href="#s4">Lab</a>
+    <a href="#s5">F1</a>
+    <a href="#s6">Orbital</a>
+    <a href="#s7">Finale</a>
+  </div>
+</nav>
+<div id="slbl">INTRO</div>
+<div id="snum">01 / 07</div>
+
+<!-- ══════ S1: INTRO ══════ -->
+<section class="sec" id="s1">
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="hero-eye rgb-text" id="hero-eye">Poly-para-phenylene terephthalamide · DuPont™ 1965</div>
+    <div class="hero-title-wrap">
+      <div class="hero-title rgb-text" id="htitle">KEVLAR</div>
+      <div class="gtl1">KEVLAR</div>
+      <div class="gtl2">KEVLAR</div>
+    </div>
+    <p class="hero-sub" id="hsub">Stronger than steel. Lighter than air.<br><span style="opacity:.6">The fiber that redefined human protection.</span></p>
+    <div class="hero-stats" id="hstats">
+      <div class="hstat"><div class="hstat-n rgb-text">3,620</div><div class="hstat-l">Tensile MPa</div></div>
+      <div class="hstat"><div class="hstat-n rgb-text">5×</div><div class="hstat-l">vs Steel</div></div>
+      <div class="hstat"><div class="hstat-n rgb-text">1.44</div><div class="hstat-l">g/cm³</div></div>
+      <div class="hstat"><div class="hstat-n rgb-text">427°C</div><div class="hstat-l">Peak Temp</div></div>
+    </div>
+    <div class="scroll-hint" id="hscroll"><span>Scroll</span><div class="sline"></div></div>
+  </div>
+</section>
+
+<!-- ══════ S2: INDUSTRIAL SYNTHESIS ══════ -->
+<section class="sec" id="s2">
+  <div class="sec-inner">
+    <div class="scene-panel left">
+      <div class="inner ai">
+        <div class="ptag gold reveal-tag">Industrial Synthesis</div>
+        <h2 class="bh rgb-text rgb-glow reveal-title">The Manufacturing<br>Process</h2>
+        <p class="body-txt reveal-body">Kevlar fibers are produced through solution polycondensation, followed by dry-wet spinning. The PPTA polymer solution in concentrated sulfuric acid is extruded through spinnerets, creating fibers with <strong class="rgb-text">70–75% crystallinity</strong> and extraordinary molecular alignment.</p>
+        <div class="spec-badge-row reveal-badges">
+          <div class="spec-badge gold">Spinning at 80°C</div>
+          <div class="spec-badge gold">H₂SO₄ 99.7%</div>
+          <div class="spec-badge cyan">12 μm Diameter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="spacer" id="s2b"></div>
+
+<!-- ══════ S3: BALLISTIC IMPACT ══════ -->
+<section class="sec" id="s3">
+  <div class="sec-inner">
+    <div class="scene-panel right">
+      <div class="inner ai">
+        <div class="ptag cyan reveal-tag">Ballistic Impact · NIJ IIIA+</div>
+        <h2 class="bh rgb-text rgb-glow reveal-title">Kinetic Energy<br>Dissipation</h2>
+        <p class="body-txt reveal-body">20–30 interwoven layers dissipate <strong class="rgb-text">92–97%</strong> of kinetic energy. The fiber doesn't break — it stretches, absorbing the shock and distributing it across a wide surface area within microseconds.</p>
+        <div class="energy-bar-wrap">
+          <div class="energy-bar-label"><span>Energy Absorbed</span><span id="energy-pct">0%</span></div>
+          <div class="energy-bar"><div class="energy-bar-fill" id="energy-fill"></div></div>
+        </div>
+        <div class="spec-badge-row reveal-badges">
+          <div class="spec-badge cyan">548 J Absorbed</div>
+          <div class="spec-badge cyan">490 m/s V50</div>
+          <div class="spec-badge gold">97% Efficiency</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="spacer" id="s3b"></div>
+
+<!-- ══════ S4: VIRTUAL LABORATORY ══════ -->
+<section class="sec" id="s4">
+  <div class="sec-inner">
+    <div class="scene-panel left">
+      <div class="inner ai">
+        <div class="ptag purple reveal-tag">Virtual Laboratory · PPTA Synthesis</div>
+        <h2 class="bh rgb-text rgb-glow reveal-title">Molecular<br>Analysis</h2>
+        <p class="body-txt reveal-body">A chemical synthesis laboratory where PPTA fiber is created. Polycondensation occurs at precisely controlled temperatures, using <strong class="rgb-text">99.7% sulfuric acid</strong> as the solvent. The resulting 70–75% crystallinity provides extraordinary tensile strength.</p>
+        <div class="mol-info reveal-chips">
+          <div class="mol-chip"><span class="dot"></span>C-N Amide Bonds</div>
+          <div class="mol-chip"><span class="dot"></span>Aromatic Rings</div>
+          <div class="mol-chip"><span class="dot"></span>Parallel Alignment</div>
+        </div>
+        <div class="spec-badge-row reveal-badges">
+          <div class="spec-badge purple" style="border-color:rgba(204,68,255,.2);color:var(--p)">Analysis Mode</div>
+          <div class="spec-badge cyan">3D Scan</div>
+          <div class="spec-badge gold">PPTA Synthesis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="spacer" id="s4b"></div>
+
+<!-- ══════ S5: F1 COMPOSITES ══════ -->
+<section class="sec" id="s5">
+  <div class="sec-inner">
+    <div class="scene-panel right" style="transform: translateX(120px);">
+      <div class="inner ai">
+        <div class="ptag cyan reveal-tag">Formula 1 · Extreme Performance</div>
+        <h2 class="bh rgb-text rgb-glow reveal-title">Kevlar Composites<br>in F1</h2>
+        <p class="body-txt reveal-body">The carbon fiber and Kevlar monocoque protects drivers from impacts exceeding <strong class="rgb-text">300 km/h</strong>. Minimal weight, maximum resistance — every single gram counts.</p>
+        <div class="spec-badge-row reveal-badges">
+          <div class="spec-badge gold">Monocoque</div>
+          <div class="spec-badge cyan">300+ km/h</div>
+          <div class="spec-badge cyan">FIA Standard</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="spacer" id="s5b"></div>
+
+<!-- ══════ S6: ORBITAL PROTECTION ══════ -->
+<section class="sec" id="s6">
+  <div class="sec-inner">
+    <div class="scene-panel left">
+      <div class="inner ai">
+        <div class="ptag purple reveal-tag">Orbital Applications · NASA</div>
+        <h2 class="bh rgb-text rgb-glow reveal-title">Protection<br>in Space</h2>
+        <p class="body-txt reveal-body">NASA utilizes Kevlar for the Whipple shields of the ISS, protecting the station from micrometeoroids traveling at <strong class="rgb-text">28,000 km/h</strong>. A terrestrial polymer, now in orbit.</p>
+        <div class="spec-badge-row reveal-badges">
+          <div class="spec-badge cyan">ISS Shield</div>
+          <div class="spec-badge gold">28,000 km/h</div>
+          <div class="spec-badge cyan">Mars Rovers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ S7: FINALE ══════ -->
+<section class="sec" id="s7" style="min-height:140vh">
+  <div style="text-align:center;max-width:800px;padding:0 24px">
+    <div class="quote ai" style="border:none;padding:0;text-align:center">"The satisfaction of knowing that I have contributed to saving so many lives is the greatest possible reward."</div>
+    <div class="ai" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;color:var(--g);margin-top:16px;text-transform:uppercase">— Stephanie Kwolek, 1923–2014</div>
+    <div class="bh ai rgb-text" style="margin-top:60px;font-size:min(9vw,110px);line-height:.9">KEVLAR<br>K—29</div>
+    <div class="ai rgb-text" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-top:20px">Engineered for protection. Designed for the future.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">KEVLAR <span>K—29</span></div>
+  <div class="fmeta">
+    ICYS 2026 Research Project<br>
+    Jiganie Bogdan · Lead Author<br>
+    Supervisor: Prof. Mihaela Garabet<br>
+    <strong>insidekevlar.github.io/kevlar</strong>
+  </div>
+</footer>
+
+<!-- Sound toggle High-End -->
+<div id="sound-toggle" aria-label="Toggle Sound">
+  <svg class="st-mute-icon" viewBox="0 0 24 24" fill="none" stroke="url(#rgbGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <defs>
+      <linearGradient id="rgbGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#fadb5f"><animate attributeName="stop-color" values="#fadb5f;#00f0ff;#9d4edd;#fadb5f" dur="4s" repeatCount="indefinite" /></stop>
+        <stop offset="100%" stop-color="#00f0ff"><animate attributeName="stop-color" values="#00f0ff;#9d4edd;#fadb5f;#00f0ff" dur="4s" repeatCount="indefinite" /></stop>
+      </linearGradient>
+    </defs>
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <line x1="23" y1="9" x2="17" y2="15"></line>
+    <line x1="17" y1="9" x2="23" y2="15"></line>
+  </svg>
+  <div class="st-icon">
+    <div class="st-bar"></div><div class="st-bar"></div><div class="st-bar"></div><div class="st-bar"></div>
+  </div>
+</div>
+
+<!-- Error toast for model loading failures -->
+<div class="model-error-toast" id="model-error-toast"></div>
+
+<!-- THREE.JS r128 CDN (proven working) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!-- Post-processing -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
